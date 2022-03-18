@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseObject.h"
+#include "Sprite2D.h"
 class SpriteAnimation : public BaseObject
 {
 private:
@@ -9,6 +10,7 @@ protected:
 	Vector2			m_Vec2DPos;
 	GLint			m_iHeight;
 	GLint			m_iWidth;
+	GLint			m_dir;
 	GLint			m_numFrames;
 	GLint			m_currentFrame;
 	GLfloat			m_frameTime;
@@ -28,6 +30,10 @@ public:
 	void		Set2DPosition(Vector2 pos);
 
 	Vector2		Get2DPosition();
+	GLint			GetDirect();
+	void		SetDirect(GLint vh);
 	void		SetSize(GLint width, GLint height);
+
+	bool		CheckBound(std::shared_ptr<Sprite2D>  obj);
 };
 

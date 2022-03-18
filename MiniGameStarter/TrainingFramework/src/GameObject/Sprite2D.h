@@ -7,6 +7,7 @@ protected:
 	GLint		m_iWidth;
 	GLint		m_iHeight;
 	GLuint		m_vboId;
+	Vector2		m_Vec2DPos;
 
 public:
 	Sprite2D() : BaseObject(), m_iWidth(0), m_iHeight(0), m_vboId(0) {}
@@ -22,5 +23,9 @@ public:
 	void		Set2DPosition(GLint x, GLint y);
 	void		Set2DPosition(Vector2 position);
 	void		SetSize(GLint width, GLint height);
+	GLint		GetHeight();
+	GLint		GetWidth();
+
+	Vector2		Get2DPosition();
 };
 

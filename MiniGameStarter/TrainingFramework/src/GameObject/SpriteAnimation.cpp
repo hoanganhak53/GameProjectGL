@@ -32,6 +32,7 @@ SpriteAnimation::SpriteAnimation(std::shared_ptr<Model> model, std::shared_ptr<S
 	m_iHeight = 50;
 	m_iWidth = 100;
 	m_scale = Vector3((float)m_iWidth /  Globals::screenWidth, (float)m_iHeight /  Globals::screenHeight, 1);
+	m_dir = 1;
 }
 
 SpriteAnimation::~SpriteAnimation()
@@ -158,11 +159,25 @@ Vector2 SpriteAnimation::Get2DPosition()
 	return m_Vec2DPos;
 }
 
+GLint  SpriteAnimation::GetDirect() {
+	return m_dir;
+}
 
+void  SpriteAnimation::SetDirect(int vh) {
+	m_dir = vh;
+}
 void SpriteAnimation::SetSize(GLint width, GLint height)
 {
 	m_iWidth = width;
 	m_iHeight = height;
 	m_scale = Vector3((float)m_iWidth /  Globals::screenWidth, (float)m_iHeight /  Globals::screenHeight, 1);
 	CaculateWorldMatrix();
+}
+
+bool SpriteAnimation::CheckBound(std::shared_ptr<Sprite2D>  obj)
+{
+	if(m_Vec2DPos.y  > (obj->Get2DPosition().y - obj->GetHeight()/2) && m_Vec2DPos.y < (obj->Get2DPosition().y + obj->GetHeight() / 2))
+		if (m_Vec2DPos.x > (obj->Get2DPosition().x - obj->GetWidth() / 2) && m_Vec2DPos.x < (obj->Get2DPosition().x + obj->GetWidth() / 2))
+			return true;
+	return false;
 }

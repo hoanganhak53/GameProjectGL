@@ -103,12 +103,15 @@ void Sprite2D::Update(GLfloat deltatime)
 
 void Sprite2D::Set2DPosition(GLint x, GLint y)
 {
+	m_Vec2DPos.x = x;
+	m_Vec2DPos.y = y;
 	m_position = Vector3((float)x, (float)y, 0.0f);
 	CalculateWorldMatrix();
 }
 
 void Sprite2D::Set2DPosition(Vector2 position)
 {
+	m_Vec2DPos = position;
 	m_position = Vector3(position.x, position.y, 0.0f);
 	CalculateWorldMatrix();
 }
@@ -119,4 +122,16 @@ void Sprite2D::SetSize(GLint width, GLint height)
 	m_iHeight = height;
 	m_scale = Vector3((GLfloat)m_iWidth, (GLfloat)m_iHeight, 1.0f);
 	CalculateWorldMatrix();
+}
+GLint Sprite2D::GetHeight()
+{
+	return m_iHeight;
+}
+GLint Sprite2D::GetWidth()
+{
+	return m_iWidth;
+}
+Vector2 Sprite2D::Get2DPosition()
+{
+	return m_Vec2DPos;
 }

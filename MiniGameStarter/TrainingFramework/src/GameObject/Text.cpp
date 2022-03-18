@@ -183,3 +183,8 @@ void Text::Set2DPosition(Vector2 pos)
 	m_position = Vector3(xx, yy, 1.0f);
 	CalculateWorldMatrix();
 }
+
+void Text::DeleteText()
+{
+	Text::SetText("");
+}
