@@ -1,90 +1,20 @@
-﻿  Application.cpp
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\xutility(158,77): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\memory(2029): message : see reference to function template instantiation 'void std::_Construct_in_place<_Ty,int,int,int&,int,int&,float,float,float>(_Ty &,int &&,int &&,int &,int &&,int &,float &&,float &&,float &&) noexcept(false)' being compiled
-          with
-          [
-              _Ty=Camera
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\memory(2748): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int,int,int&,int,int&,float,float,float>(int &&,int &&,int &,int &&,int &,float &&,float &&,float &&)' being compiled
-          with
-          [
-              _Ty=Camera
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\memory(2748): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int,int,int&,int,int&,float,float,float>(int &&,int &&,int &,int &&,int &,float &&,float &&,float &&)' being compiled
-          with
-          [
-              _Ty=Camera
-          ]
-D:\MiniGameStarter\TrainingFramework\src\Application.cpp(20): message : see reference to function template instantiation 'std::shared_ptr<Camera> std::make_shared<Camera,int,int,int&,int,int&,float,float,float>(int &&,int &&,int &,int &&,int &,float &&,float &&,float &&)' being compiled
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\xutility(158,77): warning C4244: 'argument': conversion from '_Ty' to 'GLfloat', possible loss of data
-          with
-          [
-              _Ty=int
-          ]
-  ResourceManagers.cpp
-  GameButton.cpp
-  Sprite2D.cpp
-D:\MiniGameStarter\TrainingFramework\src\GameObject\Sprite2D.cpp(106,17): warning C4244: '=': conversion from 'GLint' to 'GLfloat', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameObject\Sprite2D.cpp(107,17): warning C4244: '=': conversion from 'GLint' to 'GLfloat', possible loss of data
-  SpriteAnimation.cpp
-D:\MiniGameStarter\TrainingFramework\src\GameObject\SpriteAnimation.cpp(96,39): warning C4244: 'argument': conversion from 'GLint' to 'GLfloat', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameObject\SpriteAnimation.cpp(101,39): warning C4244: 'argument': conversion from 'GLint' to 'GLfloat', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameObject\SpriteAnimation.cpp(106,39): warning C4244: 'argument': conversion from 'GLint' to 'GLfloat', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameObject\SpriteAnimation.cpp(111,39): warning C4244: 'argument': conversion from 'GLint' to 'GLfloat', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameObject\SpriteAnimation.cpp(139,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameObject\SpriteAnimation.cpp(140,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameObject\SpriteAnimation.cpp(150,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameObject\SpriteAnimation.cpp(151,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  GSIntro.cpp
-D:\MiniGameStarter\TrainingFramework\src\GameStates\GSIntro.cpp(20,90): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameStates\GSIntro.cpp(20,52): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
-  GSMenu.cpp
-  GSPlay.cpp
-D:\MiniGameStarter\TrainingFramework\src\GameStates\GSPlay.cpp(34,92): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameStates\GSPlay.cpp(34,58): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameStates\GSPlay.cpp(171,67): warning C4244: 'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameStates\GSPlay.cpp(171,43): warning C4244: 'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-D:\MiniGameStarter\TrainingFramework\src\GameStates\GSPlay.cpp(173,47): warning C4244: 'argument': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\xutility(158,77): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
-          with
-          [
-              _Ty=double
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\memory(2029): message : see reference to function template instantiation 'void std::_Construct_in_place<_Ty,std::shared_ptr<Shader>&,std::shared_ptr<Font>&,const char(&)[10],TextColor,double>(_Ty &,std::shared_ptr<Shader> &,std::shared_ptr<Font> &,const char (&)[10],TextColor &&,double &&) noexcept(false)' being compiled
-          with
-          [
-              _Ty=Text
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\memory(2748): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<std::shared_ptr<Shader>&,std::shared_ptr<Font>&,const char(&)[10],TextColor,double>(std::shared_ptr<Shader> &,std::shared_ptr<Font> &,const char (&)[10],TextColor &&,double &&)' being compiled
-          with
-          [
-              _Ty=Text
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\memory(2748): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<std::shared_ptr<Shader>&,std::shared_ptr<Font>&,const char(&)[10],TextColor,double>(std::shared_ptr<Shader> &,std::shared_ptr<Font> &,const char (&)[10],TextColor &&,double &&)' being compiled
-          with
-          [
-              _Ty=Text
-          ]
-D:\MiniGameStarter\TrainingFramework\src\GameStates\GSPlay.cpp(60): message : see reference to function template instantiation 'std::shared_ptr<Text> std::make_shared<Text,std::shared_ptr<Shader>&,std::shared_ptr<Font>&,const char(&)[10],TextColor,double>(std::shared_ptr<Shader> &,std::shared_ptr<Font> &,const char (&)[10],TextColor &&,double &&)' being compiled
-  GameStateBase.cpp
-  GameStateMachine.cpp
-  Generating Code...
+﻿  TrainingFramework.cpp
 Application.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
 LINK : warning LNK4098: defaultlib 'LIBCMTD' conflicts with use of other libs; use /NODEFAULTLIB:library
 soloud_static_d.lib(dr_impl.obj) : warning LNK4099: PDB '' was not found with 'soloud_static_d.lib(dr_impl.obj)' or at ''; linking object as if no debug info
-soloud_static_d.lib(soloud_wav.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_wav.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(stb_vorbis.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(stb_vorbis.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud_audiosource.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_audiosource.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud_core_basicops.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_core_basicops.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud_core_getters.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_core_getters.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud_core_setters.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_core_setters.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud_core_voicegroup.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_core_voicegroup.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud_core_voiceops.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_core_voiceops.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud_fader.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_fader.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud_fft.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_fft.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud_file.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_file.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud_thread.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_thread.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud_winmm.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_winmm.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-soloud_static_d.lib(soloud_null.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_null.obj)' or at 'D:\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
-  TrainingFramework.vcxproj -> D:\MiniGameStarter\BIN-Nvidia\TrainingFramework.exe
+soloud_static_d.lib(soloud_wav.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_wav.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(stb_vorbis.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(stb_vorbis.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud_audiosource.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_audiosource.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud_core_basicops.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_core_basicops.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud_core_getters.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_core_getters.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud_core_setters.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_core_setters.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud_core_voicegroup.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_core_voicegroup.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud_core_voiceops.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_core_voiceops.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud_fader.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_fader.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud_fft.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_fft.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud_file.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_file.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud_thread.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_thread.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud_winmm.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_winmm.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+soloud_static_d.lib(soloud_null.obj) : warning LNK4099: PDB 'soloud_static.pdb' was not found with 'soloud_static_d.lib(soloud_null.obj)' or at 'C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\soloud_static.pdb'; linking object as if no debug info
+  TrainingFramework.vcxproj -> C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\TrainingFramework.exe

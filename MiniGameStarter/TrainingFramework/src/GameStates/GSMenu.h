@@ -2,6 +2,15 @@
 #include "GameStateBase.h"
 #include "GameButton.h"
 
+enum class CharacterType
+{
+	MASK_DUDE = 0,
+	NINJA_FROG,
+	PINK_MAN,
+	VIRTUAL_GUY
+};
+
+
 class GSMenu :
 	public GameStateBase
 {

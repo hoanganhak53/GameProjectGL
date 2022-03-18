@@ -5,7 +5,7 @@
 
 int Globals::screenWidth = 1300;
 int Globals::screenHeight = 800;
-
+int Globals::character = 1;
 GLint Init(ESContext* esContext)
 {
 	Application::GetInstance()->Init();

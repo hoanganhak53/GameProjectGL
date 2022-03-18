@@ -23,6 +23,7 @@ class Globals
 public:
 	static int Globals::screenWidth;
 	static int Globals::screenHeight;
+	static int Globals::character;
 };
 
 // define value

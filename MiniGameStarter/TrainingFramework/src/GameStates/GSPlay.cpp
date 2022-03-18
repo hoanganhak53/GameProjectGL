@@ -61,7 +61,14 @@ void GSPlay::Init()
 	m_score->Set2DPosition(Vector2(5, 25));
 
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	texture = ResourceManagers::GetInstance()->GetTexture("char.tga");
+
+	if (Globals::character == 1) {
+		texture = ResourceManagers::GetInstance()->GetTexture("char1.tga");
+	}
+	else if (Globals::character == 2) {
+		texture = ResourceManagers::GetInstance()->GetTexture("char2.tga");
+	}
+
 	std::shared_ptr<SpriteAnimation> obj = std::make_shared<SpriteAnimation>(model, shader, texture, 6, 1, 0, 0.1f);
 	
 	obj->Set2DPosition(240, 400);
