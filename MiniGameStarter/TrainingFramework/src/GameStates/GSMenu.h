@@ -1,7 +1,7 @@
 #pragma once
 #include "GameStateBase.h"
 #include "GameButton.h"
-
+#include "SpriteAnimation.h"
 enum class CharacterType
 {
 	MASK_DUDE = 0,
@@ -35,6 +35,6 @@ private:
 	std::shared_ptr<Sprite2D>				m_background;
 	std::list<std::shared_ptr<GameButton>>	m_listButton;
 	std::shared_ptr<Text>					m_textGameName;
-
+	std::shared_ptr<SpriteAnimation>		m_Animation;
 };
 

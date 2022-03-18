@@ -26,26 +26,27 @@ void GSMenu::Init()
 	// play button
 	texture = ResourceManagers::GetInstance()->GetTexture("btn_play.tga");
 	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
-	button->Set2DPosition(Globals::screenWidth / 2, Globals::screenHeight / 2);
+	button->Set2DPosition(Globals::screenWidth / 2,	660);
 	button->SetSize(100, 100);
 	button->SetOnClick([]() {
 			GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});
 	m_listButton.push_back(button);
 
-
+	texture = ResourceManagers::GetInstance()->GetTexture("btn_prev.tga");
 	std::shared_ptr<GameButton> buttonL = std::make_shared<GameButton>(model, shader, texture);
-	buttonL->Set2DPosition(300, 700);
+	buttonL->Set2DPosition(350, 500);
 	buttonL->SetSize(100, 100);
 	buttonL->SetOnClick([]() {
 		if(Globals::character != 1)
 			Globals::character = Globals::character - 1;
+
 		});
 	m_listButton.push_back(buttonL);
 
-
+	texture = ResourceManagers::GetInstance()->GetTexture("btn_next.tga");
 	std::shared_ptr<GameButton> buttonR = std::make_shared<GameButton>(model, shader, texture);
-	buttonR->Set2DPosition(700,700);
+	buttonR->Set2DPosition(950,500);
 	buttonR->SetSize(100, 100);
 	buttonR->SetOnClick([]() {
 		if (Globals::character != 4)
@@ -72,6 +73,13 @@ void GSMenu::Init()
 
 	std::string name = "Alarm01.wav";
 	ResourceManagers::GetInstance()->PlaySound(name);
+	//character
+	shader = ResourceManagers::GetInstance()->GetShader("Animation");
+	texture = ResourceManagers::GetInstance()->GetTexture("char1.tga");
+	m_Animation = std::make_shared<SpriteAnimation>(model, shader, texture, 6, 1, 0, 0.1f);
+
+	m_Animation->Set2DPosition(Globals::screenWidth / 2, 500);
+	m_Animation->SetSize(334, 223);
 }
 
 void GSMenu::Exit()
@@ -119,6 +127,7 @@ void GSMenu::Update(float deltaTime)
 	{
 		it->Update(deltaTime);
 	}
+	m_Animation->Update(deltaTime);
 }
 
 void GSMenu::Draw()
@@ -129,4 +138,5 @@ void GSMenu::Draw()
 		it->Draw();
 	}
 	m_textGameName->Draw();
+	m_Animation->Draw();
 }
