@@ -24,25 +24,34 @@ void GSMenu::Init()
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
 	// play button
-	texture = ResourceManagers::GetInstance()->GetTexture("btn_help.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("btn_play.tga");
 	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth / 2, Globals::screenHeight / 2);
-	button->SetSize(200, 200);
+	button->SetSize(100, 100);
 	button->SetOnClick([]() {
-			Globals::character = 1;
 			GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});
 	m_listButton.push_back(button);
 
 
-	std::shared_ptr<GameButton> button1 = std::make_shared<GameButton>(model, shader, texture);
-	button1->Set2DPosition(Globals::screenWidth / 2, Globals::screenHeight / 4);
-	button1->SetSize(200, 200);
-	button1->SetOnClick([]() {
-		Globals::character = 2;
-		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
+	std::shared_ptr<GameButton> buttonL = std::make_shared<GameButton>(model, shader, texture);
+	buttonL->Set2DPosition(300, 700);
+	buttonL->SetSize(100, 100);
+	buttonL->SetOnClick([]() {
+		if(Globals::character != 1)
+			Globals::character = Globals::character - 1;
 		});
-	m_listButton.push_back(button1);
+	m_listButton.push_back(buttonL);
+
+
+	std::shared_ptr<GameButton> buttonR = std::make_shared<GameButton>(model, shader, texture);
+	buttonR->Set2DPosition(700,700);
+	buttonR->SetSize(100, 100);
+	buttonR->SetOnClick([]() {
+		if (Globals::character != 4)
+			Globals::character = Globals::character + 1;
+		});
+	m_listButton.push_back(buttonR);
 
 	// exit button
 	texture = ResourceManagers::GetInstance()->GetTexture("btn_close.tga");

@@ -68,6 +68,12 @@ void GSPlay::Init()
 	else if (Globals::character == 2) {
 		texture = ResourceManagers::GetInstance()->GetTexture("char2.tga");
 	}
+	else if (Globals::character == 3) {
+		texture = ResourceManagers::GetInstance()->GetTexture("char3.tga");
+	}
+	else if (Globals::character == 4) {
+		texture = ResourceManagers::GetInstance()->GetTexture("char4.tga");
+	}
 
 	std::shared_ptr<SpriteAnimation> obj = std::make_shared<SpriteAnimation>(model, shader, texture, 6, 1, 0, 0.1f);
 	
