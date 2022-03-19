@@ -26,7 +26,7 @@ void GSPlay::Init()
 {
 	m_Test = 1;
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("bg_play1.tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("background_play.tga");
 
 	// background
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
@@ -35,7 +35,7 @@ void GSPlay::Init()
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
 	// button close
-	texture = ResourceManagers::GetInstance()->GetTexture("btn_close.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("b_close.tga");
 	std::shared_ptr<GameButton>  button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth - 50, 50);
 	button->SetSize(50, 50);
@@ -45,7 +45,7 @@ void GSPlay::Init()
 	m_listButton.push_back(button);
 
 
-	texture = ResourceManagers::GetInstance()->GetTexture("btn_close.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("b_close.tga");
 	std::shared_ptr<GameButton>  button1 = std::make_shared<GameButton>(model, shader, texture);
 	button1->Set2DPosition(Globals::screenWidth - 200, 50);
 	button1->SetSize(50, 50);

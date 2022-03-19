@@ -15,7 +15,7 @@ GSMenu::~GSMenu()
 void GSMenu::Init()
 {
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("catbird.tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("background_play.tga");
 
 	// background
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
@@ -24,7 +24,7 @@ void GSMenu::Init()
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
 	// play button
-	texture = ResourceManagers::GetInstance()->GetTexture("btn_play.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("b_play.tga");
 	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth / 2,	660);
 	button->SetSize(100, 100);
@@ -33,7 +33,7 @@ void GSMenu::Init()
 		});
 	m_listButton.push_back(button);
 
-	texture = ResourceManagers::GetInstance()->GetTexture("btn_prev.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("b_left.tga");
 	std::shared_ptr<GameButton> buttonL = std::make_shared<GameButton>(model, shader, texture);
 	buttonL->Set2DPosition(350, 500);
 	buttonL->SetSize(100, 100);
@@ -44,7 +44,7 @@ void GSMenu::Init()
 		});
 	m_listButton.push_back(buttonL);
 
-	texture = ResourceManagers::GetInstance()->GetTexture("btn_next.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("b_right.tga");
 	std::shared_ptr<GameButton> buttonR = std::make_shared<GameButton>(model, shader, texture);
 	buttonR->Set2DPosition(950,500);
 	buttonR->SetSize(100, 100);
@@ -55,7 +55,7 @@ void GSMenu::Init()
 	m_listButton.push_back(buttonR);
 
 	// exit button
-	texture = ResourceManagers::GetInstance()->GetTexture("btn_close.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("b_close.tga");
 	button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth - 50, 50);
 	button->SetSize(50, 50);
@@ -68,7 +68,7 @@ void GSMenu::Init()
 	// game title
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
-	m_textGameName = std::make_shared< Text>(shader, font, "Epic Game", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 3.0f);
+	m_textGameName = std::make_shared< Text>(shader, font, "HA Game", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 3.0f);
 	m_textGameName->Set2DPosition(Vector2(60, 200));
 
 	std::string name = "Alarm01.wav";
