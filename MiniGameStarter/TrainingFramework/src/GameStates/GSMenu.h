@@ -31,10 +31,12 @@ public:
 	void	Update(float deltaTime) override;
 	void	Draw() override;
 
+	void	UpdateAnimation();
 private:
 	std::shared_ptr<Sprite2D>				m_background;
 	std::list<std::shared_ptr<GameButton>>	m_listButton;
 	std::shared_ptr<Text>					m_textGameName;
 	std::shared_ptr<SpriteAnimation>		m_Animation;
+	GLint									numChar;
 };
 

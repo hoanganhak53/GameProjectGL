@@ -14,6 +14,7 @@ GSMenu::~GSMenu()
 
 void GSMenu::Init()
 {
+	numChar = 1;
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto texture = ResourceManagers::GetInstance()->GetTexture("background_play.tga");
 
@@ -40,7 +41,6 @@ void GSMenu::Init()
 	buttonL->SetOnClick([]() {
 		if(Globals::character != 1)
 			Globals::character = Globals::character - 1;
-
 		});
 	m_listButton.push_back(buttonL);
 
@@ -127,6 +127,10 @@ void GSMenu::Update(float deltaTime)
 	{
 		it->Update(deltaTime);
 	}
+	if (numChar != Globals::character) {
+		GSMenu::UpdateAnimation();
+		numChar = Globals::character;
+	}
 	m_Animation->Update(deltaTime);
 }
 
@@ -139,4 +143,21 @@ void GSMenu::Draw()
 	}
 	m_textGameName->Draw();
 	m_Animation->Draw();
+}
+void GSMenu::UpdateAnimation() {
+	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
+	auto shader = ResourceManagers::GetInstance()->GetShader("Animation");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("char1.tga");
+	if (Globals::character == 2) {
+		texture = ResourceManagers::GetInstance()->GetTexture("char2.tga");
+	}
+	else if (Globals::character == 3) {
+		texture = ResourceManagers::GetInstance()->GetTexture("char3.tga");
+	}
+	else if (Globals::character == 4) {
+		texture = ResourceManagers::GetInstance()->GetTexture("char4.tga");
+	}
+	m_Animation = std::make_shared<SpriteAnimation>(model, shader, texture, 6, 1, 0, 0.1f);
+	m_Animation->Set2DPosition(Globals::screenWidth / 2, 500);
+	m_Animation->SetSize(334, 223);
 }
