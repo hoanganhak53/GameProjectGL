@@ -33,6 +33,8 @@ SpriteAnimation::SpriteAnimation(std::shared_ptr<Model> model, std::shared_ptr<S
 	m_iWidth = 100;
 	m_scale = Vector3((float)m_iWidth /  Globals::screenWidth, (float)m_iHeight /  Globals::screenHeight, 1);
 	m_dir = 1;
+	isJump = false;
+	m_vt = 0;
 }
 
 SpriteAnimation::~SpriteAnimation()
@@ -176,8 +178,28 @@ void SpriteAnimation::SetSize(GLint width, GLint height)
 
 bool SpriteAnimation::CheckBound(std::shared_ptr<Sprite2D>  obj)
 {
-	if(m_Vec2DPos.y  > (obj->Get2DPosition().y - obj->GetHeight()/2) && m_Vec2DPos.y < (obj->Get2DPosition().y + obj->GetHeight() / 2))
-		if (m_Vec2DPos.x > (obj->Get2DPosition().x - obj->GetWidth() / 2) && m_Vec2DPos.x < (obj->Get2DPosition().x + obj->GetWidth() / 2))
+	if(m_Vec2DPos.y  >= (obj->Get2DPosition().y - obj->GetHeight()/2) && m_Vec2DPos.y <= (obj->Get2DPosition().y + obj->GetHeight() / 2))
+		if (m_Vec2DPos.x >= (obj->Get2DPosition().x - obj->GetWidth() / 2) && m_Vec2DPos.x <= (obj->Get2DPosition().x + obj->GetWidth() / 2))
 			return true;
+
 	return false;
+}
+
+void SpriteAnimation::setJump(bool tt)
+{
+	isJump = tt;
+}
+GLint SpriteAnimation::getVt()
+{
+	return m_vt;
+}
+void SpriteAnimation::setVt(GLint vt)
+{
+	m_vt = vt;
+	if (m_vt < -4)
+		m_vt = -4;
+}
+bool SpriteAnimation::getJump()
+{
+	return isJump;
 }

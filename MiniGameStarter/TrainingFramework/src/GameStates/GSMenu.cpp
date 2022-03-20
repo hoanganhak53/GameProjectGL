@@ -68,18 +68,17 @@ void GSMenu::Init()
 	// game title
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
-	m_textGameName = std::make_shared< Text>(shader, font, "HA Game", Vector4(1.0f, 0.5f, 0.0f, 1.0f), 3.0f);
-	m_textGameName->Set2DPosition(Vector2(60, 200));
-
+	m_textGameName = std::make_shared< Text>(shader, font, "Adventure Guy", Vector4(0.0f, 1.0f, 1.0f, 1.0f), 2.0f);
+	m_textGameName->Set2DPosition(Vector2(40, 80));
 	std::string name = "Alarm01.wav";
 	ResourceManagers::GetInstance()->PlaySound(name);
 	//character
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	texture = ResourceManagers::GetInstance()->GetTexture("char1.tga");
-	m_Animation = std::make_shared<SpriteAnimation>(model, shader, texture, 6, 1, 0, 0.1f);
+	texture = ResourceManagers::GetInstance()->GetTexture("char1_Run.tga");
+	m_Animation = std::make_shared<SpriteAnimation>(model, shader, texture, 12, 1, 0, 0.07f);
 
-	m_Animation->Set2DPosition(Globals::screenWidth / 2, 500);
-	m_Animation->SetSize(334, 223);
+	m_Animation->Set2DPosition(Globals::screenWidth / 2, 480);
+	m_Animation->SetSize(450, 300);
 }
 
 void GSMenu::Exit()
@@ -147,17 +146,17 @@ void GSMenu::Draw()
 void GSMenu::UpdateAnimation() {
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("char1.tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("char1_Run.tga");
 	if (Globals::character == 2) {
 		texture = ResourceManagers::GetInstance()->GetTexture("char2.tga");
 	}
 	else if (Globals::character == 3) {
-		texture = ResourceManagers::GetInstance()->GetTexture("char3.tga");
+		texture = ResourceManagers::GetInstance()->GetTexture("char3_Run.tga");
 	}
 	else if (Globals::character == 4) {
-		texture = ResourceManagers::GetInstance()->GetTexture("char4.tga");
+		texture = ResourceManagers::GetInstance()->GetTexture("char4_Run.tga");
 	}
-	m_Animation = std::make_shared<SpriteAnimation>(model, shader, texture, 6, 1, 0, 0.1f);
-	m_Animation->Set2DPosition(Globals::screenWidth / 2, 500);
-	m_Animation->SetSize(334, 223);
+	m_Animation = std::make_shared<SpriteAnimation>(model, shader, texture, 12, 1, 0, 0.07f);
+	m_Animation->Set2DPosition(Globals::screenWidth / 2, 480);
+	m_Animation->SetSize(450, 300);
 }

@@ -45,15 +45,42 @@ void GSPlay::Init()
 	m_listButton.push_back(button);
 
 
-	texture = ResourceManagers::GetInstance()->GetTexture("b_close.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("b_right.tga");
 	std::shared_ptr<GameButton>  button1 = std::make_shared<GameButton>(model, shader, texture);
 	button1->Set2DPosition(Globals::screenWidth - 200, 50);
 	button1->SetSize(50, 50);
 	button1->SetOnClick([this]() {
-		m_score->DeleteText();
+		for (auto it : m_listAnimation)
+		{
+			it->Set2DPosition(it->Get2DPosition().x + 20, it->Get2DPosition().y );
+		}
 		});
 	m_listButton.push_back(button1);
 
+	texture = ResourceManagers::GetInstance()->GetTexture("b_left.tga");
+	std::shared_ptr<GameButton>  button2 = std::make_shared<GameButton>(model, shader, texture);
+	button2->Set2DPosition(Globals::screenWidth - 300, 50);
+	button2->SetSize(50, 50);
+	button2->SetOnClick([this]() {
+		for (auto it : m_listAnimation)
+		{
+			it->Set2DPosition(it->Get2DPosition().x - 20, it->Get2DPosition().y);
+		}
+		});
+	m_listButton.push_back(button2);
+
+
+	std::shared_ptr<GameButton>  button3 = std::make_shared<GameButton>(model, shader, texture);
+	button3->Set2DPosition(Globals::screenWidth - 400, 50);
+	button3->SetSize(50, 50);
+	button3->SetOnClick([this]() {
+		for (auto it : m_listAnimation)
+		{
+			it->setJump(true);
+			it->setVt(20);
+		}
+		});
+	m_listButton.push_back(button3);
 	// score
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
@@ -94,13 +121,16 @@ void GSPlay::Init()
 	m_object->Set2DPosition(500, 100);
 	m_object->SetSize(200, 80);
 	m_listObject.push_back(m_object);
-	model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	texture = ResourceManagers::GetInstance()->GetTexture("ground.tga");
-	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+
 	std::shared_ptr<Sprite2D>  m_object1 = std::make_shared<Sprite2D>(model, shader, texture);
 	m_object1->Set2DPosition(1000, 230);
 	m_object1->SetSize(200, 80);
 	m_listObject.push_back(m_object1);
+
+	std::shared_ptr<Sprite2D>  m_object2 = std::make_shared<Sprite2D>(model, shader, texture);
+	m_object2->Set2DPosition(0, 800);
+	m_object2->SetSize(3300, 80);
+	m_listObject.push_back(m_object2);
 }
 
 void GSPlay::Exit()
@@ -158,25 +188,31 @@ void GSPlay::Update(float deltaTime)
 	}
 	for (auto it : m_listAnimation)
 	{	
-		bool haveCrash = false;
-		for (auto obj1 : m_listObject)
-		{
-			if (it->CheckBound(obj1)) {
-				haveCrash = true;
-			}
-		}
-		GLint vh;
-		if (haveCrash)
-			vh = 0;
-		else{
-			vh = it->GetDirect();
-			if ((it->Get2DPosition().y >= 650 && vh > 0) || it->Get2DPosition().y <= 150 && vh < 0){
-				vh = -vh;
-				it->SetDirect(vh);
-			}
-		}
+		if (it->getJump()) {
+			bool haveCrash = false;
+			for (auto obj1 : m_listObject)
+			{
+				if (it->CheckBound(obj1)) {
+					haveCrash = true;
+				}
 
-		it->Set2DPosition(it->Get2DPosition().x, it->Get2DPosition().y+vh);
+			}
+			if (haveCrash && it->getVt() != 20) {
+				it->setVt(0);
+				it->setJump(false);
+			}
+			else {
+
+				//			vh = it->GetDirect();
+				//			if ((it->Get2DPosition().y >= 650 && vh > 0) || it->Get2DPosition().y <= 150 && vh < 0){
+				//				vh = -vh;
+				//				it->SetDirect(vh);
+				//			}
+
+				it->Set2DPosition(it->Get2DPosition().x, it->Get2DPosition().y - it->getVt());
+				it->setVt(it->getVt() - 1);
+			}
+		}
 		it->Update(deltaTime);
 	}
 	for (auto it : m_listObject)
