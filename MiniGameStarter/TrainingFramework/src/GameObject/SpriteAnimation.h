@@ -18,6 +18,7 @@ protected:
 	GLint			m_numActions;
 	GLint			m_currentAction;//index from 0 to m_numActions-1
 	bool			isJump;
+	bool			isContinueCrash;
 	GLint			m_vt;
 public:
 	SpriteAnimation(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime);
@@ -41,5 +42,7 @@ public:
 	void		setJump(bool tt);
 	GLint		getVt();
 	void		setVt(GLint vt);
+	bool		getContinueCrash();
+	void		setContinueCrash(bool tt);
 };
 

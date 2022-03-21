@@ -199,7 +199,16 @@ void SpriteAnimation::setVt(GLint vt)
 	if (m_vt < -4)
 		m_vt = -4;
 }
+bool SpriteAnimation::getContinueCrash()
+{
+	return isContinueCrash;
+}
 bool SpriteAnimation::getJump()
 {
 	return isJump;
+}
+
+void SpriteAnimation::setContinueCrash(bool tt)
+{
+	isContinueCrash = tt;
 }
