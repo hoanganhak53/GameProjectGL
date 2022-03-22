@@ -113,12 +113,12 @@ void GSPlay::Init()
 	texture = ResourceManagers::GetInstance()->GetTexture("ground.tga");
 	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	std::shared_ptr<Sprite2D>  m_object = std::make_shared<Sprite2D>(model, shader, texture);
-	m_object->Set2DPosition(500, 100);
+	m_object->Set2DPosition(500, 400);
 	m_object->SetSize(200, 80);
 	m_listObject.push_back(m_object);
 
 	std::shared_ptr<Sprite2D>  m_object1 = std::make_shared<Sprite2D>(model, shader, texture);
-	m_object1->Set2DPosition(1000, 230);
+	m_object1->Set2DPosition(1000, 530);
 	m_object1->SetSize(200, 80);
 	m_listObject.push_back(m_object1);
 
@@ -126,6 +126,12 @@ void GSPlay::Init()
 	m_object2->Set2DPosition(0, 800);
 	m_object2->SetSize(3300, 80);
 	m_listObject.push_back(m_object2);
+
+	//cell
+	std::shared_ptr<Sprite2D>  m_object3 = std::make_shared<Sprite2D>(model, shader, texture);
+	m_object3->Set2DPosition(0, 0);
+	m_object3->SetSize(3300, 80);
+	m_listObject.push_back(m_object3);
 }
 
 void GSPlay::Exit()
@@ -203,57 +209,9 @@ void GSPlay::Update(float deltaTime)
 	{
 		it->Update(deltaTime);
 	}
-	if (!isPause) {
-		for (auto it : m_listAnimation)
-		{
-
-			switch (isPress) {
-			case 1: {
-				it->Set2DPosition(it->Get2DPosition().x - 2, it->Get2DPosition().y);
-				break;
-			}case 2: {
-				it->Set2DPosition(it->Get2DPosition().x + 2, it->Get2DPosition().y);
-				break;
-			}case 3: {
-				if (!it->getJump()) {
-					it->setJump(true);
-					it->setVt(20);
-				}
-				break;
-			}
-			default:
-				break;
-			}
-			if (it->getJump()) {
-
-				bool haveCrash = false;
-				for (auto obj1 : m_listObject)
-				{
-					if (it->CheckBound(obj1)) {
-						haveCrash = true;
-					}
-
-				}
-				if (haveCrash && it->getVt() != 20) {
-					it->setVt(0);
-					it->setJump(false);
-				}
-				else {
-					it->Set2DPosition(it->Get2DPosition().x, it->Get2DPosition().y - it->getVt());
-					it->setVt(it->getVt() - 1);
-				}
-			}
-
+	for (auto it : m_listAnimation)
+	{	
 			it->Update(deltaTime);
-		}
-		for (auto it : m_listObject)
-		{
-			it->Set2DPosition(it->Get2DPosition().x - 2, it->Get2DPosition().y);
-			if (it->Get2DPosition().x < -150) {
-				it->Set2DPosition(1400, it->Get2DPosition().y);
-			}
-			it->Update(deltaTime);
-		}
 	}
 
 }
@@ -265,7 +223,7 @@ void GSPlay::Draw()
 	{
 		it->Draw();
 	}
-	m_score->Draw();
+	//m_score->Draw();
 	for (auto it : m_listButton)
 	{
 		it->Draw();
