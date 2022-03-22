@@ -209,11 +209,58 @@ void GSPlay::Update(float deltaTime)
 	{
 		it->Update(deltaTime);
 	}
-	for (auto it : m_listAnimation)
-	{	
-			it->Update(deltaTime);
-	}
+	if (!isPause) {
+		for (auto it : m_listAnimation)
+		{
 
+			switch (isPress) {
+			case 1: {
+				it->Set2DPosition(it->Get2DPosition().x - 2, it->Get2DPosition().y);
+				break;
+			}case 2: {
+				it->Set2DPosition(it->Get2DPosition().x + 2, it->Get2DPosition().y);
+				break;
+			}case 3: {
+				if (!it->getJump()) {
+					it->setJump(true);
+					it->setVt(20);
+				}
+				break;
+			}
+			default:
+				break;
+			}
+			if (it->getJump()) {
+
+				bool haveCrash = false;
+				for (auto obj1 : m_listObject)
+				{
+					if (it->CheckBound(obj1)) {
+						haveCrash = true;
+					}
+
+				}
+				if (haveCrash && it->getVt() != 20) {
+					it->setVt(0);
+					it->setJump(false);
+				}
+				else {
+					it->Set2DPosition(it->Get2DPosition().x, it->Get2DPosition().y - it->getVt());
+					it->setVt(it->getVt() - 1);
+				}
+			}
+
+			it->Update(deltaTime);
+		}
+		for (auto it : m_listObject)
+		{
+			it->Set2DPosition(it->Get2DPosition().x - 2, it->Get2DPosition().y);
+			if (it->Get2DPosition().x < -150) {
+				it->Set2DPosition(1400, it->Get2DPosition().y);
+			}
+			it->Update(deltaTime);
+		}
+	}
 }
 
 void GSPlay::Draw()
