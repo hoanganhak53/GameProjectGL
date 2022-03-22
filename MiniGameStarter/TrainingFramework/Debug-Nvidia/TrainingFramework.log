@@ -1,1 +1,4 @@
-﻿
+﻿  GSMenu.cpp
+C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\TrainingFramework\src\GameStates\GSMenu.cpp(103,50): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\TrainingFramework\src\GameStates\GSMenu.cpp(183,50): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+  TrainingFramework.vcxproj -> C:\Users\Hoang\Documents\GitHub\GameProjectGL\MiniGameStarter\BIN-Nvidia\TrainingFramework.exe

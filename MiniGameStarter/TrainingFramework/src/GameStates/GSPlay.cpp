@@ -24,7 +24,9 @@ GSPlay::~GSPlay()
 
 void GSPlay::Init()
 {
+	isPress = 0;
 	m_Test = 1;
+	isPause = false;
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto texture = ResourceManagers::GetInstance()->GetTexture("background_play.tga");
 
@@ -34,53 +36,46 @@ void GSPlay::Init()
 	m_background->Set2DPosition((float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
-	// button close
-	texture = ResourceManagers::GetInstance()->GetTexture("b_close.tga");
+	// button home
+	texture = ResourceManagers::GetInstance()->GetTexture("b_home.tga");
 	std::shared_ptr<GameButton>  button = std::make_shared<GameButton>(model, shader, texture);
-	button->Set2DPosition(Globals::screenWidth - 50, 50);
-	button->SetSize(50, 50);
+	button->Set2DPosition(Globals::screenWidth / 2 + 100 , Globals::screenHeight/2);
+	button->SetSize(70, 70);
 	button->SetOnClick([this]() {
 			GameStateMachine::GetInstance()->PopState();
 		});
-	m_listButton.push_back(button);
+	m_listButtonPause.push_back(button);
 
-
-	texture = ResourceManagers::GetInstance()->GetTexture("b_right.tga");
-	std::shared_ptr<GameButton>  button1 = std::make_shared<GameButton>(model, shader, texture);
-	button1->Set2DPosition(Globals::screenWidth - 200, 50);
-	button1->SetSize(50, 50);
-	button1->SetOnClick([this]() {
-		for (auto it : m_listAnimation)
-		{
-			it->Set2DPosition(it->Get2DPosition().x + 20, it->Get2DPosition().y );
-		}
+	// button resume
+	texture = ResourceManagers::GetInstance()->GetTexture("b_play.tga");
+	std::shared_ptr<GameButton>  buttonResume = std::make_shared<GameButton>(model, shader, texture);
+	buttonResume->Set2DPosition(Globals::screenWidth / 2, Globals::screenHeight / 2);
+	buttonResume->SetSize(70, 70);
+	buttonResume->SetOnClick([this]() {
+		Resume();
 		});
-	m_listButton.push_back(button1);
+	m_listButtonPause.push_back(buttonResume);
 
-	texture = ResourceManagers::GetInstance()->GetTexture("b_left.tga");
-	std::shared_ptr<GameButton>  button2 = std::make_shared<GameButton>(model, shader, texture);
-	button2->Set2DPosition(Globals::screenWidth - 300, 50);
-	button2->SetSize(50, 50);
-	button2->SetOnClick([this]() {
-		for (auto it : m_listAnimation)
-		{
-			it->Set2DPosition(it->Get2DPosition().x - 20, it->Get2DPosition().y);
-		}
+	// button pause
+	texture = ResourceManagers::GetInstance()->GetTexture("b_pause.tga");
+	std::shared_ptr<GameButton>  buttonPause = std::make_shared<GameButton>(model, shader, texture);
+	buttonPause->Set2DPosition(Globals::screenWidth - 50, 50);
+	buttonPause->SetSize(70, 70);
+	buttonPause->SetOnClick([this]() {
+		Pause();
 		});
-	m_listButton.push_back(button2);
+	m_listButton.push_back(buttonPause);
 
-
-	std::shared_ptr<GameButton>  button3 = std::make_shared<GameButton>(model, shader, texture);
-	button3->Set2DPosition(Globals::screenWidth - 400, 50);
-	button3->SetSize(50, 50);
-	button3->SetOnClick([this]() {
-		for (auto it : m_listAnimation)
-		{
-			it->setJump(true);
-			it->setVt(20);
-		}
+	// button restart
+	texture = ResourceManagers::GetInstance()->GetTexture("b_restart.tga");
+	std::shared_ptr<GameButton>  buttonRestart = std::make_shared<GameButton>(model, shader, texture);
+	buttonRestart->Set2DPosition(Globals::screenWidth / 2 - 100, Globals::screenHeight / 2);
+	buttonRestart->SetSize(70, 70);
+	buttonRestart->SetOnClick([this]() {
+		GameStateMachine::GetInstance()->PopState();
+		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});
-	m_listButton.push_back(button3);
+	m_listButtonPause.push_back(buttonRestart);
 	// score
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
@@ -141,28 +136,43 @@ void GSPlay::Exit()
 
 void GSPlay::Pause()
 {
+	isPause = true;
 }
 
 void GSPlay::Resume()
 {
+	isPause = false;
 }
 
-
+void GSPlay::Restart()
+{
+	isPause = false;
+}
 void GSPlay::HandleEvents()
 {
 }
 
 void GSPlay::HandleKeyEvents(int key, bool bIsPressed)
 {
-	switch (key)
-	{
-	case 32: {
+	if (bIsPressed) {
+		switch (key)
+		{
+		case KEY_MOVE_LEFT: {
+			isPress = 1;
+			break;
+		}case KEY_MOVE_RIGHT: {
+			isPress = 2;
+			break;
+		}case KEY_MOVE_FORWORD: {
+			isPress = 3;
+			break;
+		}
+		default:
+			break;
+		}
+	}else
+		isPress = 0;
 
-		break;
-	}
-	default:
-		break;
-	}
 }
 
 void GSPlay::HandleTouchEvents(int x, int y, bool bIsPressed)
@@ -170,6 +180,13 @@ void GSPlay::HandleTouchEvents(int x, int y, bool bIsPressed)
 	for (auto button : m_listButton)
 	{
 		if(button->HandleTouchEvents(x, y, bIsPressed))
+		{
+			break;
+		}
+	}
+	for (auto button : m_listButtonPause)
+	{
+		if (button->HandleTouchEvents(x, y, bIsPressed))
 		{
 			break;
 		}
@@ -186,43 +203,59 @@ void GSPlay::Update(float deltaTime)
 	{
 		it->Update(deltaTime);
 	}
-	for (auto it : m_listAnimation)
-	{	
-		if (it->getJump()) {
-			bool haveCrash = false;
-			for (auto obj1 : m_listObject)
-			{
-				if (it->CheckBound(obj1)) {
-					haveCrash = true;
+	if (!isPause) {
+		for (auto it : m_listAnimation)
+		{
+
+			switch (isPress) {
+			case 1: {
+				it->Set2DPosition(it->Get2DPosition().x - 2, it->Get2DPosition().y);
+				break;
+			}case 2: {
+				it->Set2DPosition(it->Get2DPosition().x + 2, it->Get2DPosition().y);
+				break;
+			}case 3: {
+				if (!it->getJump()) {
+					it->setJump(true);
+					it->setVt(20);
 				}
-
+				break;
 			}
-			if (haveCrash && it->getVt() != 20) {
-				it->setVt(0);
-				it->setJump(false);
+			default:
+				break;
 			}
-			else {
+			if (it->getJump()) {
 
-				//			vh = it->GetDirect();
-				//			if ((it->Get2DPosition().y >= 650 && vh > 0) || it->Get2DPosition().y <= 150 && vh < 0){
-				//				vh = -vh;
-				//				it->SetDirect(vh);
-				//			}
+				bool haveCrash = false;
+				for (auto obj1 : m_listObject)
+				{
+					if (it->CheckBound(obj1)) {
+						haveCrash = true;
+					}
 
-				it->Set2DPosition(it->Get2DPosition().x, it->Get2DPosition().y - it->getVt());
-				it->setVt(it->getVt() - 1);
+				}
+				if (haveCrash && it->getVt() != 20) {
+					it->setVt(0);
+					it->setJump(false);
+				}
+				else {
+					it->Set2DPosition(it->Get2DPosition().x, it->Get2DPosition().y - it->getVt());
+					it->setVt(it->getVt() - 1);
+				}
 			}
+
+			it->Update(deltaTime);
 		}
-		it->Update(deltaTime);
-	}
-	for (auto it : m_listObject)
-	{
-		it->Set2DPosition(it->Get2DPosition().x - 2, it->Get2DPosition().y );
-		if (it->Get2DPosition().x < -150) {
-			it->Set2DPosition(1400, it->Get2DPosition().y);
+		for (auto it : m_listObject)
+		{
+			it->Set2DPosition(it->Get2DPosition().x - 2, it->Get2DPosition().y);
+			if (it->Get2DPosition().x < -150) {
+				it->Set2DPosition(1400, it->Get2DPosition().y);
+			}
+			it->Update(deltaTime);
 		}
-		it->Update(deltaTime);
 	}
+
 }
 
 void GSPlay::Draw()
@@ -237,10 +270,14 @@ void GSPlay::Draw()
 	{
 		it->Draw();
 	}
-
+	if (isPause) {
+		for (auto it : m_listButtonPause)
+		{
+			it->Draw();
+		}
+	}
 	for (auto it : m_listAnimation)
 	{
 		it->Draw();
 	}
-
 }

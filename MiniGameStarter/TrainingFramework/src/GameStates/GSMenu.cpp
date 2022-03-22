@@ -24,6 +24,11 @@ void GSMenu::Init()
 	m_background->Set2DPosition(Globals::screenWidth / 2, Globals::screenHeight / 2);
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
+
+	//Sound
+	std::string name = "Alarm01.wav";
+	ResourceManagers::GetInstance()->PlaySound(name,true);
+
 	// play button
 	texture = ResourceManagers::GetInstance()->GetTexture("b_play.tga");
 	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
@@ -34,6 +39,25 @@ void GSMenu::Init()
 		});
 	m_listButton.push_back(button);
 
+	// audio button
+	texture = ResourceManagers::GetInstance()->GetTexture("b_audio.tga");
+	std::shared_ptr<GameButton> buttonAudio = std::make_shared<GameButton>(model, shader, texture);
+	buttonAudio->Set2DPosition(Globals::screenWidth -150, 50);
+	buttonAudio->SetSize(50, 50);
+	buttonAudio->SetOnClick([]() {
+		ResourceManagers::GetInstance()->StopSound("Alarm01.wav");
+		});
+	m_listButton.push_back(buttonAudio);
+	// Mute audio button
+	texture = ResourceManagers::GetInstance()->GetTexture("b_muteAudio.tga");
+	std::shared_ptr<GameButton> buttonMuteAudio = std::make_shared<GameButton>(model, shader, texture);
+	buttonMuteAudio->Set2DPosition(Globals::screenWidth - 250, 50);
+	buttonMuteAudio->SetSize(50, 50);
+	buttonMuteAudio->SetOnClick([]() {
+		ResourceManagers::GetInstance()->PlaySound("Alarm01.wav");
+		});
+	m_listButton.push_back(buttonMuteAudio);
+	//left button
 	texture = ResourceManagers::GetInstance()->GetTexture("b_left.tga");
 	std::shared_ptr<GameButton> buttonL = std::make_shared<GameButton>(model, shader, texture);
 	buttonL->Set2DPosition(350, 500);
@@ -43,7 +67,7 @@ void GSMenu::Init()
 			Globals::character = Globals::character - 1;
 		});
 	m_listButton.push_back(buttonL);
-
+	//right button
 	texture = ResourceManagers::GetInstance()->GetTexture("b_right.tga");
 	std::shared_ptr<GameButton> buttonR = std::make_shared<GameButton>(model, shader, texture);
 	buttonR->Set2DPosition(950,500);
@@ -55,7 +79,7 @@ void GSMenu::Init()
 	m_listButton.push_back(buttonR);
 
 	// exit button
-	texture = ResourceManagers::GetInstance()->GetTexture("b_close.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("b_quit.tga");
 	button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth - 50, 50);
 	button->SetSize(50, 50);
@@ -70,8 +94,7 @@ void GSMenu::Init()
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
 	m_textGameName = std::make_shared< Text>(shader, font, "Adventure Guy", Vector4(0.0f, 1.0f, 1.0f, 1.0f), 2.0f);
 	m_textGameName->Set2DPosition(Vector2(40, 80));
-	std::string name = "Alarm01.wav";
-	ResourceManagers::GetInstance()->PlaySound(name);
+
 	//character
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	texture = ResourceManagers::GetInstance()->GetTexture("char1_Run.tga");

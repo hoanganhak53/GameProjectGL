@@ -26,7 +26,11 @@ public:
 	void	HandleMouseMoveEvents(int x, int y) override;
 	void	Update(float deltaTime) override;
 	void	Draw() override;
+
+	void Restart();
     int m_Test;
+	int isPress;
+	bool isPause;
 
 private:
 	std::shared_ptr<Sprite2D>	m_background;
@@ -35,5 +39,6 @@ private:
 	std::list<std::shared_ptr<SpriteAnimation>>	m_listAnimation;
 	std::list<std::shared_ptr<Sprite2D>>	m_listObject;
 
+	std::list<std::shared_ptr<GameButton>>	m_listButtonPause;
 };
 
