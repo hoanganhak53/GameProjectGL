@@ -11,7 +11,7 @@ public:
 	void	SetOnClick(std::function<void(void)>pBtClick);
 	bool	HandleTouchEvents(GLint x, GLint y, bool bIsPressed);
 	bool	IsHolding();
-
+	bool	m_isDraw = true;
 private:
 	std::function<void(void)>m_pBtClick;
 	bool	m_isHolding;

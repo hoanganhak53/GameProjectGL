@@ -14,7 +14,7 @@ GSMenu::~GSMenu()
 
 void GSMenu::Init()
 {
-	numChar = 1;
+	m_numChar = 1;
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto texture = ResourceManagers::GetInstance()->GetTexture("background_play.tga");
 
@@ -38,25 +38,32 @@ void GSMenu::Init()
 			GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});
 	m_listButton.push_back(button);
-
+	
 	// audio button
+
 	texture = ResourceManagers::GetInstance()->GetTexture("b_audio.tga");
+	auto texture2 = ResourceManagers::GetInstance()->GetTexture("b_muteAudio.tga");
 	std::shared_ptr<GameButton> buttonAudio = std::make_shared<GameButton>(model, shader, texture);
 	buttonAudio->Set2DPosition(Globals::screenWidth -150, 50);
 	buttonAudio->SetSize(50, 50);
-	buttonAudio->SetOnClick([]() {
-		ResourceManagers::GetInstance()->StopSound("Alarm01.wav");
+	buttonAudio->SetOnClick([=]() {
+		if (m_audioOn) 
+		{
+			ResourceManagers::GetInstance()->StopSound(name);
+			buttonAudio->SetTexture(texture2);
+			m_audioOn = false;
+		}
+		else
+		{
+			ResourceManagers::GetInstance()->PlaySound(name);
+			buttonAudio->SetTexture(texture);
+			m_audioOn = true;
+		}
+
 		});
 	m_listButton.push_back(buttonAudio);
-	// Mute audio button
-	texture = ResourceManagers::GetInstance()->GetTexture("b_muteAudio.tga");
-	std::shared_ptr<GameButton> buttonMuteAudio = std::make_shared<GameButton>(model, shader, texture);
-	buttonMuteAudio->Set2DPosition(Globals::screenWidth - 250, 50);
-	buttonMuteAudio->SetSize(50, 50);
-	buttonMuteAudio->SetOnClick([]() {
-		ResourceManagers::GetInstance()->PlaySound("Alarm01.wav");
-		});
-	m_listButton.push_back(buttonMuteAudio);
+
+
 	//left button
 	texture = ResourceManagers::GetInstance()->GetTexture("b_left.tga");
 	std::shared_ptr<GameButton> buttonL = std::make_shared<GameButton>(model, shader, texture);
@@ -131,7 +138,7 @@ void GSMenu::HandleTouchEvents(int x, int y, bool bIsPressed)
 {
 	for (auto button : m_listButton)
 	{
-		if (button->HandleTouchEvents(x, y, bIsPressed))
+		if (button->HandleTouchEvents(x, y, bIsPressed) && button->m_isDraw)
 		{
 			break;
 		}
@@ -147,11 +154,12 @@ void GSMenu::Update(float deltaTime)
 	m_background->Update(deltaTime);
 	for (auto it : m_listButton)
 	{
-		it->Update(deltaTime);
+		if(it->m_isDraw)
+			it->Update(deltaTime);
 	}
-	if (numChar != Globals::character) {
+	if (m_numChar != Globals::character) {
 		GSMenu::UpdateAnimation();
-		numChar = Globals::character;
+		m_numChar = Globals::character;
 	}
 	m_Animation->Update(deltaTime);
 }
@@ -161,7 +169,8 @@ void GSMenu::Draw()
 	m_background->Draw();
 	for (auto it : m_listButton)
 	{
-		it->Draw();
+		if(it->m_isDraw)
+			it->Draw();
 	}
 	m_textGameName->Draw();
 	m_Animation->Draw();
@@ -183,3 +192,14 @@ void GSMenu::UpdateAnimation() {
 	m_Animation->Set2DPosition(Globals::screenWidth / 2, 480);
 	m_Animation->SetSize(450, 300);
 }
+
+void GSMenu::setAudio(bool audio)
+{
+	m_audioOn = audio;
+}
+
+bool GSMenu::getAudio()
+{
+	return m_audioOn;
+}
+

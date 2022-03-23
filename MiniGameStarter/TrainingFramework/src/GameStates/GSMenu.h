@@ -32,11 +32,14 @@ public:
 	void	Draw() override;
 
 	void	UpdateAnimation();
+	void	setAudio(bool audio);
+	bool	getAudio();
 private:
 	std::shared_ptr<Sprite2D>				m_background;
 	std::list<std::shared_ptr<GameButton>>	m_listButton;
 	std::shared_ptr<Text>					m_textGameName;
 	std::shared_ptr<SpriteAnimation>		m_Animation;
-	GLint									numChar;
+	GLint									m_numChar;
+	bool									m_audioOn = true;
 };
 

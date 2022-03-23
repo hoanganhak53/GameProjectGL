@@ -196,8 +196,8 @@ GLint SpriteAnimation::getVt()
 void SpriteAnimation::setVt(GLint vt)
 {
 	m_vt = vt;
-	if (m_vt < -4)
-		m_vt = -4;
+	if (m_vt < -5)
+		m_vt = -5;
 }
 bool SpriteAnimation::getContinueCrash()
 {

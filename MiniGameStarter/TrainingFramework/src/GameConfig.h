@@ -96,5 +96,5 @@ public:
 #define KEY_MOVE_RIGHT		'D'
 #define KEY_MOVE_FORWORD	'W'
 #define KEY_MOVE_BACKWORD	'S'
-
+#define KEY_SPACE			32
 #endif

@@ -24,9 +24,9 @@ GSPlay::~GSPlay()
 
 void GSPlay::Init()
 {
-	isPress = 0;
+	m_PressKey = 0;
 	m_Test = 1;
-	isPause = false;
+	m_isPause = false;
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto texture = ResourceManagers::GetInstance()->GetTexture("background_play.tga");
 
@@ -84,16 +84,20 @@ void GSPlay::Init()
 
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 
-	if (Globals::character == 1) {
+	if (Globals::character == 1) 
+	{
 		texture = ResourceManagers::GetInstance()->GetTexture("char1.tga");
 	}
-	else if (Globals::character == 2) {
+	else if (Globals::character == 2) 
+	{
 		texture = ResourceManagers::GetInstance()->GetTexture("char2.tga");
 	}
-	else if (Globals::character == 3) {
+	else if (Globals::character == 3) 
+	{
 		texture = ResourceManagers::GetInstance()->GetTexture("char3.tga");
 	}
-	else if (Globals::character == 4) {
+	else if (Globals::character == 4) 
+	{
 		texture = ResourceManagers::GetInstance()->GetTexture("char4.tga");
 	}
 
@@ -128,10 +132,10 @@ void GSPlay::Init()
 	m_listObject.push_back(m_object2);
 
 	//cell
-	std::shared_ptr<Sprite2D>  m_object3 = std::make_shared<Sprite2D>(model, shader, texture);
-	m_object3->Set2DPosition(0, 0);
-	m_object3->SetSize(3300, 80);
-	m_listObject.push_back(m_object3);
+	//std::shared_ptr<sprite2d>  m_object3 = std::make_shared<sprite2d>(model, shader, texture);
+	//m_object3->set2dposition(0, 0);
+	//m_object3->setsize(3300, 80);
+	//m_listobject.push_back(m_object3);
 }
 
 void GSPlay::Exit()
@@ -142,17 +146,17 @@ void GSPlay::Exit()
 
 void GSPlay::Pause()
 {
-	isPause = true;
+	m_isPause = true;
 }
 
 void GSPlay::Resume()
 {
-	isPause = false;
+	m_isPause = false;
 }
 
 void GSPlay::Restart()
 {
-	isPause = false;
+	m_isPause = false;
 }
 void GSPlay::HandleEvents()
 {
@@ -160,25 +164,31 @@ void GSPlay::HandleEvents()
 
 void GSPlay::HandleKeyEvents(int key, bool bIsPressed)
 {
-	if (bIsPressed) {
+	if (bIsPressed) 
+	{
 		switch (key)
 		{
-		case KEY_MOVE_LEFT: {
-			isPress = 1;
+		case KEY_MOVE_LEFT: 
+		{
+			m_PressKey |= 1;
 			break;
-		}case KEY_MOVE_RIGHT: {
-			isPress = 2;
+		}
+		case KEY_MOVE_RIGHT: 
+		{
+			m_PressKey |= 1<<1;
 			break;
-		}case KEY_MOVE_FORWORD: {
-			isPress = 3;
+		}
+		case KEY_SPACE: 
+		{
+			m_PressKey |= 1<<2;
 			break;
 		}
 		default:
 			break;
 		}
-	}else
-		isPress = 0;
-
+	}
+	else
+		m_PressKey = 0;
 }
 
 void GSPlay::HandleTouchEvents(int x, int y, bool bIsPressed)
@@ -209,19 +219,46 @@ void GSPlay::Update(float deltaTime)
 	{
 		it->Update(deltaTime);
 	}
-	if (!isPause) {
+	if (!m_isPause) 
+	{
 		for (auto it : m_listAnimation)
 		{
-
-			switch (isPress) {
-			case 1: {
-				it->Set2DPosition(it->Get2DPosition().x - 2, it->Get2DPosition().y);
+			switch (m_PressKey) 
+			{
+			case 1: 
+			{
+				it->Set2DPosition(it->Get2DPosition().x - deltaTime * 100, it->Get2DPosition().y);
 				break;
-			}case 2: {
-				it->Set2DPosition(it->Get2DPosition().x + 2, it->Get2DPosition().y);
+			}
+			case 2: 
+			{
+				it->Set2DPosition(it->Get2DPosition().x + deltaTime * 100, it->Get2DPosition().y);
 				break;
-			}case 3: {
-				if (!it->getJump()) {
+			}
+			case 4: 
+			{
+				if (!it->getJump()) 
+				{
+					it->setJump(true);
+					it->setVt(20);
+				}
+				break;
+			}
+			case 5:
+			{
+				it->Set2DPosition(it->Get2DPosition().x - deltaTime * 100, it->Get2DPosition().y);
+				if (!it->getJump())
+				{
+					it->setJump(true);
+					it->setVt(20);
+				}
+				break;
+			}
+			case 6:
+			{
+				it->Set2DPosition(it->Get2DPosition().x + deltaTime * 100, it->Get2DPosition().y);
+				if (!it->getJump())
+				{
 					it->setJump(true);
 					it->setVt(20);
 				}
@@ -230,7 +267,8 @@ void GSPlay::Update(float deltaTime)
 			default:
 				break;
 			}
-			if (it->getJump()) {
+			if (it->getJump()) 
+			{
 
 				bool haveCrash = false;
 				for (auto obj1 : m_listObject)
@@ -240,13 +278,15 @@ void GSPlay::Update(float deltaTime)
 					}
 
 				}
-				if (haveCrash && it->getVt() != 20) {
+				if (haveCrash && it->getVt() != 20) 
+				{
 					it->setVt(0);
 					it->setJump(false);
 				}
-				else {
-					it->Set2DPosition(it->Get2DPosition().x, it->Get2DPosition().y - it->getVt());
-					it->setVt(it->getVt() - 1);
+				else 
+				{
+					it->Set2DPosition(it->Get2DPosition().x, it->Get2DPosition().y - it->getVt() * deltaTime * 70);
+					it->setVt(it->getVt() - deltaTime * 90);
 				}
 			}
 
@@ -254,8 +294,9 @@ void GSPlay::Update(float deltaTime)
 		}
 		for (auto it : m_listObject)
 		{
-			it->Set2DPosition(it->Get2DPosition().x - 2, it->Get2DPosition().y);
-			if (it->Get2DPosition().x < -150) {
+			it->Set2DPosition(it->Get2DPosition().x - deltaTime * 100, it->Get2DPosition().y);
+			if (it->Get2DPosition().x < -150) 
+			{
 				it->Set2DPosition(1400, it->Get2DPosition().y);
 			}
 			it->Update(deltaTime);
@@ -275,7 +316,7 @@ void GSPlay::Draw()
 	{
 		it->Draw();
 	}
-	if (isPause) {
+	if (m_isPause) {
 		for (auto it : m_listButtonPause)
 		{
 			it->Draw();

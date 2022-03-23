@@ -29,8 +29,8 @@ public:
 
 	void Restart();
     int m_Test;
-	int isPress;
-	bool isPause;
+	int m_PressKey;
+	bool m_isPause;
 
 private:
 	std::shared_ptr<Sprite2D>	m_background;
