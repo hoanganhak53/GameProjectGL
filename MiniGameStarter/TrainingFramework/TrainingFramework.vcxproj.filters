@@ -72,6 +72,8 @@
     <ClCompile Include="src\GameObject\SpriteAnimation.cpp">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Enemies.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -134,6 +136,8 @@
     <ClInclude Include="src\GameObject\SpriteAnimation.h">
       <Filter>TrainingFramework\src\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameObject\Player.h" />
+    <ClInclude Include="Enemies.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

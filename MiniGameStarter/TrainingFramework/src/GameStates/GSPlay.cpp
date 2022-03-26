@@ -10,7 +10,7 @@
 #include "Text.h"
 #include "GameButton.h"
 #include "SpriteAnimation.h"
-
+#include "Player.h"
 
 GSPlay::GSPlay()
 {
@@ -101,17 +101,12 @@ void GSPlay::Init()
 		texture = ResourceManagers::GetInstance()->GetTexture("char4.tga");
 	}
 
-	std::shared_ptr<SpriteAnimation> obj = std::make_shared<SpriteAnimation>(model, shader, texture, 6, 1, 0, 0.1f);
+	m_player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f);
 	
-	obj->Set2DPosition(240, 400);
-	obj->SetSize(334, 223);
-	std::shared_ptr<SpriteAnimation> obj1 = std::make_shared<SpriteAnimation>(model, shader, texture, 6, 1, 0, 0.1f);
+	m_player->Set2DPosition(240, 400);
+	m_player->SetSize(334, 223);
 
-	obj1->Set2DPosition(100, 700);
-	obj1->SetSize(334, 223);
-	//obj->SetRotation(Vector3(0.0f, 3.14f, 0.0f));
-	m_listAnimation.push_back(obj);
-	m_listAnimation.push_back(obj1);
+
 
 	model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	texture = ResourceManagers::GetInstance()->GetTexture("ground.tga");
@@ -127,7 +122,7 @@ void GSPlay::Init()
 	m_listObject.push_back(m_object1);
 
 	std::shared_ptr<Sprite2D>  m_object2 = std::make_shared<Sprite2D>(model, shader, texture);
-	m_object2->Set2DPosition(0, 800);
+	m_object2->Set2DPosition(0, 760);
 	m_object2->SetSize(3300, 80);
 	m_listObject.push_back(m_object2);
 
@@ -221,77 +216,70 @@ void GSPlay::Update(float deltaTime)
 	}
 	if (!m_isPause) 
 	{
-		for (auto it : m_listAnimation)
+
+		switch (m_PressKey) 
 		{
-			switch (m_PressKey) 
-			{
-			case 1: 
-			{
-				it->Set2DPosition(it->Get2DPosition().x - deltaTime * 100, it->Get2DPosition().y);
-				break;
-			}
-			case 2: 
-			{
-				it->Set2DPosition(it->Get2DPosition().x + deltaTime * 100, it->Get2DPosition().y);
-				break;
-			}
-			case 4: 
-			{
-				if (!it->getJump()) 
-				{
-					it->setJump(true);
-					it->setVt(20);
-				}
-				break;
-			}
-			case 5:
-			{
-				it->Set2DPosition(it->Get2DPosition().x - deltaTime * 100, it->Get2DPosition().y);
-				if (!it->getJump())
-				{
-					it->setJump(true);
-					it->setVt(20);
-				}
-				break;
-			}
-			case 6:
-			{
-				it->Set2DPosition(it->Get2DPosition().x + deltaTime * 100, it->Get2DPosition().y);
-				if (!it->getJump())
-				{
-					it->setJump(true);
-					it->setVt(20);
-				}
-				break;
-			}
-			default:
-				break;
-			}
-			if (it->getJump()) 
-			{
-
-				bool haveCrash = false;
-				for (auto obj1 : m_listObject)
-				{
-					if (it->CheckBound(obj1)) {
-						haveCrash = true;
-					}
-
-				}
-				if (haveCrash && it->getVt() != 20) 
-				{
-					it->setVt(0);
-					it->setJump(false);
-				}
-				else 
-				{
-					it->Set2DPosition(it->Get2DPosition().x, it->Get2DPosition().y - it->getVt() * deltaTime * 70);
-					it->setVt(it->getVt() - deltaTime * 90);
-				}
-			}
-
-			it->Update(deltaTime);
+		case 1: 
+		{
+			m_player->Set2DPosition(m_player->Get2DPosition().x - deltaTime * 150, m_player->Get2DPosition().y);
+			break;
 		}
+		case 2: 
+		{
+			m_player->Set2DPosition(m_player->Get2DPosition().x + deltaTime * 150, m_player->Get2DPosition().y);
+			break;
+		}
+		case 4: 
+		{
+			if (!m_player->getJump())
+			{
+				m_player->setJump(true);
+				m_player->setVt(20);
+			}
+			break;
+			}
+		case 5:
+		{
+			m_player->Set2DPosition(m_player->Get2DPosition().x - deltaTime * 150, m_player->Get2DPosition().y);
+			if (!m_player->getJump())
+			{
+				m_player->setJump(true);
+				m_player->setVt(20);
+			}
+			break;
+		}
+		case 6:
+		{
+			m_player->Set2DPosition(m_player->Get2DPosition().x + deltaTime * 150, m_player->Get2DPosition().y);
+			if (!m_player->getJump()) // dang khong nhay moi duoc nhay
+			{
+				m_player->setJump(true);
+				m_player->setVt(20);
+			}
+			break;
+		}
+		default:
+			break;
+		}
+		bool haveCrash = false;
+		for (auto obj : m_listObject)
+		{
+			if (m_player->CheckBound(obj)) {
+				haveCrash = true;
+			}
+		}
+		if (haveCrash && m_player->getVt() != 20)
+		{
+			m_player->setVt(0);
+			m_player->setJump(false);
+		}
+		else 
+		{
+			m_player->Set2DPosition(m_player->Get2DPosition().x, m_player->Get2DPosition().y - m_player->getVt() * deltaTime * 70);
+			m_player->setVt(m_player->getVt() - deltaTime * 90);
+		}
+		m_player->Update(deltaTime);
+
 		for (auto it : m_listObject)
 		{
 			it->Set2DPosition(it->Get2DPosition().x - deltaTime * 100, it->Get2DPosition().y);
@@ -307,11 +295,12 @@ void GSPlay::Update(float deltaTime)
 void GSPlay::Draw()
 {
 	m_background->Draw();
+	m_player->Draw();
+	//m_score->Draw();
 	for (auto it : m_listObject)
 	{
 		it->Draw();
 	}
-	//m_score->Draw();
 	for (auto it : m_listButton)
 	{
 		it->Draw();
@@ -321,9 +310,5 @@ void GSPlay::Draw()
 		{
 			it->Draw();
 		}
-	}
-	for (auto it : m_listAnimation)
-	{
-		it->Draw();
 	}
 }

@@ -33,7 +33,7 @@ SpriteAnimation::SpriteAnimation(std::shared_ptr<Model> model, std::shared_ptr<S
 	m_iWidth = 100;
 	m_scale = Vector3((float)m_iWidth /  Globals::screenWidth, (float)m_iHeight /  Globals::screenHeight, 1);
 	m_dir = 1;
-	isJump = false;
+	m_isJump = false;
 	m_vt = 0;
 }
 
@@ -177,17 +177,20 @@ void SpriteAnimation::SetSize(GLint width, GLint height)
 }
 
 bool SpriteAnimation::CheckBound(std::shared_ptr<Sprite2D>  obj)
-{
-	if(m_Vec2DPos.y  >= (obj->Get2DPosition().y - obj->GetHeight()/2) && m_Vec2DPos.y <= (obj->Get2DPosition().y + obj->GetHeight() / 2))
-		if (m_Vec2DPos.x >= (obj->Get2DPosition().x - obj->GetWidth() / 2) && m_Vec2DPos.x <= (obj->Get2DPosition().x + obj->GetWidth() / 2))
-			return true;
+{	
+	int a_x1 = m_Vec2DPos.x - m_iWidth / 5, a_x2 = m_Vec2DPos.x + m_iWidth / 5;
+	int a_y1 = m_Vec2DPos.y - m_iHeight / 5, a_y2 = m_Vec2DPos.y + m_iHeight / 5;// do kich thuoc that nho hon nhieu
+	int b_x1 = obj->Get2DPosition().x - obj->GetWidth() / 2 , b_x2 = obj->Get2DPosition().x + obj->GetWidth() / 2;
+	int b_y1 = obj->Get2DPosition().y - obj->GetHeight() / 2, b_y2 = obj->Get2DPosition().y + obj->GetHeight() / 2;
 
+	if (a_x1 < b_x2 && b_x1 < a_x2 && a_y1 < b_y2 && b_y1 < a_y2)
+		return true;
 	return false;
 }
 
 void SpriteAnimation::setJump(bool tt)
 {
-	isJump = tt;
+	m_isJump = tt;
 }
 GLint SpriteAnimation::getVt()
 {
@@ -199,16 +202,7 @@ void SpriteAnimation::setVt(GLint vt)
 	if (m_vt < -5)
 		m_vt = -5;
 }
-bool SpriteAnimation::getContinueCrash()
-{
-	return isContinueCrash;
-}
 bool SpriteAnimation::getJump()
 {
-	return isJump;
-}
-
-void SpriteAnimation::setContinueCrash(bool tt)
-{
-	isContinueCrash = tt;
+	return m_isJump;
 }

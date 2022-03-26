@@ -6,6 +6,7 @@ class Sprite3D;
 class Text;
 class GameButton;
 class SpriteAnimation;
+class Player;
 
 class GSPlay :
 	public GameStateBase
@@ -31,12 +32,11 @@ public:
     int m_Test;
 	int m_PressKey;
 	bool m_isPause;
-
 private:
 	std::shared_ptr<Sprite2D>	m_background;
 	std::shared_ptr<Text>		m_score;
 	std::list<std::shared_ptr<GameButton>>	m_listButton;
-	std::list<std::shared_ptr<SpriteAnimation>>	m_listAnimation;
+	std::shared_ptr<Player>	m_player;
 	std::list<std::shared_ptr<Sprite2D>>	m_listObject;
 
 	std::list<std::shared_ptr<GameButton>>	m_listButtonPause;
