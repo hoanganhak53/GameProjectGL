@@ -11,6 +11,7 @@
 #include "GameButton.h"
 #include "SpriteAnimation.h"
 #include "Player.h"
+#include "Trampoline.h"
 
 GSPlay::GSPlay()
 {
@@ -82,43 +83,32 @@ void GSPlay::Init()
 	m_score = std::make_shared< Text>(shader, font, "score: 10", TextColor::RED, 1.0);
 	m_score->Set2DPosition(Vector2(5, 25));
 
+	//player
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
-
-	if (Globals::character == 1) 
-	{
-		texture = ResourceManagers::GetInstance()->GetTexture("char1.tga");
-	}
-	else if (Globals::character == 2) 
-	{
-		texture = ResourceManagers::GetInstance()->GetTexture("char2.tga");
-	}
-	else if (Globals::character == 3) 
-	{
-		texture = ResourceManagers::GetInstance()->GetTexture("char3.tga");
-	}
-	else if (Globals::character == 4) 
-	{
-		texture = ResourceManagers::GetInstance()->GetTexture("char4.tga");
-	}
-
-	m_player = std::make_shared<Player>(model, shader, texture, 6, 1, 0, 0.1f);
-	
+	texture = ResourceManagers::GetInstance()->GetTexture("trampoline.tga");
+	m_player = std::make_shared<Player>(model, shader, texture, 12, 1, 0, 0.07f);
+	m_player->setIdCharacter(Globals::character);
+	m_player->UpdateAnimation();
 	m_player->Set2DPosition(240, 400);
 	m_player->SetSize(334, 223);
+	//trampoline
+	m_trampoline = std::make_shared<Trampoline>(model, shader, texture, 8, 1, 0, 0.15f);
+	m_trampoline->UpdateAnimation();
+	m_trampoline->Set2DPosition(240, 680);
+	m_trampoline->SetSize(100, 100);
 
-
-
+	//ground
 	model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	texture = ResourceManagers::GetInstance()->GetTexture("ground.tga");
 	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	std::shared_ptr<Sprite2D>  m_object = std::make_shared<Sprite2D>(model, shader, texture);
 	m_object->Set2DPosition(500, 400);
-	m_object->SetSize(200, 80);
+	m_object->SetSize(200, 20);
 	m_listObject.push_back(m_object);
 
 	std::shared_ptr<Sprite2D>  m_object1 = std::make_shared<Sprite2D>(model, shader, texture);
 	m_object1->Set2DPosition(1000, 530);
-	m_object1->SetSize(200, 80);
+	m_object1->SetSize(200, 20);
 	m_listObject.push_back(m_object1);
 
 	std::shared_ptr<Sprite2D>  m_object2 = std::make_shared<Sprite2D>(model, shader, texture);
@@ -237,7 +227,7 @@ void GSPlay::Update(float deltaTime)
 				m_player->setVt(20);
 			}
 			break;
-			}
+		}
 		case 5:
 		{
 			m_player->Set2DPosition(m_player->Get2DPosition().x - deltaTime * 150, m_player->Get2DPosition().y);
@@ -289,13 +279,17 @@ void GSPlay::Update(float deltaTime)
 			}
 			it->Update(deltaTime);
 		}
+	m_trampoline->Jumping(m_player);
+	m_trampoline->Update(deltaTime);
 	}
+
 }
 
 void GSPlay::Draw()
 {
 	m_background->Draw();
 	m_player->Draw();
+	m_trampoline->Draw();
 	//m_score->Draw();
 	for (auto it : m_listObject)
 	{

@@ -2,13 +2,7 @@
 #include "GameStateBase.h"
 #include "GameButton.h"
 #include "SpriteAnimation.h"
-enum class CharacterType
-{
-	MASK_DUDE = 0,
-	NINJA_FROG,
-	PINK_MAN,
-	VIRTUAL_GUY
-};
+#include "Player.h"
 
 
 class GSMenu :
@@ -31,14 +25,13 @@ public:
 	void	Update(float deltaTime) override;
 	void	Draw() override;
 
-	void	UpdateAnimation();
 	void	setAudio(bool audio);
 	bool	getAudio();
 private:
 	std::shared_ptr<Sprite2D>				m_background;
 	std::list<std::shared_ptr<GameButton>>	m_listButton;
 	std::shared_ptr<Text>					m_textGameName;
-	std::shared_ptr<SpriteAnimation>		m_Animation;
+	std::shared_ptr<Player>					m_player;
 	GLint									m_numChar;
 	bool									m_audioOn = true;
 };

@@ -7,6 +7,7 @@ class Text;
 class GameButton;
 class SpriteAnimation;
 class Player;
+class Trampoline;
 
 class GSPlay :
 	public GameStateBase
@@ -36,9 +37,10 @@ private:
 	std::shared_ptr<Sprite2D>	m_background;
 	std::shared_ptr<Text>		m_score;
 	std::list<std::shared_ptr<GameButton>>	m_listButton;
-	std::shared_ptr<Player>	m_player;
 	std::list<std::shared_ptr<Sprite2D>>	m_listObject;
-
 	std::list<std::shared_ptr<GameButton>>	m_listButtonPause;
+
+	std::shared_ptr<Player>	m_player;
+	std::shared_ptr<Trampoline>	m_trampoline;
 };
 

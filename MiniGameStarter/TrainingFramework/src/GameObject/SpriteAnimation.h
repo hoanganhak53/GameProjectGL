@@ -36,14 +36,16 @@ public:
 
 	Vector2		Get2DPosition();
 	GLint		GetDirect();
-	void		SetDirect(GLint vh);
+	void		SetDirect(GLint direct);
 	void		SetSize(GLint width, GLint height);
+	Vector2		getSize();
 
 	bool		CheckBound(std::shared_ptr<Sprite2D>  obj);//kiem tra va cham giua nhan vat va object
+	bool		CheckBound(std::shared_ptr<SpriteAnimation>  obj);
+
 
 	bool		getJump();
 	void		setJump(bool tt);
 	GLint		getVt();
 	void		setVt(GLint vt);
 };
-

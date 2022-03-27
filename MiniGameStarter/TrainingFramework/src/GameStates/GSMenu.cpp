@@ -105,10 +105,10 @@ void GSMenu::Init()
 	//character
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	texture = ResourceManagers::GetInstance()->GetTexture("char1_Run.tga");
-	m_Animation = std::make_shared<SpriteAnimation>(model, shader, texture, 12, 1, 0, 0.07f);
+	m_player = std::make_shared<Player>(model, shader, texture, 12, 1, 0, 0.07f);
 
-	m_Animation->Set2DPosition(Globals::screenWidth / 2, 480);
-	m_Animation->SetSize(450, 300);
+	m_player->Set2DPosition(Globals::screenWidth / 2, 480);
+	m_player->SetSize(450, 300);
 }
 
 void GSMenu::Exit()
@@ -158,10 +158,11 @@ void GSMenu::Update(float deltaTime)
 			it->Update(deltaTime);
 	}
 	if (m_numChar != Globals::character) {
-		GSMenu::UpdateAnimation();
+		m_player->setIdCharacter(Globals::character);
+		m_player->UpdateAnimation();
 		m_numChar = Globals::character;
 	}
-	m_Animation->Update(deltaTime);
+	m_player->Update(deltaTime);
 }
 
 void GSMenu::Draw()
@@ -173,26 +174,8 @@ void GSMenu::Draw()
 			it->Draw();
 	}
 	m_textGameName->Draw();
-	m_Animation->Draw();
+	m_player->Draw();
 }
-void GSMenu::UpdateAnimation() {
-	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto shader = ResourceManagers::GetInstance()->GetShader("Animation");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("char1_Run.tga");
-	if (Globals::character == 2) {
-		texture = ResourceManagers::GetInstance()->GetTexture("char2.tga");
-	}
-	else if (Globals::character == 3) {
-		texture = ResourceManagers::GetInstance()->GetTexture("char3_Run.tga");
-	}
-	else if (Globals::character == 4) {
-		texture = ResourceManagers::GetInstance()->GetTexture("char4_Run.tga");
-	}
-	m_Animation = std::make_shared<SpriteAnimation>(model, shader, texture, 12, 1, 0, 0.07f);
-	m_Animation->Set2DPosition(Globals::screenWidth / 2, 480);
-	m_Animation->SetSize(450, 300);
-}
-
 void GSMenu::setAudio(bool audio)
 {
 	m_audioOn = audio;

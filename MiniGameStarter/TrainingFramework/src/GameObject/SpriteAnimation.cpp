@@ -13,6 +13,8 @@ void SpriteAnimation::CaculateWorldMatrix()
 	m_worldMatrix = m_Sc * m_T;
 }
 
+
+
 SpriteAnimation::SpriteAnimation(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime)
 	: BaseObject()
 {
@@ -176,10 +178,15 @@ void SpriteAnimation::SetSize(GLint width, GLint height)
 	CaculateWorldMatrix();
 }
 
+Vector2 SpriteAnimation::getSize()
+{
+	return Vector2(m_iWidth,m_iHeight);
+}
+
 bool SpriteAnimation::CheckBound(std::shared_ptr<Sprite2D>  obj)
 {	
-	int a_x1 = m_Vec2DPos.x - m_iWidth / 5, a_x2 = m_Vec2DPos.x + m_iWidth / 5;
-	int a_y1 = m_Vec2DPos.y - m_iHeight / 5, a_y2 = m_Vec2DPos.y + m_iHeight / 5;// do kich thuoc that nho hon nhieu
+	int a_x1 = m_Vec2DPos.x - m_iWidth / 4, a_x2 = m_Vec2DPos.x + m_iWidth / 4;
+	int a_y1 = m_Vec2DPos.y - m_iHeight / 4, a_y2 = m_Vec2DPos.y + m_iHeight / 4;// do kich thuoc that nho hon nhieu
 	int b_x1 = obj->Get2DPosition().x - obj->GetWidth() / 2 , b_x2 = obj->Get2DPosition().x + obj->GetWidth() / 2;
 	int b_y1 = obj->Get2DPosition().y - obj->GetHeight() / 2, b_y2 = obj->Get2DPosition().y + obj->GetHeight() / 2;
 
@@ -187,6 +194,17 @@ bool SpriteAnimation::CheckBound(std::shared_ptr<Sprite2D>  obj)
 		return true;
 	return false;
 }
+bool SpriteAnimation::CheckBound(std::shared_ptr<SpriteAnimation>  obj)
+{
+	int a_x1 = m_Vec2DPos.x - m_iWidth / 6, a_x2 = m_Vec2DPos.x + m_iWidth / 6;
+	int a_y1 = m_Vec2DPos.y - m_iHeight / 6, a_y2 = m_Vec2DPos.y + m_iHeight / 6;// do kich thuoc that nho hon nhieu
+	int b_x1 = obj->Get2DPosition().x - obj->getSize().x / 2, b_x2 = obj->Get2DPosition().x + obj->getSize().x / 2;
+	int b_y1 = obj->Get2DPosition().y - obj->getSize().y / 2, b_y2 = obj->Get2DPosition().y + obj->getSize().y / 2;
+	if (a_x1 < b_x2 && b_x1 < a_x2 && a_y1 < b_y2 && b_y1 < a_y2)
+		return true;
+	return false;
+}
+
 
 void SpriteAnimation::setJump(bool tt)
 {
