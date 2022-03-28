@@ -3,11 +3,7 @@
 #include "Sprite2D.h"
 class SpriteAnimation : public BaseObject
 {
-private:
-	std::string		m_Text;
-	void			CaculateWorldMatrix();
 protected:
-	Vector2			m_Vec2DPos;
 	GLint			m_iHeight;
 	GLint			m_iWidth;
 	GLint			m_dir;
@@ -23,18 +19,14 @@ public:
 	SpriteAnimation(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime);
 	~SpriteAnimation();
 
-	SpriteAnimation()
-		: m_Vec2DPos(2,1),m_iHeight(0),m_iWidth(0),m_dir(1), m_numFrames(0), m_currentFrame(0), m_frameTime(0), m_currentTime(0), m_numActions(0)
-	, m_currentAction(0), m_isJump(false), m_vt(0){}
-
 	void		Init() override;
 	void		Draw();
 	void		Update(GLfloat deltatime) override;
 
-	void		Set2DPosition(GLfloat x, GLfloat y);
-	void		Set2DPosition(Vector2 pos);
+	void		Set2DPosition(GLint x, GLint y);
+	void		SetRotation(Vector3 rotation);
 
-	Vector2		Get2DPosition();
+	Vector3		Get2DPosition();
 	GLint		GetDirect();
 	void		SetDirect(GLint direct);
 	void		SetSize(GLint width, GLint height);

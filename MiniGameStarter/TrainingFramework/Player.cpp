@@ -3,10 +3,10 @@
 #include "ResourceManagers.h"
 
 
-Player::Player(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime)
+Player::Player(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime) :SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime)
 {
 	//SpriteAnimation::SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime);
-	m_pModel = model;
+	/*m_pModel = model;
 	m_pShader = shader;
 	m_pCamera = nullptr;
 	m_pTexture = texture;
@@ -21,7 +21,7 @@ Player::Player(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std
 	m_position = Vector3(0, 0, 0);
 	m_iHeight = 50;
 	m_iWidth = 100;
-	m_scale = Vector3((float)m_iWidth / Globals::screenWidth, (float)m_iHeight / Globals::screenHeight, 1);
+	m_scale = Vector3((float)m_iWidth / Globals::screenWidth, (float)m_iHeight / Globals::screenHeight, 1);*/
 	m_dir = 1;
 	m_isJump = false;
 	m_vt = 0;

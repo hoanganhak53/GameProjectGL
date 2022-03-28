@@ -116,6 +116,12 @@ void Sprite2D::Set2DPosition(Vector2 position)
 	CalculateWorldMatrix();
 }
 
+void Sprite2D::SetRotation(Vector3 rotation)
+{
+	m_rotation = rotation;
+	CalculateWorldMatrix();
+}
+
 void Sprite2D::SetSize(GLint width, GLint height)
 {
 	m_iWidth = width;

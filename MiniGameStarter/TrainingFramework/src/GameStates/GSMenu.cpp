@@ -108,7 +108,7 @@ void GSMenu::Init()
 	m_player = std::make_shared<Player>(model, shader, texture, 12, 1, 0, 0.07f);
 
 	m_player->Set2DPosition(Globals::screenWidth / 2, 480);
-	m_player->SetSize(450, 300);
+	m_player->SetSize(170, 170);
 }
 
 void GSMenu::Exit()

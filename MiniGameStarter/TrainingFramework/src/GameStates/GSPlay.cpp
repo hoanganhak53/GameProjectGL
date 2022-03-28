@@ -89,13 +89,13 @@ void GSPlay::Init()
 	m_player = std::make_shared<Player>(model, shader, texture, 12, 1, 0, 0.07f);
 	m_player->setIdCharacter(Globals::character);
 	m_player->UpdateAnimation();
-	m_player->Set2DPosition(240, 400);
-	m_player->SetSize(334, 223);
+	m_player->Set2DPosition(600, 400);
+	m_player->SetSize(100, 100);
 	//trampoline
 	m_trampoline = std::make_shared<Trampoline>(model, shader, texture, 8, 1, 0, 0.15f);
 	m_trampoline->UpdateAnimation();
-	m_trampoline->Set2DPosition(240, 680);
-	m_trampoline->SetSize(100, 100);
+	m_trampoline->Set2DPosition(400, 680);
+	m_trampoline->SetSize(50, 50);
 
 	//ground
 	model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
@@ -211,11 +211,13 @@ void GSPlay::Update(float deltaTime)
 		{
 		case 1: 
 		{
+			m_player->SetRotation(Vector3(0.0f, PI, 0.0f));	
 			m_player->Set2DPosition(m_player->Get2DPosition().x - deltaTime * 150, m_player->Get2DPosition().y);
 			break;
 		}
 		case 2: 
 		{
+			m_player->SetRotation(Vector3(0.0f, 0.0, 0.0f));
 			m_player->Set2DPosition(m_player->Get2DPosition().x + deltaTime * 150, m_player->Get2DPosition().y);
 			break;
 		}

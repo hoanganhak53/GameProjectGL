@@ -4,24 +4,13 @@
 #include "Model.h"
 #include "Camera.h"
 #include "Texture.h"
-
-void SpriteAnimation::CaculateWorldMatrix()
-{
-	Matrix m_Sc, m_T;
-	m_Sc.SetScale(m_scale);
-	m_T.SetTranslation(m_position);
-	m_worldMatrix = m_Sc * m_T;
-}
+#include "Application.h"
 
 
 
 SpriteAnimation::SpriteAnimation(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime)
-	: BaseObject()
+	: BaseObject(-1, model, shader, texture), m_iWidth(100), m_iHeight(50)
 {
-	m_pModel = model;
-	m_pShader = shader;
-	m_pCamera = nullptr;
-	m_pTexture = texture;
 	m_numFrames = numFrames;
 	m_numActions = numActions;
 	m_frameTime = frameTime;
@@ -29,14 +18,7 @@ SpriteAnimation::SpriteAnimation(std::shared_ptr<Model> model, std::shared_ptr<S
 	m_currentAction = 0;
 	m_currentTime = 0.0f;
 	m_currentAction = currentAction;
-
-	m_position = Vector3(0, 0, 0);
-	m_iHeight = 50;
-	m_iWidth = 100;
-	m_scale = Vector3((float)m_iWidth /  Globals::screenWidth, (float)m_iHeight /  Globals::screenHeight, 1);
-	m_dir = 1;
-	m_isJump = false;
-	m_vt = 0;
+	Init();
 }
 
 SpriteAnimation::~SpriteAnimation()
@@ -45,11 +27,13 @@ SpriteAnimation::~SpriteAnimation()
 
 void SpriteAnimation::Init()
 {
-	CaculateWorldMatrix();
+	SetCamera(Application::GetInstance()->GetCamera());
+	CalculateWorldMatrix();
 }
 
 void SpriteAnimation::Draw()
 {
+	if (m_pCamera == nullptr) return;
 	glUseProgram(m_pShader->m_program);
 	glBindBuffer(GL_ARRAY_BUFFER, m_pModel->GetVertexObject());
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_pModel->GetIndiceObject());
@@ -57,7 +41,7 @@ void SpriteAnimation::Draw()
 	GLuint iTempShaderVaribleGLID = -1;
 	Matrix matrixWVP;
 
-	matrixWVP = m_worldMatrix;//* m_pCamera->GetLookAtCamera();
+	matrixWVP = m_worldMatrix *m_pCamera->GetLookAtCameraMatrix();
 
 	if (m_pTexture != nullptr)
 	{
@@ -135,32 +119,21 @@ void SpriteAnimation::Update(GLfloat deltatime)
 }
 
 
-void SpriteAnimation::Set2DPosition(GLfloat width, GLfloat height)
+void SpriteAnimation::Set2DPosition(GLint x, GLint y)
 {
-	m_Vec2DPos.x = width;
-	m_Vec2DPos.y = height;
-
-	float xx = (2.0 * m_Vec2DPos.x) /  Globals::screenWidth - 1.0;
-	float yy = 1.0 - (2.0 * m_Vec2DPos.y) /  Globals::screenHeight;
-	m_position = Vector3(xx, yy, 1.0);
-
-	CaculateWorldMatrix();
+	m_position = Vector3((float)x, (float)y, 0.0f);
+	CalculateWorldMatrix();
 }
 
-void SpriteAnimation::Set2DPosition(Vector2 pos)
+void SpriteAnimation::SetRotation(Vector3 rotation)
 {
-	m_Vec2DPos = pos;
-
-	float xx = (2.0 * m_Vec2DPos.x) /  Globals::screenWidth - 1.0;
-	float yy = 1.0 - (2.0 * m_Vec2DPos.y) /  Globals::screenHeight;
-	m_position = Vector3(xx, yy, 1.0);
-
-	CaculateWorldMatrix();
+	m_rotation = rotation;
+	CalculateWorldMatrix();
 }
 
-Vector2 SpriteAnimation::Get2DPosition()
+Vector3 SpriteAnimation::Get2DPosition()
 {
-	return m_Vec2DPos;
+	return m_position;
 }
 
 GLint  SpriteAnimation::GetDirect() {
@@ -174,8 +147,8 @@ void SpriteAnimation::SetSize(GLint width, GLint height)
 {
 	m_iWidth = width;
 	m_iHeight = height;
-	m_scale = Vector3((float)m_iWidth /  Globals::screenWidth, (float)m_iHeight /  Globals::screenHeight, 1);
-	CaculateWorldMatrix();
+	m_scale = Vector3((float)m_iWidth, (float)m_iHeight, 1.0f);
+	CalculateWorldMatrix();
 }
 
 Vector2 SpriteAnimation::getSize()
@@ -185,19 +158,22 @@ Vector2 SpriteAnimation::getSize()
 
 bool SpriteAnimation::CheckBound(std::shared_ptr<Sprite2D>  obj)
 {	
-	int a_x1 = m_Vec2DPos.x - m_iWidth / 4, a_x2 = m_Vec2DPos.x + m_iWidth / 4;
-	int a_y1 = m_Vec2DPos.y - m_iHeight / 4, a_y2 = m_Vec2DPos.y + m_iHeight / 4;// do kich thuoc that nho hon nhieu
+	int a_x1 = m_position.x - m_iWidth / 2, a_x2 = m_position.x + m_iWidth / 2;
+	int a_y1 = m_position.y - m_iHeight / 2, a_y2 = m_position.y + m_iHeight / 2;
 	int b_x1 = obj->Get2DPosition().x - obj->GetWidth() / 2 , b_x2 = obj->Get2DPosition().x + obj->GetWidth() / 2;
 	int b_y1 = obj->Get2DPosition().y - obj->GetHeight() / 2, b_y2 = obj->Get2DPosition().y + obj->GetHeight() / 2;
 
-	if (a_x1 < b_x2 && b_x1 < a_x2 && a_y1 < b_y2 && b_y1 < a_y2)
+	if (a_x1 < b_x2 && b_x1 < a_x2 && a_y1 < b_y2 && b_y1 < a_y2 && m_vt <= 0)
+	{
+		Set2DPosition(m_position.x, obj->Get2DPosition().y - obj->GetHeight() / 2 - m_iHeight / 2);
 		return true;
+	}
 	return false;
 }
 bool SpriteAnimation::CheckBound(std::shared_ptr<SpriteAnimation>  obj)
 {
-	int a_x1 = m_Vec2DPos.x - m_iWidth / 6, a_x2 = m_Vec2DPos.x + m_iWidth / 6;
-	int a_y1 = m_Vec2DPos.y - m_iHeight / 6, a_y2 = m_Vec2DPos.y + m_iHeight / 6;// do kich thuoc that nho hon nhieu
+	int a_x1 = m_position.x - m_iWidth / 2, a_x2 = m_position.x + m_iWidth / 2;
+	int a_y1 = m_position.y - m_iHeight / 2, a_y2 = m_position.y + m_iHeight / 2;
 	int b_x1 = obj->Get2DPosition().x - obj->getSize().x / 2, b_x2 = obj->Get2DPosition().x + obj->getSize().x / 2;
 	int b_y1 = obj->Get2DPosition().y - obj->getSize().y / 2, b_y2 = obj->Get2DPosition().y + obj->getSize().y / 2;
 	if (a_x1 < b_x2 && b_x1 < a_x2 && a_y1 < b_y2 && b_y1 < a_y2)
