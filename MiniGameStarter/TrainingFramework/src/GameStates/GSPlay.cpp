@@ -80,10 +80,9 @@ void GSPlay::Init()
 	// score
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
-	m_score = std::make_shared< Text>(shader, font, "10", TextColor::RED, 1.0);
+	m_score = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.0);
 	m_score->Set2DPosition(Vector2(5, 25));
-	int a = 11;
-	m_score->SetText(": " + std::to_string(a));
+	m_score->SetText(": 0");
 	//player
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	texture = ResourceManagers::GetInstance()->GetTexture("trampoline.tga");
@@ -97,6 +96,12 @@ void GSPlay::Init()
 	m_trampoline->UpdateAnimation();
 	m_trampoline->Set2DPosition(400, 680);
 	m_trampoline->SetSize(50, 50);
+	//coin
+	std::shared_ptr<Coin> coin1 = std::make_shared<Coin>(model, shader, texture, 6, 1, 0, 0.1f);
+	coin1->UpdateAnimation();
+	coin1->Set2DPosition(700, 700);
+	coin1->SetSize(30, 30);
+	m_listCoin.push_back(coin1);// dang co loi
 
 	//ground
 	model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
@@ -117,11 +122,6 @@ void GSPlay::Init()
 	m_object2->SetSize(3300, 80);
 	m_listObject.push_back(m_object2);
 
-	//cell
-	//std::shared_ptr<sprite2d>  m_object3 = std::make_shared<sprite2d>(model, shader, texture);
-	//m_object3->set2dposition(0, 0);
-	//m_object3->setsize(3300, 80);
-	//m_listobject.push_back(m_object3);
 }
 
 void GSPlay::Exit()
@@ -173,8 +173,28 @@ void GSPlay::HandleKeyEvents(int key, bool bIsPressed)
 			break;
 		}
 	}
-	else
-		m_PressKey = 0;
+	else {
+		switch (key)
+		{
+		case KEY_MOVE_LEFT:
+		{
+			m_PressKey ^= 1;
+			break;
+		}
+		case KEY_MOVE_RIGHT:
+		{
+			m_PressKey ^= 1 << 1;
+			break;
+		}
+		case KEY_SPACE:
+		{
+			m_PressKey ^= 1 << 2;
+			break;
+		}
+		default:
+			break;
+		}
+	}
 }
 
 void GSPlay::HandleTouchEvents(int x, int y, bool bIsPressed)
@@ -210,19 +230,19 @@ void GSPlay::Update(float deltaTime)
 
 		switch (m_PressKey) 
 		{
-		case 1: 
+		case 1: //sang trai
 		{
 			m_player->SetRotation(Vector3(0.0f, PI, 0.0f));	
 			m_player->Set2DPosition(m_player->Get2DPosition().x - deltaTime * 150, m_player->Get2DPosition().y);
 			break;
 		}
-		case 2: 
+		case 2: //sang phai
 		{
 			m_player->SetRotation(Vector3(0.0f, 0.0, 0.0f));
 			m_player->Set2DPosition(m_player->Get2DPosition().x + deltaTime * 150, m_player->Get2DPosition().y);
 			break;
 		}
-		case 4: 
+		case 4: // nhay
 		{
 			if (!m_player->getJump())
 			{
@@ -231,7 +251,7 @@ void GSPlay::Update(float deltaTime)
 			}
 			break;
 		}
-		case 5:
+		case 5: // nhay va sang trai
 		{
 			m_player->Set2DPosition(m_player->Get2DPosition().x - deltaTime * 150, m_player->Get2DPosition().y);
 			if (!m_player->getJump())
@@ -241,7 +261,7 @@ void GSPlay::Update(float deltaTime)
 			}
 			break;
 		}
-		case 6:
+		case 6: // nhau va sang phai
 		{
 			m_player->Set2DPosition(m_player->Get2DPosition().x + deltaTime * 150, m_player->Get2DPosition().y);
 			if (!m_player->getJump()) // dang khong nhay moi duoc nhay
@@ -282,8 +302,17 @@ void GSPlay::Update(float deltaTime)
 			}
 			it->Update(deltaTime);
 		}
-	m_trampoline->Jumping(m_player);
-	m_trampoline->Update(deltaTime);
+
+		m_trampoline->Jumping(m_player);
+		m_trampoline->Update(deltaTime);
+
+		for (auto it : m_listCoin)
+		{
+			if (it->Collecting(m_player)) {
+				m_listCoin.pop_back();
+			}
+			it->Update(deltaTime);
+		}
 	}
 
 }
@@ -295,6 +324,10 @@ void GSPlay::Draw()
 	m_trampoline->Draw();
 	m_score->Draw();
 	for (auto it : m_listObject)
+	{
+		it->Draw();
+	}
+	for (auto it : m_listCoin)
 	{
 		it->Draw();
 	}

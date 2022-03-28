@@ -2,25 +2,8 @@
 #include "Texture.h"
 #include "ResourceManagers.h"
 
-
 Trampoline::Trampoline(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime) :SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime)
 {
-	//m_pModel = model;
-	//m_pShader = shader;
-	//m_pCamera = nullptr;
-	//m_pTexture = texture;
-	//m_numFrames = numFrames;
-	//m_numActions = numActions;
-	//m_frameTime = frameTime;
-	//m_currentFrame = 0;
-	//m_currentAction = 0;
-	//m_currentTime = 0.0f;
-	//m_currentAction = currentAction;
-
-	//m_position = Vector3(0, 0, 0);
-	//m_iHeight = 50;
-	//m_iWidth = 100;
-	//m_scale = Vector3((float)m_iWidth / Globals::screenWidth, (float)m_iHeight / Globals::screenHeight, 1);
 	m_dir = 1;
 	m_isJump = false;
 	m_vt = 0;
@@ -34,10 +17,33 @@ void Trampoline::UpdateAnimation()
 	m_pTexture = ResourceManagers::GetInstance()->GetTexture("trampoline.tga");
 }
 
-void Trampoline::Jumping(std::shared_ptr<SpriteAnimation>  obj)
+void Trampoline::Jumping(std::shared_ptr<Player>  obj)
 {
 	if (Trampoline::CheckBound(obj))
 	{
 		obj->setVt(30);
 	}
+}
+//coin
+Coin::Coin(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime) :SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime)
+{
+	m_dir = 1;
+	m_isJump = false;
+	m_vt = 0;
+}
+
+Coin::~Coin()
+{
+}
+void Coin::UpdateAnimation()
+{
+	m_pTexture = ResourceManagers::GetInstance()->GetTexture("I_coin.tga");
+}
+bool Coin::Collecting(std::shared_ptr<Player>  obj) {
+	if (Coin::CheckBound(obj))
+	{
+		obj->SetScore(obj->GetScore()+1);
+		return true;
+	}
+	return false;
 }
