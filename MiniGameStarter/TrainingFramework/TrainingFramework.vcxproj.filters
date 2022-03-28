@@ -42,8 +42,6 @@
     <ClCompile Include="src\GameManager\ResourceManagers.cpp">
       <Filter>TrainingFramework\src\GameManager</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Enemies.cpp" />
     <ClCompile Include="src\GameObject\Camera.cpp">
       <Filter>TrainingFramework\src\GameObjects</Filter>
     </ClCompile>
@@ -77,6 +75,8 @@
     <ClCompile Include="src\GameObject\Trampoline.cpp">
       <Filter>TrainingFramework\src\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameObject\Enemies.cpp" />
+    <ClCompile Include="src\GameObject\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -106,8 +106,6 @@
     <ClInclude Include="src\GameManager\ResourceManagers.h">
       <Filter>TrainingFramework\src\GameManager</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameObject\Player.h" />
-    <ClInclude Include="Enemies.h" />
     <ClInclude Include="src\GameObject\BaseObject.h">
       <Filter>TrainingFramework\src\GameObjects</Filter>
     </ClInclude>
@@ -144,6 +142,8 @@
     <ClInclude Include="src\GameObject\Trampoline.h">
       <Filter>TrainingFramework\src\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameObject\Enemies.h" />
+    <ClInclude Include="src\GameObject\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

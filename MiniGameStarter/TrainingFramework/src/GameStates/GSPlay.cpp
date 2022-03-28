@@ -80,9 +80,10 @@ void GSPlay::Init()
 	// score
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
-	m_score = std::make_shared< Text>(shader, font, "score: 10", TextColor::RED, 1.0);
+	m_score = std::make_shared< Text>(shader, font, "10", TextColor::RED, 1.0);
 	m_score->Set2DPosition(Vector2(5, 25));
-
+	int a = 11;
+	m_score->SetText(": " + std::to_string(a));
 	//player
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	texture = ResourceManagers::GetInstance()->GetTexture("trampoline.tga");
@@ -292,7 +293,7 @@ void GSPlay::Draw()
 	m_background->Draw();
 	m_player->Draw();
 	m_trampoline->Draw();
-	//m_score->Draw();
+	m_score->Draw();
 	for (auto it : m_listObject)
 	{
 		it->Draw();
