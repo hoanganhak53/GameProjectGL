@@ -136,13 +136,6 @@ Vector3 SpriteAnimation::Get2DPosition()
 	return m_position;
 }
 
-GLint  SpriteAnimation::GetDirect() {
-	return m_dir;
-}
-
-void  SpriteAnimation::SetDirect(int vh) {
-	m_dir = vh;
-}
 void SpriteAnimation::SetSize(GLint width, GLint height)
 {
 	m_iWidth = width;
@@ -163,7 +156,7 @@ bool SpriteAnimation::CheckBound(std::shared_ptr<Sprite2D>  obj)
 	int b_x1 = obj->Get2DPosition().x - obj->GetWidth() / 2 , b_x2 = obj->Get2DPosition().x + obj->GetWidth() / 2;
 	int b_y1 = obj->Get2DPosition().y - obj->GetHeight() / 2, b_y2 = obj->Get2DPosition().y + obj->GetHeight() / 2;
 
-	if (a_x1 < b_x2 && b_x1 < a_x2 && a_y1 < b_y2 && b_y1 < a_y2 && m_vt <= 0)
+	if (a_x1 < b_x2 && b_x1 < a_x2 && a_y1 < b_y2 && b_y1 < a_y2 && m_velocity <= 0)
 	{
 		Set2DPosition(m_position.x, obj->Get2DPosition().y - obj->GetHeight() / 2 - m_iHeight / 2);
 		return true;
@@ -182,19 +175,27 @@ bool SpriteAnimation::CheckBound(std::shared_ptr<SpriteAnimation>  obj)
 }
 
 
-void SpriteAnimation::setJump(bool tt)
+void SpriteAnimation::setJump(bool j)
 {
-	m_isJump = tt;
+	m_isJump = j;
 }
-GLint SpriteAnimation::getVt()
+GLint SpriteAnimation::getV()
 {
-	return m_vt;
+	return m_velocity;
 }
-void SpriteAnimation::setVt(GLint vt)
+void SpriteAnimation::setV(GLint v)
 {
-	m_vt = vt;
-	if (m_vt < -5)
-		m_vt = -5;
+	m_velocity = v;
+	if (m_velocity < -5)
+		m_velocity = -5;
+}
+bool SpriteAnimation::getActive()
+{
+	return m_isActive;
+}
+void SpriteAnimation::setActive(bool a)
+{
+	m_isActive = a;
 }
 bool SpriteAnimation::getJump()
 {

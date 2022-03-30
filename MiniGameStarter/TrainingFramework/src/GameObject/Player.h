@@ -11,8 +11,11 @@ public:
 	void UpdateAnimation();
 	GLint GetScore();
 	void SetScore(GLint s);
-
+	void SetNumFrame(int num);
+	void SetHp(int hp);
+	GLint GetHp();
 protected:
 	GLint	m_idCharacter;
 	GLint	m_score;
+	GLint	m_hp;
 };

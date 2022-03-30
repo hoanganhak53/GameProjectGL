@@ -81,8 +81,8 @@ void GSPlay::Init()
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
 	m_score = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.0);
-	m_score->Set2DPosition(Vector2(5, 25));
-	m_score->SetText(": 0");
+	m_score->Set2DPosition(Vector2(35, 25));
+	m_score->SetText("Score: 0");
 	//player
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	texture = ResourceManagers::GetInstance()->GetTexture("trampoline.tga");
@@ -101,8 +101,19 @@ void GSPlay::Init()
 	coin1->UpdateAnimation();
 	coin1->Set2DPosition(700, 700);
 	coin1->SetSize(30, 30);
-	m_listCoin.push_back(coin1);// dang co loi
+	m_listCoin.push_back(coin1);
 
+	std::shared_ptr<Coin> coin2 = std::make_shared<Coin>(model, shader, texture, 6, 1, 0, 0.1f);
+	coin2->UpdateAnimation();
+	coin2->Set2DPosition(300, 200);
+	coin2->SetSize(30, 30);
+	m_listCoin.push_back(coin2);
+
+	std::shared_ptr<Coin> coin3 = std::make_shared<Coin>(model, shader, texture, 6, 1, 0, 0.1f);
+	coin3->UpdateAnimation();
+	coin3->Set2DPosition(950, 500);
+	coin3->SetSize(30, 30);
+	m_listCoin.push_back(coin3);
 	//ground
 	model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	texture = ResourceManagers::GetInstance()->GetTexture("ground.tga");
@@ -227,53 +238,64 @@ void GSPlay::Update(float deltaTime)
 	}
 	if (!m_isPause) 
 	{
-
 		switch (m_PressKey) 
 		{
 		case 1: //sang trai
 		{
-			m_player->SetRotation(Vector3(0.0f, PI, 0.0f));	
+			if(m_player->getJump())
+				m_player->SetRotation(Vector3(0.0f, 0.0, 0.0f));
+			else
+				m_player->SetRotation(Vector3(0.0f, PI, 0.0f));	
 			m_player->Set2DPosition(m_player->Get2DPosition().x - deltaTime * 150, m_player->Get2DPosition().y);
 			break;
 		}
-		case 2: //sang phai
+		case 1 << 1: //sang phai
 		{
-			m_player->SetRotation(Vector3(0.0f, 0.0, 0.0f));
+			if (m_player->getJump())
+				m_player->SetRotation(Vector3(0.0f, PI, 0.0f));
+			else
+				m_player->SetRotation(Vector3(0.0f, 0.0, 0.0f));
 			m_player->Set2DPosition(m_player->Get2DPosition().x + deltaTime * 150, m_player->Get2DPosition().y);
 			break;
 		}
-		case 4: // nhay
+		case 1 << 2: // nhay
 		{
 			if (!m_player->getJump())
 			{
 				m_player->setJump(true);
-				m_player->setVt(20);
+				m_player->setV(20);
 			}
 			break;
 		}
-		case 5: // nhay va sang trai
+		case 1 << 2 | 1: // nhay va sang trai
 		{
+			m_player->UpdateAnimation();
+			m_player->SetRotation(Vector3(0.0f, 0.0f, 0.0f));
+
 			m_player->Set2DPosition(m_player->Get2DPosition().x - deltaTime * 150, m_player->Get2DPosition().y);
 			if (!m_player->getJump())
 			{
 				m_player->setJump(true);
-				m_player->setVt(20);
+				m_player->setV(20);
 			}
 			break;
 		}
-		case 6: // nhau va sang phai
+		case 1 << 2 | 1 << 1: // nhau va sang phai
 		{
+			m_player->UpdateAnimation();
+			m_player->SetRotation(Vector3(0.0f, PI, 0.0f));
 			m_player->Set2DPosition(m_player->Get2DPosition().x + deltaTime * 150, m_player->Get2DPosition().y);
 			if (!m_player->getJump()) // dang khong nhay moi duoc nhay
 			{
 				m_player->setJump(true);
-				m_player->setVt(20);
+				m_player->setV(20);
 			}
 			break;
 		}
 		default:
 			break;
 		}
+
 		bool haveCrash = false;
 		for (auto obj : m_listObject)
 		{
@@ -281,16 +303,17 @@ void GSPlay::Update(float deltaTime)
 				haveCrash = true;
 			}
 		}
-		if (haveCrash && m_player->getVt() != 20)
+		if (haveCrash && m_player->getV() != 20)
 		{
-			m_player->setVt(0);
+			m_player->setV(0);
 			m_player->setJump(false);
 		}
 		else 
 		{
-			m_player->Set2DPosition(m_player->Get2DPosition().x, m_player->Get2DPosition().y - m_player->getVt() * deltaTime * 70);
-			m_player->setVt(m_player->getVt() - deltaTime * 90);
+			m_player->Set2DPosition(m_player->Get2DPosition().x, m_player->Get2DPosition().y - m_player->getV() * deltaTime * 70);
+			m_player->setV(m_player->getV() - deltaTime * 90);
 		}
+		m_player->UpdateAnimation();
 		m_player->Update(deltaTime);
 
 		for (auto it : m_listObject)
@@ -309,12 +332,12 @@ void GSPlay::Update(float deltaTime)
 		for (auto it : m_listCoin)
 		{
 			if (it->Collecting(m_player)) {
-				m_listCoin.pop_back();
-			}
-			it->Update(deltaTime);
+				it->setActive(false);
+			}else
+				it->Update(deltaTime);
 		}
+		m_score->SetText("Score: " + std::to_string(m_player->GetScore()));
 	}
-
 }
 
 void GSPlay::Draw()
@@ -329,7 +352,8 @@ void GSPlay::Draw()
 	}
 	for (auto it : m_listCoin)
 	{
-		it->Draw();
+		if(it->getActive())
+			it->Draw();
 	}
 	for (auto it : m_listButton)
 	{
