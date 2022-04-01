@@ -40,8 +40,10 @@ private:
 	std::list<std::shared_ptr<GameButton>>	m_listButton;
 	std::list<std::shared_ptr<Sprite2D>>	m_listObject;
 	std::list<std::shared_ptr<GameButton>>	m_listButtonPause;
-
+	std::list<std::shared_ptr<Sprite2D>>	m_listImage;
 	std::shared_ptr<Text>		m_score;
+	std::shared_ptr<Text>		m_hp;
+
 	std::shared_ptr<Player>	m_player;
 	std::shared_ptr<Trampoline>	m_trampoline;	
 	std::list<std::shared_ptr<Coin>>	m_listCoin;

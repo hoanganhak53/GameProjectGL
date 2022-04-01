@@ -80,9 +80,28 @@ void GSPlay::Init()
 	// score
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
-	m_score = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.0);
-	m_score->Set2DPosition(Vector2(35, 25));
-	m_score->SetText("Score: 0");
+	m_score = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.3);
+	m_score->Set2DPosition(Vector2(20, 45));
+	m_score->SetText("0");
+	//hp
+	m_hp = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.3);
+	m_hp->Set2DPosition(Vector2(110, 45));
+	m_hp->SetText("3");
+
+	texture = ResourceManagers::GetInstance()->GetTexture("image_heart.tga");
+	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+	std::shared_ptr<Sprite2D>  heart = std::make_shared<Sprite2D>(model, shader, texture);
+	heart->Set2DPosition(160, 32);
+	heart->SetSize(40, 40);
+	m_listImage.push_back(heart);
+
+	texture = ResourceManagers::GetInstance()->GetTexture("image_coin.tga");
+	std::shared_ptr<Sprite2D>  coin = std::make_shared<Sprite2D>(model, shader, texture);
+	coin->Set2DPosition(60, 32);
+	coin->SetSize(40, 40);
+	m_listImage.push_back(coin);
+
+
 	//player
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	texture = ResourceManagers::GetInstance()->GetTexture("trampoline.tga");
@@ -336,7 +355,7 @@ void GSPlay::Update(float deltaTime)
 			}else
 				it->Update(deltaTime);
 		}
-		m_score->SetText("Score: " + std::to_string(m_player->GetScore()));
+		m_score->SetText(std::to_string(m_player->GetScore()));
 	}
 }
 
@@ -346,6 +365,7 @@ void GSPlay::Draw()
 	m_player->Draw();
 	m_trampoline->Draw();
 	m_score->Draw();
+	m_hp->Draw();
 	for (auto it : m_listObject)
 	{
 		it->Draw();
@@ -354,6 +374,10 @@ void GSPlay::Draw()
 	{
 		if(it->getActive())
 			it->Draw();
+	}
+	for (auto it : m_listImage)
+	{
+		it->Draw();
 	}
 	for (auto it : m_listButton)
 	{
