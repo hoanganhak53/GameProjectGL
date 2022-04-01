@@ -9,6 +9,7 @@ class SpriteAnimation;
 class Player;
 class Trampoline;
 class Coin;
+class Enemies;
 
 class GSPlay :
 	public GameStateBase
@@ -41,6 +42,8 @@ private:
 	std::list<std::shared_ptr<Sprite2D>>	m_listObject;
 	std::list<std::shared_ptr<GameButton>>	m_listButtonPause;
 	std::list<std::shared_ptr<Sprite2D>>	m_listImage;
+	std::list<std::shared_ptr<Enemies>>	m_listEnemies;
+
 	std::shared_ptr<Text>		m_score;
 	std::shared_ptr<Text>		m_hp;
 

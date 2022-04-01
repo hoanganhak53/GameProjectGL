@@ -88,3 +88,14 @@ GLint Player::GetHp()
 	return m_hp;
 }
 
+Vector2 Player::GetCheckPoint()
+{
+	return m_checkPoint;
+}
+
+void Player::SetCheckPoint(int x, int y)
+{
+	m_checkPoint.x = x;
+	m_checkPoint.y = y;
+}
+

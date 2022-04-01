@@ -14,8 +14,11 @@ public:
 	void SetNumFrame(int num);
 	void SetHp(int hp);
 	GLint GetHp();
+	Vector2 GetCheckPoint();
+	void SetCheckPoint(int x, int y);
 protected:
 	GLint	m_idCharacter;
 	GLint	m_score;
 	GLint	m_hp;
+	Vector2 m_checkPoint;
 };

@@ -12,6 +12,7 @@
 #include "SpriteAnimation.h"
 #include "Player.h"
 #include "Trampoline.h"
+#include "Enemies.h"
 
 GSPlay::GSPlay()
 {
@@ -109,7 +110,16 @@ void GSPlay::Init()
 	m_player->setIdCharacter(Globals::character);
 	m_player->UpdateAnimation();
 	m_player->Set2DPosition(600, 400);
+	m_player->SetCheckPoint(600, 400);
 	m_player->SetSize(100, 100);
+	//enemies
+	std::shared_ptr<Enemies>  slime = std::make_shared<Enemies>(model, shader, texture, 15, 1, 0, 0.07f);
+	slime->UpdateAnimation();
+	slime->Set2DPosition(900, 680);
+	slime->SetPositionStart(Vector2(900, 680));
+	slime->SetSize(70, 70);
+	m_listEnemies.push_back(slime);
+
 	//trampoline
 	m_trampoline = std::make_shared<Trampoline>(model, shader, texture, 8, 1, 0, 0.15f);
 	m_trampoline->UpdateAnimation();
@@ -151,7 +161,6 @@ void GSPlay::Init()
 	m_object2->Set2DPosition(0, 760);
 	m_object2->SetSize(3300, 80);
 	m_listObject.push_back(m_object2);
-
 }
 
 void GSPlay::Exit()
@@ -335,6 +344,16 @@ void GSPlay::Update(float deltaTime)
 		m_player->UpdateAnimation();
 		m_player->Update(deltaTime);
 
+
+		for (auto it : m_listEnemies)
+		{
+			if (!it->getActive())
+				continue;
+			//it->Move(deltaTime);
+			it->Attack(m_player);
+			it->Update(deltaTime);
+		}
+
 		for (auto it : m_listObject)
 		{
 			it->Set2DPosition(it->Get2DPosition().x - deltaTime * 100, it->Get2DPosition().y);
@@ -356,6 +375,7 @@ void GSPlay::Update(float deltaTime)
 				it->Update(deltaTime);
 		}
 		m_score->SetText(std::to_string(m_player->GetScore()));
+		m_hp->SetText(std::to_string(m_player->GetHp()));
 	}
 }
 
@@ -369,6 +389,11 @@ void GSPlay::Draw()
 	for (auto it : m_listObject)
 	{
 		it->Draw();
+	}
+	for (auto it : m_listEnemies)
+	{
+		if(it->getActive())
+			it->Draw();
 	}
 	for (auto it : m_listCoin)
 	{
