@@ -32,6 +32,7 @@ public:
 	void	Draw() override;
 
 	void	Restart();
+	void	GameOver();
     int m_Test;
 	int m_PressKey;
 	bool m_isPause;

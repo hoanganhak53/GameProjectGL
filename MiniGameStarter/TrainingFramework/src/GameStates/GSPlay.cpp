@@ -183,6 +183,13 @@ void GSPlay::Restart()
 {
 	m_isPause = false;
 }
+
+void GSPlay::GameOver()
+{
+	GameStateMachine::GetInstance()->PopState();
+	GameStateMachine::GetInstance()->ChangeState(StateType::STATE_OVER);
+}
+
 void GSPlay::HandleEvents()
 {
 }
@@ -266,64 +273,6 @@ void GSPlay::Update(float deltaTime)
 	}
 	if (!m_isPause) 
 	{
-		switch (m_PressKey) 
-		{
-		case 1: //sang trai
-		{
-			if(m_player->getJump())
-				m_player->SetRotation(Vector3(0.0f, 0.0, 0.0f));
-			else
-				m_player->SetRotation(Vector3(0.0f, PI, 0.0f));	
-			m_player->Set2DPosition(m_player->Get2DPosition().x - deltaTime * 150, m_player->Get2DPosition().y);
-			break;
-		}
-		case 1 << 1: //sang phai
-		{
-			if (m_player->getJump())
-				m_player->SetRotation(Vector3(0.0f, PI, 0.0f));
-			else
-				m_player->SetRotation(Vector3(0.0f, 0.0, 0.0f));
-			m_player->Set2DPosition(m_player->Get2DPosition().x + deltaTime * 150, m_player->Get2DPosition().y);
-			break;
-		}
-		case 1 << 2: // nhay
-		{
-			if (!m_player->getJump())
-			{
-				m_player->setJump(true);
-				m_player->setV(20);
-			}
-			break;
-		}
-		case 1 << 2 | 1: // nhay va sang trai
-		{
-			m_player->UpdateAnimation();
-			m_player->SetRotation(Vector3(0.0f, 0.0f, 0.0f));
-
-			m_player->Set2DPosition(m_player->Get2DPosition().x - deltaTime * 150, m_player->Get2DPosition().y);
-			if (!m_player->getJump())
-			{
-				m_player->setJump(true);
-				m_player->setV(20);
-			}
-			break;
-		}
-		case 1 << 2 | 1 << 1: // nhau va sang phai
-		{
-			m_player->UpdateAnimation();
-			m_player->SetRotation(Vector3(0.0f, PI, 0.0f));
-			m_player->Set2DPosition(m_player->Get2DPosition().x + deltaTime * 150, m_player->Get2DPosition().y);
-			if (!m_player->getJump()) // dang khong nhay moi duoc nhay
-			{
-				m_player->setJump(true);
-				m_player->setV(20);
-			}
-			break;
-		}
-		default:
-			break;
-		}
-
 		bool haveCrash = false;
 		for (auto obj : m_listObject)
 		{
@@ -341,6 +290,8 @@ void GSPlay::Update(float deltaTime)
 			m_player->Set2DPosition(m_player->Get2DPosition().x, m_player->Get2DPosition().y - m_player->getV() * deltaTime * 70);
 			m_player->setV(m_player->getV() - deltaTime * 90);
 		}
+
+		m_player->Move(deltaTime,m_PressKey);
 		m_player->UpdateAnimation();
 		m_player->Update(deltaTime);
 
@@ -349,7 +300,7 @@ void GSPlay::Update(float deltaTime)
 		{
 			if (!it->getActive())
 				continue;
-			//it->Move(deltaTime);
+			it->Move(deltaTime);
 			it->Attack(m_player);
 			it->Update(deltaTime);
 		}
@@ -376,6 +327,11 @@ void GSPlay::Update(float deltaTime)
 		}
 		m_score->SetText(std::to_string(m_player->GetScore()));
 		m_hp->SetText(std::to_string(m_player->GetHp()));
+	}
+	//
+	if (m_player->GetHp() == 0)
+	{
+		GameOver();
 	}
 }
 

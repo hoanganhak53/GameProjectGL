@@ -176,6 +176,7 @@ void GSMenu::Draw()
 	m_textGameName->Draw();
 	m_player->Draw();
 }
+
 void GSMenu::setAudio(bool audio)
 {
 	m_audioOn = audio;

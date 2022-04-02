@@ -99,3 +99,64 @@ void Player::SetCheckPoint(int x, int y)
 	m_checkPoint.y = y;
 }
 
+void Player::Move(float deltaTime, int pressKey)
+{
+	switch (pressKey)
+	{
+	case 1: //sang trai
+	{
+		if (m_isJump)
+			SetRotation(Vector3(0.0f, 0.0, 0.0f));
+		else
+			SetRotation(Vector3(0.0f, PI, 0.0f));
+		Set2DPosition(m_position.x - deltaTime * 200, m_position.y);
+		break;
+	}
+	case 1 << 1: //sang phai
+	{
+		if (m_isJump)
+			SetRotation(Vector3(0.0f, PI, 0.0f));
+		else
+			SetRotation(Vector3(0.0f, 0.0, 0.0f));
+		Set2DPosition(m_position.x + deltaTime * 200, m_position.y);
+		break;
+	}
+	case 1 << 2: // nhay
+	{
+		if (!m_isJump)
+		{
+			setJump(true);
+			setV(20);
+		}
+		break;
+	}
+	case 1 << 2 | 1: // nhay va sang trai
+	{
+		UpdateAnimation();
+		SetRotation(Vector3(0.0f, 0.0f, 0.0f));
+
+		Set2DPosition(m_position.x - deltaTime * 200, m_position.y);
+		if (!m_isJump)
+		{
+			setJump(true);
+			setV(20);
+		}
+		break;
+	}
+	case 1 << 2 | 1 << 1: // nhau va sang phai
+	{
+		UpdateAnimation();
+		SetRotation(Vector3(0.0f, PI, 0.0f));
+		Set2DPosition(m_position.x + deltaTime * 200, m_position.y);
+		if (!m_isJump) // dang khong nhay moi duoc nhay
+		{
+			setJump(true);
+			setV(20);
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
+

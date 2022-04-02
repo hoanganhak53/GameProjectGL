@@ -38,7 +38,7 @@ void Enemies::Attack(std::shared_ptr<Player> obj)
 {
 	if (CheckBound(obj))
 	{
-		if(m_position.y - m_iHeight / 2 <= obj->Get2DPosition().y + obj->getSize().y / 2)
+		if(m_position.y - m_iHeight / 2 >= obj->Get2DPosition().y + obj->getSize().y / 2 - 5)
 		{
 			setActive(false);
 		}
