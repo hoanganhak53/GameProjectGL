@@ -24,3 +24,17 @@ public:
     void UpdateAnimation();
     bool Collecting(std::shared_ptr<Player>  obj);
 };
+
+
+
+class CheckPoint :
+    public SpriteAnimation
+{
+public:
+    CheckPoint(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime);
+    ~CheckPoint();
+
+    void UpdateAnimation();
+    void SetCheckPointPlayer(std::shared_ptr<Player>  obj);
+
+};

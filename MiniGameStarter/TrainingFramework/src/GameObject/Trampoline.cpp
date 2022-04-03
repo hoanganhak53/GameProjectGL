@@ -48,3 +48,28 @@ bool Coin::Collecting(std::shared_ptr<Player>  obj) {
 	}
 	return false;
 }
+
+//check point
+
+CheckPoint::CheckPoint(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime) :SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime)
+{
+	m_isJump = false;
+	m_velocity = 0;
+}
+
+CheckPoint::~CheckPoint()
+{
+}
+
+void CheckPoint::UpdateAnimation()
+{
+	m_pTexture = ResourceManagers::GetInstance()->GetTexture("Checkpoint_Flag_Idle.tga");
+}
+
+void CheckPoint::SetCheckPointPlayer(std::shared_ptr<Player> obj)
+{
+	if (CheckBound(obj))
+	{
+		obj->SetCheckPoint(m_position.x, m_position.y);
+	}
+}

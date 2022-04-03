@@ -10,6 +10,9 @@ class Player;
 class Trampoline;
 class Coin;
 class Enemies;
+class CheckPoint;
+class Plant;
+class Bullet;
 
 class GSPlay :
 	public GameStateBase
@@ -36,6 +39,7 @@ public:
     int m_Test;
 	int m_PressKey;
 	bool m_isPause;
+
 private:
 	std::shared_ptr<Sprite2D>	m_background;
 
@@ -44,6 +48,9 @@ private:
 	std::list<std::shared_ptr<GameButton>>	m_listButtonPause;
 	std::list<std::shared_ptr<Sprite2D>>	m_listImage;
 	std::list<std::shared_ptr<Enemies>>	m_listEnemies;
+	std::list<std::shared_ptr<Plant>>	m_listPlant;
+
+	std::list<std::shared_ptr<CheckPoint>>	m_listCheckPoint;
 
 	std::shared_ptr<Text>		m_score;
 	std::shared_ptr<Text>		m_hp;

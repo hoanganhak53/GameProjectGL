@@ -27,7 +27,7 @@ GSPlay::~GSPlay()
 void GSPlay::Init()
 {
 	m_PressKey = 0;
-	m_Test = 1;
+	m_Test = 0;
 	m_isPause = false;
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto texture = ResourceManagers::GetInstance()->GetTexture("background_play.tga");
@@ -113,18 +113,36 @@ void GSPlay::Init()
 	m_player->SetCheckPoint(600, 400);
 	m_player->SetSize(100, 100);
 	//enemies
-	std::shared_ptr<Enemies>  slime = std::make_shared<Enemies>(model, shader, texture, 15, 1, 0, 0.07f);
+	std::shared_ptr<Enemies>  slime = std::make_shared<Enemies>(model, shader, texture, 14, 1, 0, 0.07f);
 	slime->UpdateAnimation();
 	slime->Set2DPosition(900, 680);
 	slime->SetPositionStart(Vector2(900, 680));
 	slime->SetSize(70, 70);
 	m_listEnemies.push_back(slime);
 
+	std::shared_ptr<Plant>  plant = std::make_shared<Plant>(model, shader, texture, 8, 1, 0, 0.07f);
+	plant->UpdateAnimation();
+	plant->Set2DPosition(1000, 680);
+	plant->SetPositionStart(Vector2(900, 680));
+	plant->SetSize(70, 70);
+	plant->m_bullet->SetSize(20, 20);
+	plant->m_bullet->Set2DPosition(plant->Get2DPosition().x, plant->Get2DPosition().y);
+	plant->m_bullet->SetPositionStart(Vector2(plant->Get2DPosition().x, plant->Get2DPosition().y));
+	m_listPlant.push_back(plant);
+
 	//trampoline
-	m_trampoline = std::make_shared<Trampoline>(model, shader, texture, 8, 1, 0, 0.15f);
+	m_trampoline = std::make_shared<Trampoline>(model, shader, texture, 14, 1, 0, 0.07f);
 	m_trampoline->UpdateAnimation();
 	m_trampoline->Set2DPosition(400, 680);
-	m_trampoline->SetSize(50, 50);
+	m_trampoline->SetSize(70, 70);
+
+	//check point
+	std::shared_ptr<CheckPoint> checkpoint1 = std::make_shared<CheckPoint>(model, shader, texture, 10, 1, 0, 0.1f);
+	checkpoint1->UpdateAnimation();
+	checkpoint1->Set2DPosition(200, 690);
+	checkpoint1->SetSize(100, 100);
+	m_listCheckPoint.push_back(checkpoint1);
+
 	//coin
 	std::shared_ptr<Coin> coin1 = std::make_shared<Coin>(model, shader, texture, 6, 1, 0, 0.1f);
 	coin1->UpdateAnimation();
@@ -290,8 +308,7 @@ void GSPlay::Update(float deltaTime)
 			m_player->Set2DPosition(m_player->Get2DPosition().x, m_player->Get2DPosition().y - m_player->getV() * deltaTime * 70);
 			m_player->setV(m_player->getV() - deltaTime * 90);
 		}
-
-		m_player->Move(deltaTime,m_PressKey);
+		m_player->Move(deltaTime, m_PressKey);
 		m_player->UpdateAnimation();
 		m_player->Update(deltaTime);
 
@@ -305,6 +322,18 @@ void GSPlay::Update(float deltaTime)
 			it->Update(deltaTime);
 		}
 
+		for (auto it : m_listPlant)
+		{
+			if (!it->getActive())
+				continue;
+
+			it->m_bullet->Attack(m_player);
+			it->m_bullet->Move(deltaTime);
+			it->m_bullet->Update(deltaTime);
+			it->Attack(m_player);
+			it->Update(deltaTime);
+		}		
+
 		for (auto it : m_listObject)
 		{
 			it->Set2DPosition(it->Get2DPosition().x - deltaTime * 100, it->Get2DPosition().y);
@@ -317,6 +346,12 @@ void GSPlay::Update(float deltaTime)
 
 		m_trampoline->Jumping(m_player);
 		m_trampoline->Update(deltaTime);
+
+		for (auto it : m_listCheckPoint)
+		{
+			it->SetCheckPointPlayer(m_player);
+			it->Update(deltaTime);
+		}
 
 		for (auto it : m_listCoin)
 		{
@@ -346,10 +381,22 @@ void GSPlay::Draw()
 	{
 		it->Draw();
 	}
+	for (auto it : m_listCheckPoint)
+	{
+		it->Draw();
+	}
 	for (auto it : m_listEnemies)
 	{
 		if(it->getActive())
 			it->Draw();
+	}
+	for (auto it : m_listPlant)
+	{
+		if (it->getActive()) {
+			it->DrawBullet();
+			it->Draw();
+		}
+
 	}
 	for (auto it : m_listCoin)
 	{

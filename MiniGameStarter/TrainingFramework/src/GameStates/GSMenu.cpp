@@ -11,7 +11,6 @@ GSMenu::~GSMenu()
 }
 
 
-
 void GSMenu::Init()
 {
 	m_numChar = 1;

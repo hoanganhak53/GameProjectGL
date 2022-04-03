@@ -117,7 +117,9 @@ Matrix Camera::GetProjecttionMatrix()
 
 void Camera::Update(GLfloat deltaTime)
 {
+	MoveLeft(deltaTime);
 	// Handle camera movement here
+
 }
 
 void Camera::MoveUp(GLfloat deltaTime)
