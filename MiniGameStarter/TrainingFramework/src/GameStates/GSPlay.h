@@ -35,10 +35,10 @@ public:
 	void	Draw() override;
 
 	void	Restart();
-	void	GameOver();
-    int m_Test;
-	int m_PressKey;
-	bool m_isPause;
+	void	GameOver(float deltaTime);
+	void	CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
+	void	CreateEnemies(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
+
 
 private:
 	std::shared_ptr<Sprite2D>	m_background;
@@ -58,5 +58,8 @@ private:
 	std::shared_ptr<Player>	m_player;
 	std::shared_ptr<Trampoline>	m_trampoline;	
 	std::list<std::shared_ptr<Coin>>	m_listCoin;
+    float m_Time;
+	bool m_isPause;
+	int m_PressKey;
 };
 

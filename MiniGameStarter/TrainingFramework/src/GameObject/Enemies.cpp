@@ -13,9 +13,13 @@ Enemies::~Enemies()
 {
 }
 
-void Enemies::UpdateAnimation()
-{
-	m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_chicken.tga");
+void Enemies::UpdateAnimation(int id)
+{	
+	if(id == 1)
+		m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_chicken.tga");
+	else
+		m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_blueBird.tga");
+
 }
 void Enemies::Move(float deltaTime)
 {
@@ -36,7 +40,7 @@ void Enemies::Move(float deltaTime)
 }
 void Enemies::Attack(std::shared_ptr<Player> obj)
 {
-	if (CheckBound(obj))
+	if (CheckBound(obj) && obj->getActive())
 	{
 		if(m_position.y - m_iHeight / 2 >= obj->Get2DPosition().y + obj->getSize().y / 2 - 5)
 		{
@@ -44,9 +48,11 @@ void Enemies::Attack(std::shared_ptr<Player> obj)
 		}
 		else
 		{
-			if(obj->GetHp() >= 1)
+			if (obj->GetHp() > 1)
+			{
+				obj->Set2DPosition(obj->GetCheckPoint().x, obj->GetCheckPoint().y);
+			}
 			obj->SetHp(obj->GetHp() - 1);
-			obj->Set2DPosition(obj->GetCheckPoint().x, obj->GetCheckPoint().y);
 		}
 	}
 }
@@ -62,7 +68,8 @@ void Enemies::SetPositionStart(Vector2 v)
 Plant::Plant(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime): Enemies(model, shader, texture, numFrames, numActions, currentAction, frameTime)
 {
 	auto b_texture = ResourceManagers::GetInstance()->GetTexture("E_bullet.tga");
-	m_bullet = std::make_shared<Bullet>(model, shader, b_texture, 2, 1, 0, 0.1f);
+	m_bullet = std::make_shared<Bullet>(model, shader, b_texture, 1, 1, 0, 0.1f);
+	m_bullet->SetSize(32, 32);
 }
 
 Plant::~Plant()
@@ -106,10 +113,12 @@ void Bullet::Move(float deltaTime)
 void Bullet::Attack(std::shared_ptr<Player> obj)
 {
 
-	if (CheckBound(obj))
+	if (CheckBound(obj) && obj->getActive())
 	{
-		if (obj->GetHp() >= 1)
-			obj->SetHp(obj->GetHp() - 1);
-		obj->Set2DPosition(obj->GetCheckPoint().x, obj->GetCheckPoint().y);
+		if (obj->GetHp() > 1)
+		{
+			obj->Set2DPosition(obj->GetCheckPoint().x, obj->GetCheckPoint().y);
+		}
+		obj->SetHp(obj->GetHp() - 1);
 	}
 }

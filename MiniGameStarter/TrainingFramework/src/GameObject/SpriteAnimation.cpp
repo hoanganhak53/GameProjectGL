@@ -186,8 +186,8 @@ GLint SpriteAnimation::getV()
 void SpriteAnimation::setV(GLint v)
 {
 	m_velocity = v;
-	if (m_velocity < -5)
-		m_velocity = -5;
+	if (m_velocity < -6)
+		m_velocity = -6;
 }
 bool SpriteAnimation::getActive()
 {
