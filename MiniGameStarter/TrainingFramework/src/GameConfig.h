@@ -24,7 +24,7 @@ public:
 	static int Globals::screenWidth;
 	static int Globals::screenHeight;
 	static int Globals::character;
-	static int Globals::yOffset;
+	static int Globals::moveCam;
 };
 
 // define value

@@ -6,7 +6,7 @@
 int Globals::screenWidth = 1300;
 int Globals::screenHeight = 800;
 int Globals::character = 1;
-int Globals::yOffset = 0;
+int Globals::moveCam = 0;
 
 GLint Init(ESContext* esContext)
 {

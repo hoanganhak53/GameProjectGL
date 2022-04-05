@@ -78,6 +78,7 @@
     <ClCompile Include="src\GameObject\Enemies.cpp" />
     <ClCompile Include="src\GameObject\Player.cpp" />
     <ClCompile Include="src\GameStates\GSGameOver.cpp" />
+    <ClCompile Include="src\GameObject\Ground.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -146,6 +147,7 @@
     <ClInclude Include="src\GameObject\Enemies.h" />
     <ClInclude Include="src\GameObject\Player.h" />
     <ClInclude Include="src\GameStates\GSGameOver.h" />
+    <ClInclude Include="src\GameObject\Ground.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

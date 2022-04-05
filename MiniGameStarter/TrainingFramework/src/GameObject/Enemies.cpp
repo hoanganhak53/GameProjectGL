@@ -13,6 +13,20 @@ Enemies::~Enemies()
 {
 }
 
+void Enemies::Update(GLfloat deltatime)
+{
+	m_currentTime += deltatime;
+	if (m_currentTime >= m_frameTime)
+	{
+		m_currentFrame++;
+		if (m_currentFrame >= m_numFrames)
+			m_currentFrame = 0;
+		m_currentTime -= m_frameTime;
+	}
+	Set2DPosition(Get2DPosition().x - Globals::moveCam, Get2DPosition().y);
+	SetPositionStart(Vector2(GetPositionStart().x - Globals::moveCam, GetPositionStart().y));
+}
+
 void Enemies::UpdateAnimation(int id)
 {	
 	if(id == 1)
@@ -27,14 +41,14 @@ void Enemies::Move(float deltaTime)
 	{
 		Set2DPosition(m_position.x + deltaTime * 200, m_position.y);
 		SetRotation(Vector3(0.0f, PI, 0.0f));
-		if (m_position.x >= m_start.x + MOVE_LENGTH)
+		if (Get2DPosition().x >= GetPositionStart().x + MOVE_LENGTH)
 			m_direct = -1;
 	}
 	else
 	{
 		Set2DPosition(m_position.x - deltaTime * 200, m_position.y);
 		SetRotation(Vector3(0.0f, 0.0f, 0.0f));
-		if (m_position.x <= m_start.x - MOVE_LENGTH)
+		if (Get2DPosition().x <= GetPositionStart().x - MOVE_LENGTH)
 			m_direct = 1;
 	}
 }
@@ -61,6 +75,11 @@ void Enemies::SetPositionStart(Vector2 v)
 {
 	m_start.x = v.x;
 	m_start.y = v.y;
+}
+
+Vector2 Enemies::GetPositionStart()
+{
+	return m_start;
 }
 
 //plant
@@ -105,8 +124,8 @@ Bullet::~Bullet()
 
 void Bullet::Move(float deltaTime)
 {
-	Set2DPosition(m_position.x - deltaTime * 100, m_position.y);
-	if (m_position.x <= m_start.x - MOVE_LENGTH)
+	Set2DPosition(m_position.x - deltaTime * 200, m_position.y);
+	if (m_position.x <= m_start.x - MOVE_LENGTH * 2)
 		Set2DPosition(m_start.x, m_start.y);
 }
 

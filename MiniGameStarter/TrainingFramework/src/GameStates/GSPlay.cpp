@@ -13,6 +13,8 @@
 #include "Player.h"
 #include "Trampoline.h"
 #include "Enemies.h"
+#include "Ground.h"
+
 
 GSPlay::GSPlay()
 {
@@ -29,26 +31,14 @@ void GSPlay::Init()
 	m_PressKey = 0;
 	m_Time = 0;
 	m_isPause = false;
-	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("background_play.tga");
 
 	// background
+	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("background_layer_1.tga");
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
-	m_background = std::make_shared<Sprite2D>(model, shader, texture);
-	m_background->Set2DPosition((float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
-	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
+	CreateBackground(model, shader, texture);
 	CreateButton(model, shader, texture);
-	// score
-	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
-	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
-	m_score = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.3);
-	m_score->Set2DPosition(Vector2(20, 45));
-	m_score->SetText("0");
-	//hp
-	m_hp = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.3);
-	m_hp->Set2DPosition(Vector2(110, 45));
-	m_hp->SetText("3");
 
 	texture = ResourceManagers::GetInstance()->GetTexture("image_heart.tga");
 	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
@@ -63,6 +53,16 @@ void GSPlay::Init()
 	coin->SetSize(40, 40);
 	m_listImage.push_back(coin);
 
+	// score
+	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
+	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
+	m_score = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.3);
+	m_score->Set2DPosition(Vector2(20, 45));
+	m_score->SetText("0");
+	//hp
+	m_hp = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.3);
+	m_hp->Set2DPosition(Vector2(110, 45));
+	m_hp->SetText("3");
 
 	//player
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
@@ -72,20 +72,20 @@ void GSPlay::Init()
 	m_player->UpdateAnimation();
 	m_player->Set2DPosition(600, 400);
 	m_player->SetCheckPoint(600, 400);
-	m_player->SetSize(64, 64);
+	m_player->SetSize(96, 96);
 
 	CreateEnemies(model, shader, texture);
 	//trampoline
 	m_trampoline = std::make_shared<Trampoline>(model, shader, texture, 14, 1, 0, 0.07f);
 	m_trampoline->UpdateAnimation();
 	m_trampoline->Set2DPosition(400, 680);
-	m_trampoline->SetSize(64, 64);
+	m_trampoline->SetSize(96, 96);
 
 	//check point
 	std::shared_ptr<CheckPoint> checkpoint1 = std::make_shared<CheckPoint>(model, shader, texture, 10, 1, 0, 0.1f);
 	checkpoint1->UpdateAnimation();
 	checkpoint1->Set2DPosition(200, 690);
-	checkpoint1->SetSize(64, 64);
+	checkpoint1->SetSize(96, 96);
 	m_listCheckPoint.push_back(checkpoint1);
 
 	//coin
@@ -108,22 +108,25 @@ void GSPlay::Init()
 	m_listCoin.push_back(coin3);
 	//ground
 	model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	texture = ResourceManagers::GetInstance()->GetTexture("ground.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("Ground3.tga");
 	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
-	std::shared_ptr<Sprite2D>  m_object = std::make_shared<Sprite2D>(model, shader, texture);
+	std::shared_ptr<Ground>  m_object = std::make_shared<Ground>(model, shader, texture, 3);
 	m_object->Set2DPosition(500, 400);
-	m_object->SetSize(200, 20);
-	m_listObject.push_back(m_object);
+	m_object->UpdateAnimation();
+	m_object->SetSize(128, 32);
+	m_listGround.push_back(m_object);
 
-	std::shared_ptr<Sprite2D>  m_object1 = std::make_shared<Sprite2D>(model, shader, texture);
+	std::shared_ptr<Ground>  m_object1 = std::make_shared<Ground>(model, shader, texture, 3);
 	m_object1->Set2DPosition(1000, 530);
-	m_object1->SetSize(200, 20);
-	m_listObject.push_back(m_object1);
+	m_object1->SetSize(128, 32);
+	m_object1->UpdateAnimation();
+	m_listGround.push_back(m_object1);
 
-	std::shared_ptr<Sprite2D>  m_object2 = std::make_shared<Sprite2D>(model, shader, texture);
+	std::shared_ptr<Ground>  m_object2 = std::make_shared<Ground>(model, shader, texture, 1);
 	m_object2->Set2DPosition(0, 760);
-	m_object2->SetSize(3300, 80);
-	m_listObject.push_back(m_object2);
+	m_object2->SetSize(8300, 80);
+	m_object2->UpdateAnimation();
+	m_listGround.push_back(m_object2);
 }
 
 void GSPlay::Exit()
@@ -240,7 +243,7 @@ void GSPlay::Update(float deltaTime)
 	if (!m_isPause) 
 	{
 		bool haveCrash = false;
-		for (auto obj : m_listObject)
+		for (auto obj : m_listGround)
 		{
 			if (m_player->CheckBound(obj)) {
 				haveCrash = true;
@@ -267,7 +270,7 @@ void GSPlay::Update(float deltaTime)
 			if (!it->getActive())
 				continue;
 			it->Move(deltaTime);
-			it->Attack(m_player);
+			//it->Attack(m_player);
 			it->Update(deltaTime);
 		}
 
@@ -276,20 +279,16 @@ void GSPlay::Update(float deltaTime)
 			if (!it->getActive())
 				continue;
 
-			it->m_bullet->Attack(m_player);
+			//it->m_bullet->Attack(m_player);
 			it->m_bullet->Move(deltaTime);
 			it->m_bullet->Update(deltaTime);
-			it->Attack(m_player);
+			//it->Attack(m_player);
 			it->Update(deltaTime);
 		}		
 
-		for (auto it : m_listObject)
+		for (auto it : m_listGround)
 		{
-			it->Set2DPosition(it->Get2DPosition().x - deltaTime * 100, it->Get2DPosition().y);
-			if (it->Get2DPosition().x < -150) 
-			{
-				it->Set2DPosition(1400, it->Get2DPosition().y);
-			}
+			it->Set2DPosition(it->Get2DPosition().x - Globals::moveCam, it->Get2DPosition().y);
 			it->Update(deltaTime);
 		}
 
@@ -312,22 +311,35 @@ void GSPlay::Update(float deltaTime)
 		m_score->SetText(std::to_string(m_player->GetScore()));
 		m_hp->SetText(std::to_string(m_player->GetHp()));
 	}
-	//
-	if (m_player->GetHp() == 0)
+	for (auto it : m_listBackground)
+	{
+		if(it->Get2DPosition().x < -Globals::screenWidth / 2)
+			it->Set2DPosition(Globals::screenWidth / 2 * 3 - 10, it->Get2DPosition().y);
+		if(it->Get2DPosition().x > Globals::screenWidth / 2 * 3)
+			it->Set2DPosition( -Globals::screenWidth / 2 + 10, it->Get2DPosition().y);
+
+		it->Set2DPosition(it->Get2DPosition().x - Globals::moveCam, it->Get2DPosition().y);
+		it->Update(deltaTime);
+	}
+	if (m_player->GetHp() == 0 || m_player->Get2DPosition().y > Globals::screenHeight)
 	{
 		m_player->setActive(false);
 		m_player->UpdateAnimation();
+		Globals::moveCam = 0;
 		GameOver(deltaTime);
 	}
 }
 
 void GSPlay::Draw()
 {
-	m_background->Draw();
+	for (auto it : m_listBackground)
+	{
+		it->Draw();
+	}
 	m_trampoline->Draw();
 	m_score->Draw();
 	m_hp->Draw();
-	for (auto it : m_listObject)
+	for (auto it : m_listGround)
 	{
 		it->Draw();
 	}
@@ -379,26 +391,77 @@ void GSPlay::CreateEnemies(std::shared_ptr<Model> model, std::shared_ptr<Shader>
 	chicken->UpdateAnimation(1);
 	chicken->Set2DPosition(900, 680);
 	chicken->SetPositionStart(Vector2(900, 680));
-	chicken->SetSize(64, 64);
+	chicken->SetSize(96, 96);
 	m_listEnemies.push_back(chicken);
 
 	std::shared_ptr<Enemies>  bird = std::make_shared<Enemies>(model, shader, texture, 9, 1, 0, 0.07f);
 	bird->UpdateAnimation(2);
 	bird->Set2DPosition(700, 280);
 	bird->SetPositionStart(Vector2(900, 680));
-	bird->SetSize(64, 64);
+	bird->SetSize(96, 96);
 	m_listEnemies.push_back(bird);
 
-	std::shared_ptr<Plant>  plant = std::make_shared<Plant>(model, shader, texture, 8, 1, 0, 0.07f);
+	std::shared_ptr<Plant>  plant = std::make_shared<Plant>(model, shader, texture, 8, 1, 0, 0.1f);
 	plant->UpdateAnimation();
 	plant->Set2DPosition(1000, 680);
 	plant->SetPositionStart(Vector2(900, 680));
-	plant->SetSize(64, 64);
+	plant->SetSize(96, 96);
 
 	plant->m_bullet->Set2DPosition(plant->Get2DPosition().x, plant->Get2DPosition().y - 5);
 	plant->m_bullet->SetPositionStart(Vector2(plant->Get2DPosition().x, plant->Get2DPosition().y - 5));
 	m_listPlant.push_back(plant);
 }
+
+void GSPlay::CreateBackground(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture)
+{
+	std::shared_ptr<Sprite2D> bg1 = std::make_shared<Sprite2D>(model, shader, texture);
+	bg1->Set2DPosition((float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
+	bg1->SetSize(Globals::screenWidth, Globals::screenHeight);
+	m_listBackground.push_back(bg1);
+
+	std::shared_ptr<Sprite2D> bg4 = std::make_shared<Sprite2D>(model, shader, texture);
+	bg4->Set2DPosition((float)Globals::screenWidth / 2 + Globals::screenWidth, (float)Globals::screenHeight / 2);
+	bg4->SetSize(Globals::screenWidth, Globals::screenHeight);
+	m_listBackground.push_back(bg4);
+
+	std::shared_ptr<Sprite2D> bg7 = std::make_shared<Sprite2D>(model, shader, texture);
+	bg7->Set2DPosition(-(float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
+	bg7->SetSize(Globals::screenWidth, Globals::screenHeight);
+	m_listBackground.push_back(bg7);
+
+	texture = ResourceManagers::GetInstance()->GetTexture("background_layer_2.tga");
+	std::shared_ptr<Sprite2D> bg2 = std::make_shared<Sprite2D>(model, shader, texture);
+	bg2->Set2DPosition((float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
+	bg2->SetSize(Globals::screenWidth, Globals::screenHeight);
+	m_listBackground.push_back(bg2);
+
+	std::shared_ptr<Sprite2D> bg5 = std::make_shared<Sprite2D>(model, shader, texture);
+	bg5->Set2DPosition((float)Globals::screenWidth / 2 + Globals::screenWidth, (float)Globals::screenHeight / 2);
+	bg5->SetSize(Globals::screenWidth, Globals::screenHeight);
+	m_listBackground.push_back(bg5);
+
+	std::shared_ptr<Sprite2D> bg8 = std::make_shared<Sprite2D>(model, shader, texture);
+	bg8->Set2DPosition(-(float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
+	bg8->SetSize(Globals::screenWidth, Globals::screenHeight);
+	m_listBackground.push_back(bg8);
+
+	texture = ResourceManagers::GetInstance()->GetTexture("background_layer_3.tga");
+	std::shared_ptr<Sprite2D> bg3 = std::make_shared<Sprite2D>(model, shader, texture);
+	bg3->Set2DPosition((float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
+	bg3->SetSize(Globals::screenWidth, Globals::screenHeight);
+	m_listBackground.push_back(bg3);
+
+	std::shared_ptr<Sprite2D> bg6 = std::make_shared<Sprite2D>(model, shader, texture);
+	bg6->Set2DPosition((float)Globals::screenWidth / 2 + Globals::screenWidth, (float)Globals::screenHeight / 2);
+	bg6->SetSize(Globals::screenWidth, Globals::screenHeight);
+	m_listBackground.push_back(bg6);
+
+	std::shared_ptr<Sprite2D> bg9 = std::make_shared<Sprite2D>(model, shader, texture);
+	bg9->Set2DPosition(-(float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
+	bg9->SetSize(Globals::screenWidth, Globals::screenHeight);
+	m_listBackground.push_back(bg9);
+}
+
 
 
 
@@ -430,6 +493,7 @@ void GSPlay::CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> 
 	buttonPause->Set2DPosition(Globals::screenWidth - 50, 50);
 	buttonPause->SetSize(70, 70);
 	buttonPause->SetOnClick([this]() {
+		Globals::moveCam = 0;
 		Pause();
 		});
 	m_listButton.push_back(buttonPause);

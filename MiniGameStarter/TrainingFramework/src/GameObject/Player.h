@@ -1,6 +1,7 @@
 #pragma once
 #include "SpriteAnimation.h"
 #include "BaseObject.h"
+
 class Player :
 	public SpriteAnimation
 {
@@ -17,6 +18,8 @@ public:
 	Vector2 GetCheckPoint();
 	void	SetCheckPoint(int x, int y);
 	void	Move(float deltaTime, int pressKey);
+	void	Update(GLfloat deltatime);
+
 
 protected:
 	GLint	m_idCharacter;

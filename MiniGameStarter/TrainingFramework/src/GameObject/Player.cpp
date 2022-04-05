@@ -134,7 +134,12 @@ void Player::Move(float deltaTime, int pressKey)
 			SetRotation(Vector3(0.0f, 0.0, 0.0f));
 		else
 			SetRotation(Vector3(0.0f, PI, 0.0f));
-		Set2DPosition(m_position.x - deltaTime * 250, m_position.y);
+
+		if(m_position.x <= Globals::screenWidth / 6)
+			Globals::moveCam = -deltaTime * 250;
+		else
+			Set2DPosition(m_position.x - deltaTime * 250, m_position.y);
+
 		break;
 	}
 	case 1 << 1: //sang phai
@@ -143,7 +148,12 @@ void Player::Move(float deltaTime, int pressKey)
 			SetRotation(Vector3(0.0f, PI, 0.0f));
 		else
 			SetRotation(Vector3(0.0f, 0.0, 0.0f));
-		Set2DPosition(m_position.x + deltaTime * 250, m_position.y);
+		
+		if (m_position.x >= Globals::screenWidth / 2)
+			Globals::moveCam = deltaTime * 250;
+		else
+			Set2DPosition(m_position.x + deltaTime * 250, m_position.y);
+
 		break;
 	}
 	case 1 << 2: // nhay
@@ -160,7 +170,11 @@ void Player::Move(float deltaTime, int pressKey)
 		UpdateAnimation();
 		SetRotation(Vector3(0.0f, 0.0f, 0.0f));
 
-		Set2DPosition(m_position.x - deltaTime * 250, m_position.y);
+		if (m_position.x <= Globals::screenWidth / 6)
+			Globals::moveCam = -deltaTime * 250;
+		else
+			Set2DPosition(m_position.x - deltaTime * 250, m_position.y);
+
 		if (!m_isJump)
 		{
 			setJump(true);
@@ -172,7 +186,12 @@ void Player::Move(float deltaTime, int pressKey)
 	{
 		UpdateAnimation();
 		SetRotation(Vector3(0.0f, PI, 0.0f));
-		Set2DPosition(m_position.x + deltaTime * 250, m_position.y);
+
+		if (m_position.x >= Globals::screenWidth / 2)
+			Globals::moveCam = deltaTime * 250;
+		else
+			Set2DPosition(m_position.x + deltaTime * 250, m_position.y);
+
 		if (!m_isJump) // dang khong nhay moi duoc nhay
 		{
 			setJump(true);
@@ -181,7 +200,24 @@ void Player::Move(float deltaTime, int pressKey)
 		break;
 	}
 	default:
+	{
+		Globals::moveCam = 0;
 		break;
 	}
+
+	}
+}
+
+void Player::Update(GLfloat deltatime)
+{
+	m_currentTime += deltatime;
+	if (m_currentTime >= m_frameTime)
+	{
+		m_currentFrame++;
+		if (m_currentFrame >= m_numFrames)
+			m_currentFrame = 0;
+		m_currentTime -= m_frameTime;
+	}
+	SetCheckPoint(GetCheckPoint().x - Globals::moveCam, GetCheckPoint().y);
 }
 

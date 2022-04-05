@@ -116,6 +116,7 @@ void SpriteAnimation::Update(GLfloat deltatime)
 			m_currentFrame = 0;
 		m_currentTime -= m_frameTime;
 	}
+	Set2DPosition(Get2DPosition().x - Globals::moveCam, Get2DPosition().y);
 }
 
 
