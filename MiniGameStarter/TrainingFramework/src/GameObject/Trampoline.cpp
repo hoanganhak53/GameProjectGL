@@ -49,27 +49,53 @@ bool Coin::Collecting(std::shared_ptr<Player>  obj) {
 	return false;
 }
 
-//check point
 
-CheckPoint::CheckPoint(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime) :SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime)
-{
-	m_isJump = false;
-	m_velocity = 0;
-}
-
-CheckPoint::~CheckPoint()
+Spike::Spike(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime) :SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime)
 {
 }
 
-void CheckPoint::UpdateAnimation()
+Spike::~Spike()
 {
-	m_pTexture = ResourceManagers::GetInstance()->GetTexture("Checkpoint_Flag_Idle.tga");
 }
 
-void CheckPoint::SetCheckPointPlayer(std::shared_ptr<Player> obj)
+void Spike::UpdateAnimation()
 {
+	m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_spike.tga");
+}
+
+void Spike::Attack(std::shared_ptr<Player>  obj)
+{
+	if (CheckBound(obj) && obj->getActive())
+	{
+		obj->SetHp(obj->GetHp() - 1);
+		obj->Set2DPosition(obj->Get2DPosition().x - 50, obj->Get2DPosition().y);
+		obj->setActive(false);
+	}
+}
+
+
+
+Heart::Heart(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime) :SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime)
+{
+}
+
+Heart::~Heart()
+{
+}
+
+void Heart::UpdateAnimation()
+{
+	m_pTexture = ResourceManagers::GetInstance()->GetTexture("I_heart.tga");
+}
+
+bool Heart::BuffHP(std::shared_ptr<Player> obj)
+{
+	if (!m_isActive)
+		return false;
 	if (CheckBound(obj))
 	{
-		obj->SetCheckPoint(m_position.x, m_position.y);
+		obj->SetHp(obj->GetHp() + 1);
+		return true;
 	}
+	return false;
 }

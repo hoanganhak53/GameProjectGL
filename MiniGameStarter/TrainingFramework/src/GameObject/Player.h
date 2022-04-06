@@ -15,8 +15,6 @@ public:
 	void	SetNumFrame(int num);
 	void	SetHp(int hp);
 	GLint	GetHp();
-	Vector2 GetCheckPoint();
-	void	SetCheckPoint(int x, int y);
 	void	Move(float deltaTime, int pressKey);
 	void	Update(GLfloat deltatime);
 
@@ -25,5 +23,4 @@ protected:
 	GLint	m_idCharacter;
 	GLint	m_score;
 	GLint	m_hp;
-	Vector2 m_checkPoint;
 };

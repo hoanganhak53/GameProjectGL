@@ -24,4 +24,8 @@ void Ground::UpdateAnimation()
 	{
 		m_pTexture = ResourceManagers::GetInstance()->GetTexture("Ground3.tga");
 	}
+	else if (m_id == 4)
+	{
+		m_pTexture = ResourceManagers::GetInstance()->GetTexture("Ground4.tga");
+	}
 }

@@ -27,14 +27,23 @@ public:
 
 
 
-class CheckPoint :
+class Spike :
     public SpriteAnimation
 {
 public:
-    CheckPoint(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime);
-    ~CheckPoint();
-
+    Spike(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime);
+    ~Spike();
     void UpdateAnimation();
-    void SetCheckPointPlayer(std::shared_ptr<Player>  obj);
+    void Attack(std::shared_ptr<Player>  obj);
+};
 
+
+class Heart :
+    public SpriteAnimation
+{
+public:
+    Heart(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime);
+    ~Heart();
+    void UpdateAnimation();
+    bool BuffHP(std::shared_ptr<Player>  obj);
 };

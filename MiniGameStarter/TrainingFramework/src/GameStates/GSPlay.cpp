@@ -40,7 +40,7 @@ void GSPlay::Init()
 	CreateBackground(model, shader, texture);
 	CreateButton(model, shader, texture);
 
-	texture = ResourceManagers::GetInstance()->GetTexture("image_heart.tga");
+	texture = ResourceManagers::GetInstance()->GetTexture("I_heart.tga");
 	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	std::shared_ptr<Sprite2D>  heart = std::make_shared<Sprite2D>(model, shader, texture);
 	heart->Set2DPosition(160, 32);
@@ -71,7 +71,6 @@ void GSPlay::Init()
 	m_player->setIdCharacter(Globals::character);
 	m_player->UpdateAnimation();
 	m_player->Set2DPosition(600, 400);
-	m_player->SetCheckPoint(600, 400);
 	m_player->SetSize(96, 96);
 
 	CreateEnemies(model, shader, texture);
@@ -80,13 +79,6 @@ void GSPlay::Init()
 	m_trampoline->UpdateAnimation();
 	m_trampoline->Set2DPosition(400, 680);
 	m_trampoline->SetSize(96, 96);
-
-	//check point
-	std::shared_ptr<CheckPoint> checkpoint1 = std::make_shared<CheckPoint>(model, shader, texture, 10, 1, 0, 0.1f);
-	checkpoint1->UpdateAnimation();
-	checkpoint1->Set2DPosition(200, 690);
-	checkpoint1->SetSize(96, 96);
-	m_listCheckPoint.push_back(checkpoint1);
 
 	//coin
 	std::shared_ptr<Coin> coin1 = std::make_shared<Coin>(model, shader, texture, 6, 1, 0, 0.1f);
@@ -106,6 +98,13 @@ void GSPlay::Init()
 	coin3->Set2DPosition(950, 500);
 	coin3->SetSize(32, 32);
 	m_listCoin.push_back(coin3);
+	//
+	std::shared_ptr<Heart> h = std::make_shared<Heart>(model, shader, texture, 1, 1, 0, 0.1f);
+	h->UpdateAnimation();
+	h->Set2DPosition(950, 500);
+	h->SetSize(32, 32);
+	m_listHeart.push_back(h);
+
 	//ground
 	model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	texture = ResourceManagers::GetInstance()->GetTexture("Ground3.tga");
@@ -149,13 +148,31 @@ void GSPlay::Restart()
 	m_isPause = false;
 }
 
-void GSPlay::GameOver(float deltaTime)
+void GSPlay::Attacked(float deltaTime)
 {
-	m_Time += deltaTime;
-	if (m_Time > 2.5f)
-	{
-		GameStateMachine::GetInstance()->PopState();
-		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_OVER);
+	if (!m_player->getActive())
+	{			
+		Globals::moveCam = 0;
+		if (m_player->GetHp() == 0 || m_player->Get2DPosition().y > Globals::screenHeight)
+		{
+			m_player->setActive(false);
+			m_player->UpdateAnimation();
+			m_Time += deltaTime;
+			if (m_Time > 2.5f)
+			{
+				GameStateMachine::GetInstance()->ChangeState(StateType::STATE_OVER);
+			}
+		}
+		else
+		{
+			m_Time += deltaTime;
+			if (m_Time > 0.84)
+			{
+				m_player->setActive(true);
+				m_player->UpdateAnimation();
+				m_Time = 0;
+			}
+		}
 	}
 }
 
@@ -270,7 +287,7 @@ void GSPlay::Update(float deltaTime)
 			if (!it->getActive())
 				continue;
 			it->Move(deltaTime);
-			//it->Attack(m_player);
+			it->Attack(m_player);
 			it->Update(deltaTime);
 		}
 
@@ -279,10 +296,10 @@ void GSPlay::Update(float deltaTime)
 			if (!it->getActive())
 				continue;
 
-			//it->m_bullet->Attack(m_player);
+			it->m_bullet->Attack(m_player);
 			it->m_bullet->Move(deltaTime);
 			it->m_bullet->Update(deltaTime);
-			//it->Attack(m_player);
+			it->Attack(m_player);
 			it->Update(deltaTime);
 		}		
 
@@ -295,12 +312,6 @@ void GSPlay::Update(float deltaTime)
 		m_trampoline->Jumping(m_player);
 		m_trampoline->Update(deltaTime);
 
-		for (auto it : m_listCheckPoint)
-		{
-			it->SetCheckPointPlayer(m_player);
-			it->Update(deltaTime);
-		}
-
 		for (auto it : m_listCoin)
 		{
 			if (it->Collecting(m_player)) {
@@ -308,26 +319,35 @@ void GSPlay::Update(float deltaTime)
 			}else
 				it->Update(deltaTime);
 		}
+		for (auto it : m_listHeart)
+		{
+			if (it->BuffHP(m_player)) {
+				it->setActive(false);
+			}
+			else
+				it->Update(deltaTime);
+		}
 		m_score->SetText(std::to_string(m_player->GetScore()));
 		m_hp->SetText(std::to_string(m_player->GetHp()));
 	}
+
+	for (auto it : m_listSpike)
+	{
+		it->Attack(m_player);
+		it->Update(deltaTime);
+	}
+
 	for (auto it : m_listBackground)
 	{
 		if(it->Get2DPosition().x < -Globals::screenWidth / 2)
-			it->Set2DPosition(Globals::screenWidth / 2 * 3 - 10, it->Get2DPosition().y);
+			it->Set2DPosition(Globals::screenWidth / 2 * 3 - 15, it->Get2DPosition().y);
 		if(it->Get2DPosition().x > Globals::screenWidth / 2 * 3)
-			it->Set2DPosition( -Globals::screenWidth / 2 + 10, it->Get2DPosition().y);
+			it->Set2DPosition( -Globals::screenWidth / 2 + 15, it->Get2DPosition().y);
 
 		it->Set2DPosition(it->Get2DPosition().x - Globals::moveCam, it->Get2DPosition().y);
 		it->Update(deltaTime);
 	}
-	if (m_player->GetHp() == 0 || m_player->Get2DPosition().y > Globals::screenHeight)
-	{
-		m_player->setActive(false);
-		m_player->UpdateAnimation();
-		Globals::moveCam = 0;
-		GameOver(deltaTime);
-	}
+	Attacked(deltaTime);
 }
 
 void GSPlay::Draw()
@@ -343,10 +363,11 @@ void GSPlay::Draw()
 	{
 		it->Draw();
 	}
-	for (auto it : m_listCheckPoint)
+	for (auto it : m_listSpike)
 	{
 		it->Draw();
 	}
+
 	for (auto it : m_listEnemies)
 	{
 		if(it->getActive())
@@ -365,6 +386,11 @@ void GSPlay::Draw()
 	for (auto it : m_listCoin)
 	{
 		if(it->getActive())
+			it->Draw();
+	}
+	for (auto it : m_listHeart)
+	{
+		if (it->getActive())
 			it->Draw();
 	}
 	for (auto it : m_listImage)
@@ -410,10 +436,24 @@ void GSPlay::CreateEnemies(std::shared_ptr<Model> model, std::shared_ptr<Shader>
 	plant->m_bullet->Set2DPosition(plant->Get2DPosition().x, plant->Get2DPosition().y - 5);
 	plant->m_bullet->SetPositionStart(Vector2(plant->Get2DPosition().x, plant->Get2DPosition().y - 5));
 	m_listPlant.push_back(plant);
+	// spike
+	std::shared_ptr<Spike>  spike1 = std::make_shared<Spike>(model, shader, texture, 1, 1, 0, 0.1f);
+	spike1->UpdateAnimation();
+	spike1->Set2DPosition(1700, 700);
+	spike1->SetSize(32, 32);
+	m_listSpike.push_back(spike1);
+	//
+	std::shared_ptr<Enemies>  bun = std::make_shared<Enemies>(model, shader, texture, 10, 1, 0, 0.1f);
+	bun->UpdateAnimation(3);
+	bun->Set2DPosition(1300, 680);
+	bun->SetPositionStart(Vector2(-300, 680));
+	bun->SetSize(96, 96);
+	m_listEnemies.push_back(bun);
 }
 
 void GSPlay::CreateBackground(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture)
 {
+
 	std::shared_ptr<Sprite2D> bg1 = std::make_shared<Sprite2D>(model, shader, texture);
 	bg1->Set2DPosition((float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
 	bg1->SetSize(Globals::screenWidth, Globals::screenHeight);

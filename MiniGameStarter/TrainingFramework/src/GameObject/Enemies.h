@@ -2,7 +2,7 @@
 #include "SpriteAnimation.h"
 #include "Player.h"
 
-#define MOVE_LENGTH 250
+#define MOVE_LENGTH 300
 
 class Enemies :
     public SpriteAnimation
@@ -19,7 +19,7 @@ public:
     Vector2     GetPositionStart();
     int         m_direct;
     Vector2     m_start;
-
+    int         m_id;
 private:
 };
 

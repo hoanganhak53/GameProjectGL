@@ -28,6 +28,7 @@ void GSGameOver::Init()
 	button->SetSize(70, 70);
 	button->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->PopState();
+		GameStateMachine::GetInstance()->PopState();
 		});
 	m_listButton.push_back(button);
 
@@ -37,6 +38,7 @@ void GSGameOver::Init()
 	buttonRestart->Set2DPosition(Globals::screenWidth / 2 - 100, Globals::screenHeight / 5 * 4);
 	buttonRestart->SetSize(70, 70);
 	buttonRestart->SetOnClick([this]() {
+		GameStateMachine::GetInstance()->PopState();
 		GameStateMachine::GetInstance()->PopState();
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});

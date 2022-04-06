@@ -14,6 +14,8 @@ class CheckPoint;
 class Plant;
 class Bullet;
 class Ground;
+class Spike;
+class Heart;
 
 class GSPlay :
 	public GameStateBase
@@ -36,7 +38,7 @@ public:
 	void	Draw() override;
 
 	void	Restart();
-	void	GameOver(float deltaTime);
+	void	Attacked(float deltaTime);
 	void	CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
 	void	CreateEnemies(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
 	void	CreateBackground(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
@@ -52,8 +54,7 @@ private:
 	std::list<std::shared_ptr<Sprite2D>>		m_listImage;
 	std::list<std::shared_ptr<Enemies>>			m_listEnemies;
 	std::list<std::shared_ptr<Plant>>			m_listPlant;
-
-	std::list<std::shared_ptr<CheckPoint>>		m_listCheckPoint;
+	std::list<std::shared_ptr<Spike>>			m_listSpike;
 
 	std::shared_ptr<Text>						m_score;
 	std::shared_ptr<Text>						m_hp;
@@ -61,6 +62,9 @@ private:
 	std::shared_ptr<Player>						m_player;
 	std::shared_ptr<Trampoline>					m_trampoline;	
 	std::list<std::shared_ptr<Coin>>			m_listCoin;
+	std::list<std::shared_ptr<Heart>>			m_listHeart;
+
+
     float										m_Time;
 	bool										m_isPause;
 	int											m_PressKey;

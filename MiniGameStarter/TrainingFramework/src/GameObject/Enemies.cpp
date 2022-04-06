@@ -7,6 +7,7 @@ Enemies::Enemies(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, s
 	m_velocity = 0;
 	m_start = Vector2(0, 0);
 	m_direct = 1;
+	m_id = 1;
 }
 
 Enemies::~Enemies() 
@@ -29,12 +30,16 @@ void Enemies::Update(GLfloat deltatime)
 
 void Enemies::UpdateAnimation(int id)
 {	
+	m_id = id;
 	if(id == 1)
 		m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_chicken.tga");
-	else
+	else if(id == 2)
 		m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_blueBird.tga");
+	else
+		m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_ghost.tga");
 
 }
+
 void Enemies::Move(float deltaTime)
 {
 	if (m_direct == 1)
@@ -51,7 +56,15 @@ void Enemies::Move(float deltaTime)
 		if (Get2DPosition().x <= GetPositionStart().x - MOVE_LENGTH)
 			m_direct = 1;
 	}
+	if (m_id == 3)
+	{	
+		if(m_position.y >= m_start.y - 1)
+			setV(30);
+	Set2DPosition(Get2DPosition().x, Get2DPosition().y - getV() * deltaTime * 70);
+	setV(getV() - deltaTime * 90);
+	}
 }
+
 void Enemies::Attack(std::shared_ptr<Player> obj)
 {
 	if (CheckBound(obj) && obj->getActive())
@@ -62,11 +75,9 @@ void Enemies::Attack(std::shared_ptr<Player> obj)
 		}
 		else
 		{
-			if (obj->GetHp() > 1)
-			{
-				obj->Set2DPosition(obj->GetCheckPoint().x, obj->GetCheckPoint().y);
-			}
 			obj->SetHp(obj->GetHp() - 1);
+			obj->Set2DPosition(obj->Get2DPosition().x - 50, obj->Get2DPosition().y);
+			obj->setActive(false);
 		}
 	}
 }
@@ -131,13 +142,10 @@ void Bullet::Move(float deltaTime)
 
 void Bullet::Attack(std::shared_ptr<Player> obj)
 {
-
 	if (CheckBound(obj) && obj->getActive())
 	{
-		if (obj->GetHp() > 1)
-		{
-			obj->Set2DPosition(obj->GetCheckPoint().x, obj->GetCheckPoint().y);
-		}
 		obj->SetHp(obj->GetHp() - 1);
+		obj->Set2DPosition(obj->Get2DPosition().x - 50, obj->Get2DPosition().y);
+		obj->setActive(false);
 	}
 }
