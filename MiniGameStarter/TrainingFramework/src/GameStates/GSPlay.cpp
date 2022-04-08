@@ -30,6 +30,9 @@ void GSPlay::Init()
 	m_PressKey = 0;
 	m_Time = 0;
 	m_isPause = false;
+	//Sound
+	std::string name = "MenuSound.wav";
+	ResourceManagers::GetInstance()->PlaySound(name, true);
 
 	// background
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
@@ -55,7 +58,7 @@ void GSPlay::Init()
 	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
 	m_score = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.3);
-	m_score->Set2DPosition(Vector2(20, 45));
+	m_score->Set2DPosition(Vector2(15, 45));
 	m_score->SetText("0");
 	//hp
 	m_hp = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.3);
@@ -73,7 +76,7 @@ void GSPlay::Init()
 	//cup
 	m_cup = std::make_shared<Cup>(model, shader, texture, 8, 1, 0, 0.07f);
 	m_cup->UpdateAnimation();
-	m_cup->Set2DPosition(400, 600);
+	m_cup->Set2DPosition(-400, 600);
 	m_cup->SetSize(64, 64);
 
 	CreateMap(model, shader, texture);
@@ -81,11 +84,35 @@ void GSPlay::Init()
 
 	//ground
 
-	std::shared_ptr<Ground>  m_object2 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
-	m_object2->Set2DPosition(0, 760);
-	m_object2->SetSize(8300, 80);
-	m_object2->UpdateAnimation();
-	m_listGround.push_back(m_object2);
+	std::shared_ptr<Ground>  g1 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
+	g1->Set2DPosition(700, 750);
+	g1->SetSize(1000, 100);
+	g1->UpdateAnimation();
+	m_listGround.push_back(g1);
+
+	std::shared_ptr<Ground>  g2 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
+	g2->Set2DPosition(2800, 750);
+	g2->SetSize(800, 100);
+	g2->UpdateAnimation();
+	m_listGround.push_back(g2);
+
+	std::shared_ptr<Ground>  g3 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
+	g3->Set2DPosition(4800, 750);
+	g3->SetSize(1300, 100);
+	g3->UpdateAnimation();
+	m_listGround.push_back(g3);
+
+	std::shared_ptr<Ground>  g4 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
+	g4->Set2DPosition(6500, 750);
+	g4->SetSize(1800, 100);
+	g4->UpdateAnimation();
+	m_listGround.push_back(g4);
+
+	std::shared_ptr<Ground>  g5 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
+	g5->Set2DPosition(8800, 750);
+	g5->SetSize(1000, 100);
+	g5->UpdateAnimation();
+	m_listGround.push_back(g5);
 }
 
 void GSPlay::Exit()
@@ -110,7 +137,7 @@ void GSPlay::Restart()
 
 void GSPlay::Attacked(float deltaTime)
 {
-	if (!m_player->getActive())
+	if (!m_player->getActive() || m_player->Get2DPosition().y > Globals::screenHeight)
 	{			
 		Globals::moveCam = 0;
 		if (m_player->GetHp() == 0 || m_player->Get2DPosition().y > Globals::screenHeight)
@@ -118,7 +145,7 @@ void GSPlay::Attacked(float deltaTime)
 			m_player->setActive(false);
 			m_player->UpdateAnimation();
 			m_Time += deltaTime;
-			if (m_Time > 2.5f)
+			if (m_Time > 2.0f)
 			{
 				Globals::isWin = false;
 				UpdateScore();
@@ -273,7 +300,6 @@ void GSPlay::Update(float deltaTime)
 		}
 		for (auto it : m_listGround)
 		{
-			it->Set2DPosition(it->Get2DPosition().x - Globals::moveCam, it->Get2DPosition().y);
 			if(it->m_id == 2)
 				it->Falling(deltaTime, m_player);
 			it->Update(deltaTime);
@@ -578,6 +604,8 @@ void GSPlay::UpdateScore()
 		fclose(fptr);
 		Globals::bestSocre = m_player->GetScore();
 	}
+	//Sound
+	ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
 }
 
 
@@ -591,6 +619,8 @@ void GSPlay::CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> 
 	button->Set2DPosition(Globals::screenWidth / 2 + 100, Globals::screenHeight / 2);
 	button->SetSize(70, 70);
 	button->SetOnClick([this]() {
+		ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
+		ResourceManagers::GetInstance()->PlaySound("MenuSound.wav", true);
 		GameStateMachine::GetInstance()->PopState();
 		});
 	m_listButtonPause.push_back(button);
@@ -622,6 +652,8 @@ void GSPlay::CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> 
 	buttonRestart->Set2DPosition(Globals::screenWidth / 2 - 100, Globals::screenHeight / 2);
 	buttonRestart->SetSize(70, 70);
 	buttonRestart->SetOnClick([this]() {
+		ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
+		ResourceManagers::GetInstance()->PlaySound("MenuSound.wav", true);
 		GameStateMachine::GetInstance()->PopState();
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});

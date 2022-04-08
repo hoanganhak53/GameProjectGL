@@ -22,6 +22,7 @@ void Trampoline::Jumping(std::shared_ptr<Player>  obj)
 	{
 		obj->setV(30);
 		obj->setJump(true);
+		ResourceManagers::GetInstance()->PlaySound("Jump.wav");
 	}
 }
 //coin
@@ -44,6 +45,7 @@ bool Coin::Collecting(std::shared_ptr<Player>  obj) {
 	if (Coin::CheckBound(obj))
 	{
 		obj->SetScore(obj->GetScore()+1);
+		ResourceManagers::GetInstance()->PlaySound("Collect.wav");
 		return true;
 	}
 	return false;
@@ -58,6 +60,17 @@ Spike::Spike(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::
 
 Spike::~Spike()
 {
+}
+
+bool Spike::CheckBound(std::shared_ptr<SpriteAnimation> obj)
+{
+	int a_x1 = m_position.x - m_iWidth / 2, a_x2 = m_position.x + m_iWidth / 2;
+	int a_y1 = m_position.y - m_iHeight / 2 + 20, a_y2 = m_position.y + m_iHeight / 2;
+	int b_x1 = obj->Get2DPosition().x - obj->getSize().x / 2 + 10, b_x2 = obj->Get2DPosition().x + obj->getSize().x / 2 - 10;
+	int b_y1 = obj->Get2DPosition().y - obj->getSize().y / 2, b_y2 = obj->Get2DPosition().y + obj->getSize().y / 2;
+	if (a_x1 < b_x2 && b_x1 < a_x2 && a_y1 < b_y2 && b_y1 < a_y2)
+		return true;
+	return false;
 }
 
 void Spike::UpdateAnimation()
@@ -100,7 +113,9 @@ bool Heart::BuffHP(std::shared_ptr<Player> obj)
 		return false;
 	if (CheckBound(obj))
 	{
-		obj->SetHp(obj->GetHp() + 1);
+		if(obj->GetHp() > 0)
+			obj->SetHp(obj->GetHp() + 1);
+		ResourceManagers::GetInstance()->PlaySound("Collect.wav");
 		return true;
 	}
 	return false;

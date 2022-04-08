@@ -33,6 +33,8 @@ class Spike :
 public:
     Spike(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime);
     ~Spike();
+    bool		CheckBound(std::shared_ptr<SpriteAnimation>  obj);
+
     void UpdateAnimation();
     void Attack(std::shared_ptr<Player>  obj);
 };

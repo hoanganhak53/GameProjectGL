@@ -25,7 +25,7 @@ void GSMenu::Init()
 
 
 	//Sound
-	std::string name = "Alarm01.wav";
+	std::string name = "MenuSound.wav";
 	ResourceManagers::GetInstance()->PlaySound(name,true);
 
 	// play button
@@ -34,6 +34,7 @@ void GSMenu::Init()
 	button->Set2DPosition(Globals::screenWidth / 2,	660);
 	button->SetSize(100, 100);
 	button->SetOnClick([]() {
+			ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
 			GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});
 	m_listButton.push_back(button);
