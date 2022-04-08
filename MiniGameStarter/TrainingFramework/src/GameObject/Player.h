@@ -17,10 +17,11 @@ public:
 	GLint	GetHp();
 	void	Move(float deltaTime, int pressKey);
 	void	Update(GLfloat deltatime);
-
+	GLint	GetDirect();
 
 protected:
 	GLint	m_idCharacter;
 	GLint	m_score;
 	GLint	m_hp;
+	GLint	m_dir;
 };

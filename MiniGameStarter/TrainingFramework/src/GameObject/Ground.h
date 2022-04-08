@@ -1,14 +1,17 @@
 #pragma once
-#include "Sprite2D.h"
+#include "SpriteAnimation.h"
+#include "Player.h"
+
 class Ground :
-    public Sprite2D
+    public SpriteAnimation
 {
 public:
-    Ground(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, int id);
+    Ground(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime, int id);
     ~Ground();
     
-    void    UpdateAnimation();
-
-private:
+    void    UpdateAnimation(); 
+    void    Falling(float deltaTime, std::shared_ptr<Player> player);
     int     m_id;
+    float   m_Time;
+    bool    m_fall;
 };

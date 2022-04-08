@@ -10,6 +10,7 @@ Player::Player(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std
 	m_idCharacter = 1;
 	m_score = 0;
 	m_hp = 3;
+	m_dir = 1;
 }
 
 Player::~Player() {
@@ -130,6 +131,7 @@ void Player::Move(float deltaTime, int pressKey)
 		else
 			Set2DPosition(m_position.x - deltaTime * 300, m_position.y);
 
+		m_dir = -1;
 		break;
 	}
 	case 1 << 1: //sang phai
@@ -143,7 +145,7 @@ void Player::Move(float deltaTime, int pressKey)
 			Globals::moveCam = deltaTime * 300;
 		else
 			Set2DPosition(m_position.x + deltaTime * 300, m_position.y);
-
+		m_dir = 1;
 		break;
 	}
 	case 1 << 2: // nhay
@@ -170,6 +172,8 @@ void Player::Move(float deltaTime, int pressKey)
 			setJump(true);
 			setV(25);
 		}
+		m_dir = -1;
+
 		break;
 	}
 	case 1 << 2 | 1 << 1: // nhau va sang phai
@@ -187,6 +191,7 @@ void Player::Move(float deltaTime, int pressKey)
 			setJump(true);
 			setV(25);
 		}
+		m_dir = 1;
 		break;
 	}
 	default:
@@ -208,5 +213,10 @@ void Player::Update(GLfloat deltatime)
 			m_currentFrame = 0;
 		m_currentTime -= m_frameTime;
 	}
+}
+
+GLint Player::GetDirect()
+{
+	return m_dir;
 }
 

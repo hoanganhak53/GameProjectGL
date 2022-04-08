@@ -36,7 +36,7 @@ void Enemies::UpdateAnimation(int id)
 	else if(id == 2)
 		m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_blueBird.tga");
 	else
-		m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_ghost.tga");
+		m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_bunny.tga");
 
 }
 
@@ -147,5 +147,44 @@ void Bullet::Attack(std::shared_ptr<Player> obj)
 		obj->SetHp(obj->GetHp() - 1);
 		obj->Set2DPosition(obj->Get2DPosition().x - 50, obj->Get2DPosition().y);
 		obj->setActive(false);
+	}
+}
+
+Ghost::Ghost(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime) :Enemies(model, shader, texture, numFrames, numActions, currentAction, frameTime)
+{
+	m_dir = -1;
+}
+
+Ghost::~Ghost()
+{
+}
+
+void Ghost::UpdateAnimation()
+{
+	m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_ghost.tga");
+}
+
+void Ghost::Move(std::shared_ptr<Player> player, float deltaTime)
+{
+	if (m_dir != player->GetDirect() && std::abs(player->Get2DPosition().x - m_position.x) < 900)
+	{
+		if (m_position.x > player->Get2DPosition().x)
+		{
+			SetRotation(Vector3(0.0f, 0.0, 0.0f));
+			Set2DPosition(m_position.x - 200 * deltaTime, m_position.y);
+		}
+		else
+		{
+			SetRotation(Vector3(0.0f, PI, 0.0f));
+			Set2DPosition(m_position.x + 200 * deltaTime, m_position.y);
+		}
+		if (m_position.y > player->Get2DPosition().y)
+		{
+			Set2DPosition(m_position.x , m_position.y- 100 * deltaTime);
+		}
+		else
+		{
+			Set2DPosition(m_position.x, m_position.y + 100 * deltaTime);
+		}
 	}
 }

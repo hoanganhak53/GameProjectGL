@@ -16,6 +16,8 @@ class Bullet;
 class Ground;
 class Spike;
 class Heart;
+class Ghost;
+class Cup;
 
 class GSPlay :
 	public GameStateBase
@@ -40,10 +42,10 @@ public:
 	void	Restart();
 	void	Attacked(float deltaTime);
 	void	CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
-	void	CreateEnemies(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
 	void	CreateBackground(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
 
-
+	void	CreateMap(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
+	void	UpdateScore();
 
 private:
 	std::list<std::shared_ptr<Sprite2D>>		m_listBackground;
@@ -54,13 +56,16 @@ private:
 	std::list<std::shared_ptr<Sprite2D>>		m_listImage;
 	std::list<std::shared_ptr<Enemies>>			m_listEnemies;
 	std::list<std::shared_ptr<Plant>>			m_listPlant;
+	std::list<std::shared_ptr<Ghost>>			m_listGhost;
 	std::list<std::shared_ptr<Spike>>			m_listSpike;
+	std::list<std::shared_ptr<Trampoline>>		m_listTrampoline;
 
 	std::shared_ptr<Text>						m_score;
 	std::shared_ptr<Text>						m_hp;
+	std::shared_ptr<Cup>						m_cup;
+
 
 	std::shared_ptr<Player>						m_player;
-	std::shared_ptr<Trampoline>					m_trampoline;	
 	std::list<std::shared_ptr<Coin>>			m_listCoin;
 	std::list<std::shared_ptr<Heart>>			m_listHeart;
 

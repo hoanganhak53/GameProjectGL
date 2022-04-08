@@ -25,6 +25,10 @@ public:
 	static int Globals::screenHeight;
 	static int Globals::character;
 	static int Globals::moveCam;
+	static bool Globals::isWin;
+	static int Globals::bestSocre;
+
+
 };
 
 // define value

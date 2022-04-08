@@ -30,7 +30,7 @@ public:
 	void		SetSize(GLint width, GLint height);
 	Vector2		getSize();
 
-	bool		CheckBound(std::shared_ptr<Sprite2D>  obj);//kiem tra va cham giua nhan vat va object
+	bool		CheckBound(std::shared_ptr<SpriteAnimation>  obj, int id);
 	bool		CheckBound(std::shared_ptr<SpriteAnimation>  obj);
 
 	bool		getJump();

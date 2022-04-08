@@ -50,6 +50,8 @@ bool Coin::Collecting(std::shared_ptr<Player>  obj) {
 }
 
 
+//spike
+
 Spike::Spike(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime) :SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime)
 {
 }
@@ -68,7 +70,11 @@ void Spike::Attack(std::shared_ptr<Player>  obj)
 	if (CheckBound(obj) && obj->getActive())
 	{
 		obj->SetHp(obj->GetHp() - 1);
-		obj->Set2DPosition(obj->Get2DPosition().x - 50, obj->Get2DPosition().y);
+		if(obj->Get2DPosition().x <= m_position.x)
+			obj->Set2DPosition(m_position.x - m_iWidth - 50, obj->Get2DPosition().y);
+		else
+			obj->Set2DPosition(m_position.x + m_iHeight + 50, obj->Get2DPosition().y);
+
 		obj->setActive(false);
 	}
 }
@@ -95,6 +101,28 @@ bool Heart::BuffHP(std::shared_ptr<Player> obj)
 	if (CheckBound(obj))
 	{
 		obj->SetHp(obj->GetHp() + 1);
+		return true;
+	}
+	return false;
+}
+
+Cup::Cup(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime) :SpriteAnimation(model, shader, texture, numFrames, numActions, currentAction, frameTime)
+{
+}
+
+Cup::~Cup()
+{
+}
+
+void Cup::UpdateAnimation()
+{
+	m_pTexture = ResourceManagers::GetInstance()->GetTexture("cup.tga");
+}
+
+bool Cup::Win(std::shared_ptr<Player> obj)
+{
+	if (CheckBound(obj))
+	{
 		return true;
 	}
 	return false;

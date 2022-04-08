@@ -100,6 +100,24 @@ void GSMenu::Init()
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
 	m_textGameName = std::make_shared< Text>(shader, font, "Adventure Guy", Vector4(0.0f, 1.0f, 1.0f, 1.0f), 2.0f);
 	m_textGameName->Set2DPosition(Vector2(40, 80));
+	// score	
+	m_score = std::make_shared< Text>(shader, font, "Best score:", Vector4(0.0f, 1.0f, 1.0f, 1.0f), 1.0f);
+	m_score->Set2DPosition(Vector2(900, 60));
+
+	FILE* fptr;
+	fptr = fopen("C:\\Users\\Hoang\\Documents\\GitHub\\GameProjectGL\\MiniGameStarter\\TrainingFramework\\src\\GameStates\\BestScore.txt", "r");
+	if (fptr == NULL)
+	{
+		printf("Error!");
+		exit(1);
+	}
+	GLint score = 0;
+	while (fscanf(fptr, "%d", &score) != EOF)
+	{
+		m_score->SetText("Best score: " + std::to_string(score));
+	}
+	fclose(fptr);
+	Globals::bestSocre = score;
 
 	//character
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
@@ -162,6 +180,7 @@ void GSMenu::Update(float deltaTime)
 		m_numChar = Globals::character;
 	}
 	m_player->Update(deltaTime);
+	m_score->SetText("Best score: " + std::to_string(Globals::bestSocre));
 }
 
 void GSMenu::Draw()
@@ -173,6 +192,7 @@ void GSMenu::Draw()
 			it->Draw();
 	}
 	m_textGameName->Draw();
+	m_score->Draw();
 	m_player->Draw();
 }
 

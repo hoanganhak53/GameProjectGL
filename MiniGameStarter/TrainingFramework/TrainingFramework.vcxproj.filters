@@ -152,4 +152,8 @@
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\GameStates\DataMap.txt" />
+    <Text Include="src\GameStates\BestScore.txt" />
+  </ItemGroup>
 </Project>

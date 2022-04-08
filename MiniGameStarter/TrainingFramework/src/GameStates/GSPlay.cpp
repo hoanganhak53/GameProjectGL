@@ -15,7 +15,6 @@
 #include "Enemies.h"
 #include "Ground.h"
 
-
 GSPlay::GSPlay()
 {
 }
@@ -41,7 +40,6 @@ void GSPlay::Init()
 	CreateButton(model, shader, texture);
 
 	texture = ResourceManagers::GetInstance()->GetTexture("I_heart.tga");
-	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	std::shared_ptr<Sprite2D>  heart = std::make_shared<Sprite2D>(model, shader, texture);
 	heart->Set2DPosition(160, 32);
 	heart->SetSize(40, 40);
@@ -72,56 +70,18 @@ void GSPlay::Init()
 	m_player->UpdateAnimation();
 	m_player->Set2DPosition(600, 400);
 	m_player->SetSize(96, 96);
+	//cup
+	m_cup = std::make_shared<Cup>(model, shader, texture, 8, 1, 0, 0.07f);
+	m_cup->UpdateAnimation();
+	m_cup->Set2DPosition(400, 600);
+	m_cup->SetSize(64, 64);
 
-	CreateEnemies(model, shader, texture);
-	//trampoline
-	m_trampoline = std::make_shared<Trampoline>(model, shader, texture, 14, 1, 0, 0.07f);
-	m_trampoline->UpdateAnimation();
-	m_trampoline->Set2DPosition(400, 680);
-	m_trampoline->SetSize(96, 96);
+	CreateMap(model, shader, texture);
 
-	//coin
-	std::shared_ptr<Coin> coin1 = std::make_shared<Coin>(model, shader, texture, 6, 1, 0, 0.1f);
-	coin1->UpdateAnimation();
-	coin1->Set2DPosition(700, 700);
-	coin1->SetSize(32, 32);
-	m_listCoin.push_back(coin1);
-
-	std::shared_ptr<Coin> coin2 = std::make_shared<Coin>(model, shader, texture, 6, 1, 0, 0.1f);
-	coin2->UpdateAnimation();
-	coin2->Set2DPosition(300, 200);
-	coin2->SetSize(32, 32);
-	m_listCoin.push_back(coin2);
-
-	std::shared_ptr<Coin> coin3 = std::make_shared<Coin>(model, shader, texture, 6, 1, 0, 0.1f);
-	coin3->UpdateAnimation();
-	coin3->Set2DPosition(950, 500);
-	coin3->SetSize(32, 32);
-	m_listCoin.push_back(coin3);
-	//
-	std::shared_ptr<Heart> h = std::make_shared<Heart>(model, shader, texture, 1, 1, 0, 0.1f);
-	h->UpdateAnimation();
-	h->Set2DPosition(950, 500);
-	h->SetSize(32, 32);
-	m_listHeart.push_back(h);
 
 	//ground
-	model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	texture = ResourceManagers::GetInstance()->GetTexture("Ground3.tga");
-	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
-	std::shared_ptr<Ground>  m_object = std::make_shared<Ground>(model, shader, texture, 3);
-	m_object->Set2DPosition(500, 400);
-	m_object->UpdateAnimation();
-	m_object->SetSize(128, 32);
-	m_listGround.push_back(m_object);
 
-	std::shared_ptr<Ground>  m_object1 = std::make_shared<Ground>(model, shader, texture, 3);
-	m_object1->Set2DPosition(1000, 530);
-	m_object1->SetSize(128, 32);
-	m_object1->UpdateAnimation();
-	m_listGround.push_back(m_object1);
-
-	std::shared_ptr<Ground>  m_object2 = std::make_shared<Ground>(model, shader, texture, 1);
+	std::shared_ptr<Ground>  m_object2 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
 	m_object2->Set2DPosition(0, 760);
 	m_object2->SetSize(8300, 80);
 	m_object2->UpdateAnimation();
@@ -160,6 +120,8 @@ void GSPlay::Attacked(float deltaTime)
 			m_Time += deltaTime;
 			if (m_Time > 2.5f)
 			{
+				Globals::isWin = false;
+				UpdateScore();
 				GameStateMachine::GetInstance()->ChangeState(StateType::STATE_OVER);
 			}
 		}
@@ -262,7 +224,7 @@ void GSPlay::Update(float deltaTime)
 		bool haveCrash = false;
 		for (auto obj : m_listGround)
 		{
-			if (m_player->CheckBound(obj)) {
+			if (m_player->CheckBound(obj, 1)) {
 				haveCrash = true;
 			}
 		}
@@ -276,8 +238,7 @@ void GSPlay::Update(float deltaTime)
 			m_player->Set2DPosition(m_player->Get2DPosition().x, m_player->Get2DPosition().y - m_player->getV() * deltaTime * 70);
 			m_player->setV(m_player->getV() - deltaTime * 90);
 		}
-		if(m_player->getActive())
-			m_player->Move(deltaTime, m_PressKey);
+		m_player->Move(deltaTime, m_PressKey);
 		m_player->UpdateAnimation();
 		m_player->Update(deltaTime);
 
@@ -302,15 +263,22 @@ void GSPlay::Update(float deltaTime)
 			it->Attack(m_player);
 			it->Update(deltaTime);
 		}		
-
+		for (auto it : m_listGhost)
+		{
+			if (!it->getActive())
+				continue;
+			it->Move(m_player, deltaTime);
+			it->Attack(m_player);
+			it->Update(deltaTime);
+		}
 		for (auto it : m_listGround)
 		{
 			it->Set2DPosition(it->Get2DPosition().x - Globals::moveCam, it->Get2DPosition().y);
+			if(it->m_id == 2)
+				it->Falling(deltaTime, m_player);
 			it->Update(deltaTime);
 		}
 
-		m_trampoline->Jumping(m_player);
-		m_trampoline->Update(deltaTime);
 
 		for (auto it : m_listCoin)
 		{
@@ -330,13 +298,24 @@ void GSPlay::Update(float deltaTime)
 		m_score->SetText(std::to_string(m_player->GetScore()));
 		m_hp->SetText(std::to_string(m_player->GetHp()));
 	}
+	for (auto it : m_listTrampoline)
+	{
+		it->Jumping(m_player);
+		it->Update(deltaTime);
+	}
 
 	for (auto it : m_listSpike)
 	{
 		it->Attack(m_player);
 		it->Update(deltaTime);
 	}
-
+	if (m_cup->Win(m_player))
+	{
+		Globals::isWin = true;
+		UpdateScore();
+		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_OVER);
+	}
+	m_cup->Update(deltaTime);
 	for (auto it : m_listBackground)
 	{
 		if(it->Get2DPosition().x < -Globals::screenWidth / 2)
@@ -356,7 +335,6 @@ void GSPlay::Draw()
 	{
 		it->Draw();
 	}
-	m_trampoline->Draw();
 	m_score->Draw();
 	m_hp->Draw();
 	for (auto it : m_listGround)
@@ -367,7 +345,10 @@ void GSPlay::Draw()
 	{
 		it->Draw();
 	}
-
+	for (auto it : m_listTrampoline)
+	{
+		it->Draw();
+	}
 	for (auto it : m_listEnemies)
 	{
 		if(it->getActive())
@@ -381,6 +362,14 @@ void GSPlay::Draw()
 		}
 
 	}
+	for (auto it : m_listGhost)
+	{
+		if (it->getActive()) {
+			it->Draw();
+		}
+
+	}
+	m_cup->Draw();
 	m_player->Draw();
 
 	for (auto it : m_listCoin)
@@ -409,47 +398,6 @@ void GSPlay::Draw()
 	}
 }
 
-
-void GSPlay::CreateEnemies(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture)
-{
-	//enemies
-	std::shared_ptr<Enemies>  chicken = std::make_shared<Enemies>(model, shader, texture, 14, 1, 0, 0.07f);
-	chicken->UpdateAnimation(1);
-	chicken->Set2DPosition(900, 680);
-	chicken->SetPositionStart(Vector2(900, 680));
-	chicken->SetSize(96, 96);
-	m_listEnemies.push_back(chicken);
-
-	std::shared_ptr<Enemies>  bird = std::make_shared<Enemies>(model, shader, texture, 9, 1, 0, 0.07f);
-	bird->UpdateAnimation(2);
-	bird->Set2DPosition(700, 280);
-	bird->SetPositionStart(Vector2(900, 680));
-	bird->SetSize(96, 96);
-	m_listEnemies.push_back(bird);
-
-	std::shared_ptr<Plant>  plant = std::make_shared<Plant>(model, shader, texture, 8, 1, 0, 0.1f);
-	plant->UpdateAnimation();
-	plant->Set2DPosition(1000, 680);
-	plant->SetPositionStart(Vector2(900, 680));
-	plant->SetSize(96, 96);
-
-	plant->m_bullet->Set2DPosition(plant->Get2DPosition().x, plant->Get2DPosition().y - 5);
-	plant->m_bullet->SetPositionStart(Vector2(plant->Get2DPosition().x, plant->Get2DPosition().y - 5));
-	m_listPlant.push_back(plant);
-	// spike
-	std::shared_ptr<Spike>  spike1 = std::make_shared<Spike>(model, shader, texture, 1, 1, 0, 0.1f);
-	spike1->UpdateAnimation();
-	spike1->Set2DPosition(1700, 700);
-	spike1->SetSize(32, 32);
-	m_listSpike.push_back(spike1);
-	//
-	std::shared_ptr<Enemies>  bun = std::make_shared<Enemies>(model, shader, texture, 10, 1, 0, 0.1f);
-	bun->UpdateAnimation(3);
-	bun->Set2DPosition(1300, 680);
-	bun->SetPositionStart(Vector2(-300, 680));
-	bun->SetSize(96, 96);
-	m_listEnemies.push_back(bun);
-}
 
 void GSPlay::CreateBackground(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture)
 {
@@ -502,6 +450,136 @@ void GSPlay::CreateBackground(std::shared_ptr<Model> model, std::shared_ptr<Shad
 	m_listBackground.push_back(bg9);
 }
 
+void GSPlay::CreateMap(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture)
+{
+	int id = 0, xPosition = 0, yPosition = 0;
+	FILE* fptr;
+	fptr = fopen("C:\\Users\\Hoang\\Documents\\GitHub\\GameProjectGL\\MiniGameStarter\\TrainingFramework\\src\\GameStates\\DataMap.txt", "r");
+	if (fptr == NULL)
+	{
+		printf("Error!");
+		exit(1);
+	}
+	//id  xPosition  yPosition
+	while (fscanf(fptr, "%d %d %d", &id, &xPosition, &yPosition) != EOF)
+	{
+		if(id == 1)
+		{
+			std::shared_ptr<Enemies>  chicken = std::make_shared<Enemies>(model, shader, texture, 14, 1, 0, 0.07f);
+			chicken->UpdateAnimation(1);
+			chicken->Set2DPosition(xPosition, yPosition);
+			chicken->SetPositionStart(Vector2(xPosition, yPosition));
+			chicken->SetSize(96, 96);
+			m_listEnemies.push_back(chicken);
+		}
+		else if (id == 2)
+		{
+			std::shared_ptr<Enemies>  bird = std::make_shared<Enemies>(model, shader, texture, 9, 1, 0, 0.07f);
+			bird->UpdateAnimation(2);
+			bird->Set2DPosition(xPosition, yPosition);
+			bird->SetPositionStart(Vector2(xPosition, yPosition));
+			bird->SetSize(96, 96);
+			m_listEnemies.push_back(bird);
+
+		}
+		else if (id == 3)
+		{
+			std::shared_ptr<Plant>  plant = std::make_shared<Plant>(model, shader, texture, 8, 1, 0, 0.1f);
+			plant->UpdateAnimation();
+			plant->Set2DPosition(xPosition, yPosition);
+			plant->SetPositionStart(Vector2(xPosition, yPosition));
+			plant->SetSize(96, 96);
+
+			plant->m_bullet->Set2DPosition(plant->Get2DPosition().x, plant->Get2DPosition().y - 5);
+			plant->m_bullet->SetPositionStart(Vector2(plant->Get2DPosition().x, plant->Get2DPosition().y - 5));
+			m_listPlant.push_back(plant);
+		}
+		else if (id == 4)
+		{
+			std::shared_ptr<Enemies>  bun = std::make_shared<Enemies>(model, shader, texture, 12, 1, 0, 0.1f);
+			bun->UpdateAnimation(3);
+			bun->Set2DPosition(xPosition, yPosition);
+			bun->SetPositionStart(Vector2(xPosition, yPosition));
+			bun->SetSize(96, 96);
+			m_listEnemies.push_back(bun);
+		}
+		else if (id == 5)
+		{
+			std::shared_ptr<Ghost>  ghost = std::make_shared<Ghost>(model, shader, texture, 10, 1, 0, 0.07f);
+			ghost->UpdateAnimation();
+			ghost->Set2DPosition(xPosition, yPosition);
+			ghost->SetSize(96, 96);
+			m_listGhost.push_back(ghost);
+		}
+		else if (id == 6)
+		{
+			std::shared_ptr<Spike>  spike = std::make_shared<Spike>(model, shader, texture, 1, 1, 0, 0.1f);
+			spike->UpdateAnimation();
+			spike->Set2DPosition(xPosition, yPosition);
+			spike->SetSize(32, 32);
+			m_listSpike.push_back(spike);
+		}
+		else if (id == 7)
+		{
+			std::shared_ptr<Heart> heart = std::make_shared<Heart>(model, shader, texture, 1, 1, 0, 0.1f);
+			heart->UpdateAnimation();
+			heart->Set2DPosition(xPosition, yPosition);
+			heart->SetSize(32, 32);
+			m_listHeart.push_back(heart);
+		}
+		else if (id == 8)
+		{
+			std::shared_ptr<Coin> coin = std::make_shared<Coin>(model, shader, texture, 6, 1, 0, 0.1f);
+			coin->UpdateAnimation();
+			coin->Set2DPosition(xPosition, yPosition);
+			coin->SetSize(32, 32);
+			m_listCoin.push_back(coin);
+		}
+		else if (id == 9)
+		{
+			std::shared_ptr<Trampoline > trampoline= std::make_shared<Trampoline>(model, shader, texture, 14, 1, 0, 0.07f);
+			trampoline->UpdateAnimation();
+			trampoline->Set2DPosition(xPosition, yPosition);
+			trampoline->SetSize(96, 96);
+			m_listTrampoline.push_back(trampoline);
+		}
+		else if (id == 10)
+		{
+			std::shared_ptr<Ground>  ground3 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.7f, 3);
+			ground3->Set2DPosition(xPosition, yPosition);
+			ground3->SetSize(128, 32);
+			ground3->UpdateAnimation();
+			m_listGround.push_back(ground3);
+		}
+		else if (id == 11)
+		{
+			std::shared_ptr<Ground>  ground2 = std::make_shared<Ground>(model, shader, texture, 4, 1, 0, 0.1f, 2);
+			ground2->Set2DPosition(xPosition, yPosition);
+			ground2->SetSize(128, 32);
+			ground2->UpdateAnimation();
+			m_listGround.push_back(ground2);
+		}
+	}
+	fclose(fptr);
+}
+
+void GSPlay::UpdateScore()
+{
+	if(m_player->GetScore() > Globals::bestSocre)
+	{
+		FILE* fptr;
+		fptr = fopen("C:\\Users\\Hoang\\Documents\\GitHub\\GameProjectGL\\MiniGameStarter\\TrainingFramework\\src\\GameStates\\BestScore.txt", "r+");
+		if (fptr == NULL)
+		{
+			printf("Error!");
+			exit(1);
+		}
+		fprintf(fptr, "%d", m_player->GetScore());
+		fclose(fptr);
+		Globals::bestSocre = m_player->GetScore();
+	}
+}
+
 
 
 
@@ -549,3 +627,4 @@ void GSPlay::CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> 
 		});
 	m_listButtonPause.push_back(buttonRestart);
 }
+

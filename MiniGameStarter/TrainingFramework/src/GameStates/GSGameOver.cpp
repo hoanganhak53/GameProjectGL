@@ -13,19 +13,30 @@ GSGameOver::~GSGameOver()
 void GSGameOver::Init()
 {
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("background_over.tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("win.tga");
+	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 
 	// background
-	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
-	m_background = std::make_shared<Sprite2D>(model, shader, texture);
-	m_background->Set2DPosition(Globals::screenWidth / 2, Globals::screenHeight / 2);
-	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
+	if(Globals::isWin)
+	{
+		m_background = std::make_shared<Sprite2D>(model, shader, texture);
+		m_background->Set2DPosition(Globals::screenWidth / 2, Globals::screenHeight / 2);
+		m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
+	}
+	else
+	{
+		auto texture = ResourceManagers::GetInstance()->GetTexture("lose.tga");
+		m_background = std::make_shared<Sprite2D>(model, shader, texture);
+		m_background->Set2DPosition(Globals::screenWidth / 2, Globals::screenHeight / 2);
+		m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
+	}
+
 
 	//home button
 	texture = ResourceManagers::GetInstance()->GetTexture("b_home.tga");
 	std::shared_ptr<GameButton>  button = std::make_shared<GameButton>(model, shader, texture);
-	button->Set2DPosition(Globals::screenWidth / 2 + 100, Globals::screenHeight / 5 * 4);
-	button->SetSize(70, 70);
+	button->Set2DPosition(Globals::screenWidth / 2 + 100, Globals::screenHeight / 5 * 4 + 100);
+	button->SetSize(64, 64);
 	button->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->PopState();
 		GameStateMachine::GetInstance()->PopState();
@@ -35,8 +46,8 @@ void GSGameOver::Init()
 	//restart button
 	texture = ResourceManagers::GetInstance()->GetTexture("b_restart.tga");
 	std::shared_ptr<GameButton>  buttonRestart = std::make_shared<GameButton>(model, shader, texture);
-	buttonRestart->Set2DPosition(Globals::screenWidth / 2 - 100, Globals::screenHeight / 5 * 4);
-	buttonRestart->SetSize(70, 70);
+	buttonRestart->Set2DPosition(Globals::screenWidth / 2 - 100, Globals::screenHeight / 5 * 4 + 100);
+	buttonRestart->SetSize(64, 64);
 	buttonRestart->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->PopState();
 		GameStateMachine::GetInstance()->PopState();

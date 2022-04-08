@@ -7,6 +7,9 @@ int Globals::screenWidth = 1300;
 int Globals::screenHeight = 800;
 int Globals::character = 1;
 int Globals::moveCam = 0;
+bool Globals::isWin = false;
+int Globals::bestSocre = 0;
+
 
 GLint Init(ESContext* esContext)
 {
@@ -54,6 +57,12 @@ GLint _tmain(GLint argc, _TCHAR* argv[])
 	if (Init(&esContext) != 0)
 		return 0;
 
+	RECT rc;
+	GetWindowRect(esContext.hWnd, &rc);
+	int xPos = (GetSystemMetrics(SM_CXSCREEN) - rc.right) / 2;
+	int yPos = (GetSystemMetrics(SM_CYSCREEN) - rc.bottom) / 2;
+
+	SetWindowPos(esContext.hWnd, 0, xPos, yPos, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 	esRegisterDrawFunc(&esContext, Draw);
 	esRegisterUpdateFunc(&esContext, Update);
 	esRegisterKeyFunc(&esContext, OnKey);

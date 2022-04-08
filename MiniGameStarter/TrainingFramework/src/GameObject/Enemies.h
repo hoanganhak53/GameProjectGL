@@ -51,3 +51,15 @@ public:
 
 };
 
+class Ghost :
+    public Enemies
+{
+public:
+    Ghost(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime);
+    ~Ghost();
+
+    void        UpdateAnimation();
+    void        Move(std::shared_ptr<Player> player, float deltaTime);
+    GLint       m_dir;
+};
+

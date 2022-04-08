@@ -31,6 +31,8 @@ private:
 	std::shared_ptr<Sprite2D>				m_background;
 	std::list<std::shared_ptr<GameButton>>	m_listButton;
 	std::shared_ptr<Text>					m_textGameName;
+	std::shared_ptr<Text>					m_score;
+
 	std::shared_ptr<Player>					m_player;
 	GLint									m_numChar;
 	bool									m_audioOn = true;
