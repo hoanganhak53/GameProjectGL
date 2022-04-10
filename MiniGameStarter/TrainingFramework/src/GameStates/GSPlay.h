@@ -59,7 +59,6 @@ private:
 	std::list<std::shared_ptr<Ghost>>			m_listGhost;
 	std::list<std::shared_ptr<Spike>>			m_listSpike;
 	std::list<std::shared_ptr<Trampoline>>		m_listTrampoline;
-
 	std::shared_ptr<Text>						m_score;
 	std::shared_ptr<Text>						m_hp;
 	std::shared_ptr<Cup>						m_cup;

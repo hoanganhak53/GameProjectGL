@@ -58,6 +58,7 @@ public:
     Ghost(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime);
     ~Ghost();
 
+    void        Attack(std::shared_ptr<Player>  obj);
     void        UpdateAnimation();
     void        Move(std::shared_ptr<Player> player, float deltaTime);
     GLint       m_dir;

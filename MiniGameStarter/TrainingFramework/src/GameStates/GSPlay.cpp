@@ -32,7 +32,8 @@ void GSPlay::Init()
 	m_isPause = false;
 	//Sound
 	std::string name = "MenuSound.wav";
-	ResourceManagers::GetInstance()->PlaySound(name, true);
+	if(Globals::haveSound)
+		ResourceManagers::GetInstance()->PlaySound(name, true);
 
 	// background
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
@@ -71,12 +72,13 @@ void GSPlay::Init()
 	m_player = std::make_shared<Player>(model, shader, texture, 12, 1, 0, 0.07f);
 	m_player->setIdCharacter(Globals::character);
 	m_player->UpdateAnimation();
-	m_player->Set2DPosition(600, 400);
+	m_player->Set2DPosition(600, 650);
 	m_player->SetSize(96, 96);
 	//cup
 	m_cup = std::make_shared<Cup>(model, shader, texture, 8, 1, 0, 0.07f);
 	m_cup->UpdateAnimation();
-	m_cup->Set2DPosition(-400, 600);
+	m_cup->Set2DPosition(24250, 150);
+
 	m_cup->SetSize(64, 64);
 
 	CreateMap(model, shader, texture);
@@ -109,10 +111,28 @@ void GSPlay::Init()
 	m_listGround.push_back(g4);
 
 	std::shared_ptr<Ground>  g5 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
-	g5->Set2DPosition(8800, 750);
-	g5->SetSize(1000, 100);
+	g5->Set2DPosition(9500, 750);
+	g5->SetSize(2300, 100);
 	g5->UpdateAnimation();
 	m_listGround.push_back(g5);
+
+	std::shared_ptr<Ground>  g6 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
+	g6->Set2DPosition(13100, 750);
+	g6->SetSize(1800, 100);
+	g6->UpdateAnimation();
+	m_listGround.push_back(g6);
+
+	std::shared_ptr<Ground>  g7 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
+	g7->Set2DPosition(15200, 750);
+	g7->SetSize(1800, 100);
+	g7->UpdateAnimation();
+	m_listGround.push_back(g7);
+
+	std::shared_ptr<Ground>  g8 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
+	g8->Set2DPosition(19300, 750);
+	g8->SetSize(4000, 100);
+	g8->UpdateAnimation();
+	m_listGround.push_back(g8);
 }
 
 void GSPlay::Exit()
@@ -255,7 +275,7 @@ void GSPlay::Update(float deltaTime)
 				haveCrash = true;
 			}
 		}
-		if (haveCrash && m_player->getV() != 20)
+		if (haveCrash && m_player->getV() != 25)
 		{
 			m_player->setV(0);
 			m_player->setJump(false);
@@ -344,10 +364,10 @@ void GSPlay::Update(float deltaTime)
 	m_cup->Update(deltaTime);
 	for (auto it : m_listBackground)
 	{
-		if(it->Get2DPosition().x < -Globals::screenWidth / 2)
-			it->Set2DPosition(Globals::screenWidth / 2 * 3 - 15, it->Get2DPosition().y);
-		if(it->Get2DPosition().x > Globals::screenWidth / 2 * 3)
-			it->Set2DPosition( -Globals::screenWidth / 2 + 15, it->Get2DPosition().y);
+		if(it->Get2DPosition().x < -Globals::screenWidth / 2 + 20)
+			it->Set2DPosition(Globals::screenWidth / 2 * 3 - 20, it->Get2DPosition().y);
+		if(it->Get2DPosition().x > Globals::screenWidth / 2 * 3 - 20)
+			it->Set2DPosition( -Globals::screenWidth / 2 + 20, it->Get2DPosition().y);
 
 		it->Set2DPosition(it->Get2DPosition().x - Globals::moveCam, it->Get2DPosition().y);
 		it->Update(deltaTime);
@@ -393,7 +413,6 @@ void GSPlay::Draw()
 		if (it->getActive()) {
 			it->Draw();
 		}
-
 	}
 	m_cup->Draw();
 	m_player->Draw();
@@ -474,13 +493,14 @@ void GSPlay::CreateBackground(std::shared_ptr<Model> model, std::shared_ptr<Shad
 	bg9->Set2DPosition(-(float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
 	bg9->SetSize(Globals::screenWidth, Globals::screenHeight);
 	m_listBackground.push_back(bg9);
+
 }
 
 void GSPlay::CreateMap(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture)
 {
 	int id = 0, xPosition = 0, yPosition = 0;
 	FILE* fptr;
-	fptr = fopen("C:\\Users\\Hoang\\Documents\\GitHub\\GameProjectGL\\MiniGameStarter\\TrainingFramework\\src\\GameStates\\DataMap.txt", "r");
+	fptr = fopen("..\\Data\\TextData\\DataMap.txt", "r");
 	if (fptr == NULL)
 	{
 		printf("Error!");
@@ -594,7 +614,7 @@ void GSPlay::UpdateScore()
 	if(m_player->GetScore() > Globals::bestSocre)
 	{
 		FILE* fptr;
-		fptr = fopen("C:\\Users\\Hoang\\Documents\\GitHub\\GameProjectGL\\MiniGameStarter\\TrainingFramework\\src\\GameStates\\BestScore.txt", "r+");
+		fptr = fopen("..\\Data\\TextData\\BestScore.txt", "r+");
 		if (fptr == NULL)
 		{
 			printf("Error!");
@@ -605,7 +625,8 @@ void GSPlay::UpdateScore()
 		Globals::bestSocre = m_player->GetScore();
 	}
 	//Sound
-	ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
+	if (Globals::haveSound)
+		ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
 }
 
 
@@ -619,8 +640,12 @@ void GSPlay::CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> 
 	button->Set2DPosition(Globals::screenWidth / 2 + 100, Globals::screenHeight / 2);
 	button->SetSize(70, 70);
 	button->SetOnClick([this]() {
-		ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
-		ResourceManagers::GetInstance()->PlaySound("MenuSound.wav", true);
+		if (Globals::haveSound)
+		{
+			ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
+			ResourceManagers::GetInstance()->PlaySound("MenuSound.wav", true);
+		}
+
 		GameStateMachine::GetInstance()->PopState();
 		});
 	m_listButtonPause.push_back(button);
@@ -652,8 +677,12 @@ void GSPlay::CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> 
 	buttonRestart->Set2DPosition(Globals::screenWidth / 2 - 100, Globals::screenHeight / 2);
 	buttonRestart->SetSize(70, 70);
 	buttonRestart->SetOnClick([this]() {
-		ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
-		ResourceManagers::GetInstance()->PlaySound("MenuSound.wav", true);
+		if (Globals::haveSound)
+		{
+			ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
+			ResourceManagers::GetInstance()->PlaySound("MenuSound.wav", true);
+		}
+
 		GameStateMachine::GetInstance()->PopState();
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});

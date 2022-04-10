@@ -154,7 +154,8 @@ void Player::Move(float deltaTime, int pressKey)
 		{
 			setJump(true);
 			setV(25);
-			ResourceManagers::GetInstance()->PlaySound("Jump.wav");
+			if (Globals::haveSound)
+				ResourceManagers::GetInstance()->PlaySound("Jump.wav");
 		}
 		break;
 	}
@@ -172,7 +173,8 @@ void Player::Move(float deltaTime, int pressKey)
 		{
 			setJump(true);
 			setV(25);
-			ResourceManagers::GetInstance()->PlaySound("Jump.wav");
+			if (Globals::haveSound)
+				ResourceManagers::GetInstance()->PlaySound("Jump.wav");
 
 		}
 		m_dir = -1;
@@ -193,7 +195,8 @@ void Player::Move(float deltaTime, int pressKey)
 		{
 			setJump(true);
 			setV(25);
-			ResourceManagers::GetInstance()->PlaySound("Jump.wav");
+			if (Globals::haveSound)
+				ResourceManagers::GetInstance()->PlaySound("Jump.wav");
 
 		}
 		m_dir = 1;

@@ -27,7 +27,7 @@ public:
 	static int Globals::moveCam;
 	static bool Globals::isWin;
 	static int Globals::bestSocre;
-
+	static bool Globals::haveSound;
 
 };
 

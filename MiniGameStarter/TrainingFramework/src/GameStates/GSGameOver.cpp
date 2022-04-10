@@ -34,7 +34,8 @@ void GSGameOver::Init()
 		m_background->Set2DPosition(Globals::screenWidth / 2, Globals::screenHeight / 2);
 		m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 	}
-	ResourceManagers::GetInstance()->PlaySound(song);
+	if(Globals::haveSound)
+		ResourceManagers::GetInstance()->PlaySound(song);
 
 	
 	//home button
@@ -43,12 +44,16 @@ void GSGameOver::Init()
 	button->Set2DPosition(Globals::screenWidth / 2 + 100, Globals::screenHeight / 5 * 4 + 100);
 	button->SetSize(64, 64);
 	button->SetOnClick([this]() {
-		if(Globals::isWin)
-			ResourceManagers::GetInstance()->StopSound("Win.wav");
-		else
-			ResourceManagers::GetInstance()->StopSound("Lose.wav");
+		if (Globals::haveSound)
+		{
+			if(Globals::isWin)
+				ResourceManagers::GetInstance()->StopSound("Win.wav");
+			else
+				ResourceManagers::GetInstance()->StopSound("Lose.wav");
 
 		ResourceManagers::GetInstance()->PlaySound("MenuSound.wav");
+		}
+
 		GameStateMachine::GetInstance()->PopState();
 		GameStateMachine::GetInstance()->PopState();
 		});
@@ -62,11 +67,15 @@ void GSGameOver::Init()
 	buttonRestart->SetOnClick([this]() {
 		GameStateMachine::GetInstance()->PopState();
 		GameStateMachine::GetInstance()->PopState();
-		if (Globals::isWin)
-			ResourceManagers::GetInstance()->StopSound("Win.wav");
-		else
-			ResourceManagers::GetInstance()->StopSound("Lose.wav");
-		ResourceManagers::GetInstance()->PlaySound("MenuSound.wav");
+		if (Globals::haveSound)
+		{
+			if (Globals::isWin)
+				ResourceManagers::GetInstance()->StopSound("Win.wav");
+			else
+				ResourceManagers::GetInstance()->StopSound("Lose.wav");
+
+			ResourceManagers::GetInstance()->PlaySound("MenuSound.wav");
+		}
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});
 	m_listButton.push_back(buttonRestart);

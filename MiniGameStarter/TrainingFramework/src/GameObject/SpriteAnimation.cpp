@@ -159,7 +159,7 @@ bool SpriteAnimation::CheckBound(std::shared_ptr<SpriteAnimation>  obj,int id)
 
 	if (a_x1 < b_x2 && b_x1 < a_x2 && a_y1 < b_y2 && b_y1 < a_y2 && m_velocity <= 0)
 	{
-		Set2DPosition(m_position.x, obj->Get2DPosition().y - obj->getSize().y / 2 - m_iHeight / 2);
+		Set2DPosition(m_position.x, obj->Get2DPosition().y - obj->getSize().y / 2 - m_iHeight / 2 + 1);
 		return true;
 	}
 	return false;
@@ -167,10 +167,10 @@ bool SpriteAnimation::CheckBound(std::shared_ptr<SpriteAnimation>  obj,int id)
 
 bool SpriteAnimation::CheckBound(std::shared_ptr<SpriteAnimation>  obj)
 {
-	int a_x1 = m_position.x - m_iWidth / 2, a_x2 = m_position.x + m_iWidth / 2;
-	int a_y1 = m_position.y - m_iHeight / 2, a_y2 = m_position.y + m_iHeight / 2;
-	int b_x1 = obj->Get2DPosition().x - obj->getSize().x / 2 + 10, b_x2 = obj->Get2DPosition().x + obj->getSize().x / 2 - 10;
-	int b_y1 = obj->Get2DPosition().y - obj->getSize().y / 2, b_y2 = obj->Get2DPosition().y + obj->getSize().y / 2;
+	float a_x1 = m_position.x - m_iWidth / 2, a_x2 = m_position.x + m_iWidth / 2;
+	float a_y1 = m_position.y - m_iHeight / 2, a_y2 = m_position.y + m_iHeight / 2;
+	float b_x1 = obj->Get2DPosition().x - obj->getSize().x / 2 + 10, b_x2 = obj->Get2DPosition().x + obj->getSize().x / 2 - 10;
+	float b_y1 = obj->Get2DPosition().y - obj->getSize().y / 2, b_y2 = obj->Get2DPosition().y + obj->getSize().y / 2;
 	if (a_x1 < b_x2 && b_x1 < a_x2 && a_y1 < b_y2 && b_y1 < a_y2)
 		return true;
 	return false;
@@ -188,8 +188,8 @@ GLint SpriteAnimation::getV()
 void SpriteAnimation::setV(GLint v)
 {
 	m_velocity = v;
-	if (m_velocity < -6)
-		m_velocity = -6;
+	if (m_velocity < -5)
+		m_velocity = -5;
 }
 bool SpriteAnimation::getActive()
 {

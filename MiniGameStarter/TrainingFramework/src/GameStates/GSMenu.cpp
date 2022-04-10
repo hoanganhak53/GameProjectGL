@@ -32,7 +32,7 @@ void GSMenu::Init()
 	texture = ResourceManagers::GetInstance()->GetTexture("b_play.tga");
 	std::shared_ptr<GameButton> button = std::make_shared<GameButton>(model, shader, texture);
 	button->Set2DPosition(Globals::screenWidth / 2,	660);
-	button->SetSize(100, 100);
+	button->SetSize(64, 64);
 	button->SetOnClick([]() {
 			ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
 			GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
@@ -52,12 +52,14 @@ void GSMenu::Init()
 			ResourceManagers::GetInstance()->StopSound(name);
 			buttonAudio->SetTexture(texture2);
 			m_audioOn = false;
+			Globals::haveSound = false;
 		}
 		else
 		{
 			ResourceManagers::GetInstance()->PlaySound(name);
 			buttonAudio->SetTexture(texture);
 			m_audioOn = true;
+			Globals::haveSound = true;
 		}
 
 		});
@@ -68,7 +70,7 @@ void GSMenu::Init()
 	texture = ResourceManagers::GetInstance()->GetTexture("b_left.tga");
 	std::shared_ptr<GameButton> buttonL = std::make_shared<GameButton>(model, shader, texture);
 	buttonL->Set2DPosition(350, 500);
-	buttonL->SetSize(100, 100);
+	buttonL->SetSize(64, 64);
 	buttonL->SetOnClick([]() {
 		if(Globals::character != 1)
 			Globals::character = Globals::character - 1;
@@ -78,7 +80,7 @@ void GSMenu::Init()
 	texture = ResourceManagers::GetInstance()->GetTexture("b_right.tga");
 	std::shared_ptr<GameButton> buttonR = std::make_shared<GameButton>(model, shader, texture);
 	buttonR->Set2DPosition(950,500);
-	buttonR->SetSize(100, 100);
+	buttonR->SetSize(64, 64);
 	buttonR->SetOnClick([]() {
 		if (Globals::character != 4)
 			Globals::character = Globals::character + 1;
@@ -106,7 +108,7 @@ void GSMenu::Init()
 	m_score->Set2DPosition(Vector2(900, 60));
 
 	FILE* fptr;
-	fptr = fopen("C:\\Users\\Hoang\\Documents\\GitHub\\GameProjectGL\\MiniGameStarter\\TrainingFramework\\src\\GameStates\\BestScore.txt", "r");
+	fptr = fopen("..\\Data\\TextData\\BestScore.txt", "r");
 	if (fptr == NULL)
 	{
 		printf("Error!");
@@ -126,7 +128,7 @@ void GSMenu::Init()
 	m_player = std::make_shared<Player>(model, shader, texture, 12, 1, 0, 0.07f);
 
 	m_player->Set2DPosition(Globals::screenWidth / 2, 480);
-	m_player->SetSize(170, 170);
+	m_player->SetSize(128, 128);
 }
 
 void GSMenu::Exit()

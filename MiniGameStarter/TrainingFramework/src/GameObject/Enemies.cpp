@@ -71,6 +71,7 @@ void Enemies::Attack(std::shared_ptr<Player> obj)
 	{
 		if(m_position.y - m_iHeight / 2 >= obj->Get2DPosition().y + obj->getSize().y / 2 - 10)
 		{
+			obj->setV(15);
 			setActive(false);
 		}
 		else
@@ -159,6 +160,25 @@ Ghost::~Ghost()
 {
 }
 
+void Ghost::Attack(std::shared_ptr<Player> obj)
+{
+	if (CheckBound(obj) && obj->getActive())
+	{
+		if (m_position.y - m_iHeight / 2 >= obj->Get2DPosition().y + obj->getSize().y / 2 - 10)
+		{
+			obj->setV(15);
+			setActive(false);
+		}
+		else
+		{
+			obj->SetHp(obj->GetHp() - 1);
+			obj->Set2DPosition(obj->Get2DPosition().x - 50, obj->Get2DPosition().y);
+			obj->setActive(false);
+			setActive(false);
+		}
+	}
+}
+
 void Ghost::UpdateAnimation()
 {
 	m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_ghost.tga");
@@ -166,7 +186,7 @@ void Ghost::UpdateAnimation()
 
 void Ghost::Move(std::shared_ptr<Player> player, float deltaTime)
 {
-	if (m_dir != player->GetDirect() && std::abs(player->Get2DPosition().x - m_position.x) < 900)
+	if (m_dir != player->GetDirect() && std::abs(player->Get2DPosition().x - m_position.x) < 700)
 	{
 		if (m_position.x > player->Get2DPosition().x)
 		{

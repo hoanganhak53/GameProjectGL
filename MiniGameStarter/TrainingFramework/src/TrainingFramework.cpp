@@ -9,6 +9,7 @@ int Globals::character = 1;
 int Globals::moveCam = 0;
 bool Globals::isWin = false;
 int Globals::bestSocre = 0;
+bool Globals::haveSound = true;
 
 
 GLint Init(ESContext* esContext)

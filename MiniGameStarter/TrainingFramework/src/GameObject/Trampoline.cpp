@@ -22,7 +22,8 @@ void Trampoline::Jumping(std::shared_ptr<Player>  obj)
 	{
 		obj->setV(30);
 		obj->setJump(true);
-		ResourceManagers::GetInstance()->PlaySound("Jump.wav");
+		if (Globals::haveSound)
+			ResourceManagers::GetInstance()->PlaySound("Jump.wav");
 	}
 }
 //coin
@@ -45,7 +46,8 @@ bool Coin::Collecting(std::shared_ptr<Player>  obj) {
 	if (Coin::CheckBound(obj))
 	{
 		obj->SetScore(obj->GetScore()+1);
-		ResourceManagers::GetInstance()->PlaySound("Collect.wav");
+		if (Globals::haveSound)
+			ResourceManagers::GetInstance()->PlaySound("Collect.wav");
 		return true;
 	}
 	return false;
@@ -115,7 +117,8 @@ bool Heart::BuffHP(std::shared_ptr<Player> obj)
 	{
 		if(obj->GetHp() > 0)
 			obj->SetHp(obj->GetHp() + 1);
-		ResourceManagers::GetInstance()->PlaySound("Collect.wav");
+		if (Globals::haveSound)
+			ResourceManagers::GetInstance()->PlaySound("Collect.wav");
 		return true;
 	}
 	return false;
