@@ -156,4 +156,7 @@
     <Text Include="src\GameStates\DataMap.txt" />
     <Text Include="src\GameStates\BestScore.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\Icon.ico" />
+  </ItemGroup>
 </Project>

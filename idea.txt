@@ -1,2 +1,2 @@
-Một tựa game RPG giúp người chơi hóa thân vào một nhân vật và khám phá tất cả các map
+Một tựa game 2D giúp người chơi hóa thân vào một nhân vật và khám phá bản đồ và vượt qua quái vật cản đường
 Sử dụng ngôn ngữ chính là C++
