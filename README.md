@@ -13,4 +13,4 @@ Written by C++ programming language, use graphic library GL
 
 ### Game:
 
-![Image](https://cdn.discordapp.com/attachments/734371335018381344/962945303059771432/unknown.png)
+![Image](https://cdn.discordapp.com/attachments/734371335018381344/962945739246432256/unknown.png)
