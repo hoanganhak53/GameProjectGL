@@ -35,10 +35,10 @@ void Ground::Falling(float deltaTime, std::shared_ptr<Player>  player)
 	if(m_fall)
 	{
 		m_Time += deltaTime;
-		if (m_Time > 1.15)
+		if (m_Time > 1.10)
 		{
 			if(GetPosition().y < 1400)
-				Set2DPosition(GetPosition().x, GetPosition().y + 200 * deltaTime);
+				Set2DPosition(GetPosition().x, GetPosition().y + 250 * deltaTime);
 		}
 	}
 }

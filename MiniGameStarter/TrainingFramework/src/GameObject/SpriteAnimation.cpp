@@ -152,9 +152,9 @@ Vector2 SpriteAnimation::getSize()
 
 bool SpriteAnimation::CheckBound(std::shared_ptr<SpriteAnimation>  obj,int id)
 {	
-	int a_x1 = m_position.x - m_iWidth / 2, a_x2 = m_position.x + m_iWidth / 2;
+	int a_x1 = m_position.x - m_iWidth / 2 + 18, a_x2 = m_position.x + m_iWidth / 2 - 18;
 	int a_y1 = m_position.y - m_iHeight / 2, a_y2 = m_position.y + m_iHeight / 2;
-	int b_x1 = obj->Get2DPosition().x - obj->getSize().x/ 2 , b_x2 = obj->Get2DPosition().x + obj->getSize().x / 2;
+	int b_x1 = obj->Get2DPosition().x - obj->getSize().x / 2 , b_x2 = obj->Get2DPosition().x + obj->getSize().x / 2;
 	int b_y1 = obj->Get2DPosition().y - obj->getSize().y / 2, b_y2 = obj->Get2DPosition().y + obj->getSize().y / 2;
 
 	if (a_x1 < b_x2 && b_x1 < a_x2 && a_y1 < b_y2 && b_y1 < a_y2 && m_velocity <= 0)

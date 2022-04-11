@@ -60,8 +60,8 @@ void Enemies::Move(float deltaTime)
 	{	
 		if(m_position.y >= m_start.y - 1)
 			setV(30);
-	Set2DPosition(Get2DPosition().x, Get2DPosition().y - getV() * deltaTime * 70);
-	setV(getV() - deltaTime * 90);
+		Set2DPosition(Get2DPosition().x, Get2DPosition().y - getV() * deltaTime * 70);
+		setV(getV() - deltaTime * 90);
 	}
 }
 
@@ -69,7 +69,7 @@ void Enemies::Attack(std::shared_ptr<Player> obj)
 {
 	if (CheckBound(obj) && obj->getActive())
 	{
-		if(m_position.y - m_iHeight / 2 >= obj->Get2DPosition().y + obj->getSize().y / 2 - 10)
+		if(m_position.y - m_iHeight / 2 >= obj->Get2DPosition().y + obj->getSize().y / 2 - 50)
 		{
 			obj->setV(15);
 			setActive(false);
@@ -186,25 +186,25 @@ void Ghost::UpdateAnimation()
 
 void Ghost::Move(std::shared_ptr<Player> player, float deltaTime)
 {
-	if (m_dir != player->GetDirect() && std::abs(player->Get2DPosition().x - m_position.x) < 700)
+	if (m_dir == player->GetDirect() && std::abs(player->Get2DPosition().x - m_position.x) < 700)
 	{
 		if (m_position.x > player->Get2DPosition().x)
 		{
 			SetRotation(Vector3(0.0f, 0.0, 0.0f));
-			Set2DPosition(m_position.x - 200 * deltaTime, m_position.y);
+			Set2DPosition(m_position.x - 250 * deltaTime, m_position.y);
 		}
 		else
 		{
 			SetRotation(Vector3(0.0f, PI, 0.0f));
-			Set2DPosition(m_position.x + 200 * deltaTime, m_position.y);
+			Set2DPosition(m_position.x + 250 * deltaTime, m_position.y);
 		}
 		if (m_position.y > player->Get2DPosition().y)
 		{
-			Set2DPosition(m_position.x , m_position.y- 100 * deltaTime);
+			Set2DPosition(m_position.x , m_position.y - 150 * deltaTime);
 		}
 		else
 		{
-			Set2DPosition(m_position.x, m_position.y + 100 * deltaTime);
+			Set2DPosition(m_position.x, m_position.y + 150 * deltaTime);
 		}
 	}
 }

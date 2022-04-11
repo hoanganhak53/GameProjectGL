@@ -65,7 +65,10 @@ void GSPlay::Init()
 	m_hp = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.3);
 	m_hp->Set2DPosition(Vector2(110, 45));
 	m_hp->SetText("3");
-
+	//time
+	m_playTime = std::make_shared< Text>(shader, font, "10", TextColor::CYAN, 1.3);
+	m_playTime->Set2DPosition(Vector2(900, 45));
+	m_playTime->SetText("TIME: ");
 	//player
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
 	texture = ResourceManagers::GetInstance()->GetTexture("trampoline.tga");
@@ -170,6 +173,7 @@ void GSPlay::Attacked(float deltaTime)
 				Globals::isWin = false;
 				UpdateScore();
 				GameStateMachine::GetInstance()->ChangeState(StateType::STATE_OVER);
+				Globals::score = m_player->GetScore();
 			}
 		}
 		else
@@ -343,36 +347,42 @@ void GSPlay::Update(float deltaTime)
 		}
 		m_score->SetText(std::to_string(m_player->GetScore()));
 		m_hp->SetText(std::to_string(m_player->GetHp()));
-	}
-	for (auto it : m_listTrampoline)
-	{
-		it->Jumping(m_player);
-		it->Update(deltaTime);
-	}
 
-	for (auto it : m_listSpike)
-	{
-		it->Attack(m_player);
-		it->Update(deltaTime);
-	}
-	if (m_cup->Win(m_player))
-	{
-		Globals::isWin = true;
-		UpdateScore();
-		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_OVER);
-	}
-	m_cup->Update(deltaTime);
-	for (auto it : m_listBackground)
-	{
-		if(it->Get2DPosition().x < -Globals::screenWidth / 2 + 20)
-			it->Set2DPosition(Globals::screenWidth / 2 * 3 - 20, it->Get2DPosition().y);
-		if(it->Get2DPosition().x > Globals::screenWidth / 2 * 3 - 20)
-			it->Set2DPosition( -Globals::screenWidth / 2 + 20, it->Get2DPosition().y);
+		m_playTime->SetText("TIME: " + std::to_string((int)Globals::second / 60) + "M " + std::to_string((int)Globals::second % 60) + "S");
+		Globals::second += deltaTime;
+		m_playTime->Update(deltaTime);
 
-		it->Set2DPosition(it->Get2DPosition().x - Globals::moveCam, it->Get2DPosition().y);
-		it->Update(deltaTime);
+		for (auto it : m_listTrampoline)
+		{
+			it->Jumping(m_player);
+			it->Update(deltaTime);
+		}
+
+		for (auto it : m_listSpike)
+		{
+			it->Attack(m_player);
+			it->Update(deltaTime);
+		}
+		if (m_cup->Win(m_player))
+		{
+			Globals::isWin = true;
+			UpdateScore();
+			Globals::score = m_player->GetScore();
+			GameStateMachine::GetInstance()->ChangeState(StateType::STATE_OVER);
+		}
+		m_cup->Update(deltaTime);
+		for (auto it : m_listBackground)
+		{
+			if(it->Get2DPosition().x < -Globals::screenWidth / 2 + 20)
+				it->Set2DPosition(Globals::screenWidth / 2 * 3 - 20, it->Get2DPosition().y);
+			if(it->Get2DPosition().x > Globals::screenWidth / 2 * 3 - 20)
+				it->Set2DPosition( -Globals::screenWidth / 2 + 20, it->Get2DPosition().y);
+
+			it->Set2DPosition(it->Get2DPosition().x - Globals::moveCam, it->Get2DPosition().y);
+			it->Update(deltaTime);
+		}
+		Attacked(deltaTime);
 	}
-	Attacked(deltaTime);
 }
 
 void GSPlay::Draw()
@@ -383,6 +393,7 @@ void GSPlay::Draw()
 	}
 	m_score->Draw();
 	m_hp->Draw();
+	m_playTime->Draw();
 	for (auto it : m_listGround)
 	{
 		it->Draw();
@@ -645,7 +656,7 @@ void GSPlay::CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> 
 			ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
 			ResourceManagers::GetInstance()->PlaySound("MenuSound.wav", true);
 		}
-
+		Globals::second = 0;
 		GameStateMachine::GetInstance()->PopState();
 		});
 	m_listButtonPause.push_back(button);
@@ -682,7 +693,7 @@ void GSPlay::CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> 
 			ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
 			ResourceManagers::GetInstance()->PlaySound("MenuSound.wav", true);
 		}
-
+		Globals::second = 0;
 		GameStateMachine::GetInstance()->PopState();
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});

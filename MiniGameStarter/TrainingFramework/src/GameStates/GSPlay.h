@@ -61,6 +61,8 @@ private:
 	std::list<std::shared_ptr<Trampoline>>		m_listTrampoline;
 	std::shared_ptr<Text>						m_score;
 	std::shared_ptr<Text>						m_hp;
+	std::shared_ptr<Text>						m_playTime;
+
 	std::shared_ptr<Cup>						m_cup;
 
 

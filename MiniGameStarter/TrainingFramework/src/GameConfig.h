@@ -28,6 +28,8 @@ public:
 	static bool Globals::isWin;
 	static int Globals::bestSocre;
 	static bool Globals::haveSound;
+	static float Globals::second;
+	static int Globals::score;
 
 };
 

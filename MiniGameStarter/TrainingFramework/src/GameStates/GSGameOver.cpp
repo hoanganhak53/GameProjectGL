@@ -53,7 +53,8 @@ void GSGameOver::Init()
 
 		ResourceManagers::GetInstance()->PlaySound("MenuSound.wav");
 		}
-
+		Globals::score = 0;
+		Globals::second = 0;
 		GameStateMachine::GetInstance()->PopState();
 		GameStateMachine::GetInstance()->PopState();
 		});
@@ -76,10 +77,21 @@ void GSGameOver::Init()
 
 			ResourceManagers::GetInstance()->PlaySound("MenuSound.wav");
 		}
+		Globals::score = 0;
+		Globals::second = 0;
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});
 	m_listButton.push_back(buttonRestart);
 
+	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
+	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("Brightly Crush Shine.otf");
+	m_playTime = std::make_shared< Text>(shader, font, "10", TextColor::WHITE, 1.3);
+	m_playTime->Set2DPosition(Vector2(400, 650));
+	m_playTime->SetText("TIME: " + std::to_string((int)Globals::second / 60) + "M " + std::to_string((int)Globals::second % 60) + "S");
+	
+	m_score = std::make_shared< Text>(shader, font, "10", TextColor::WHITE, 1.3);
+	m_score->Set2DPosition(Vector2(800, 650));
+	m_score->SetText("SCORE: " + std::to_string(Globals::score));
 }
 
 void GSGameOver::Exit()
@@ -133,4 +145,6 @@ void GSGameOver::Draw()
 	{
 		it->Draw();
 	}
+	m_score->Draw();
+	m_playTime->Draw();
 }
