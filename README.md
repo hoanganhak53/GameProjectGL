@@ -4,12 +4,11 @@
  
  ## Content:
  
-Written by C++ programming language, use graphic library GL
-
+Written by C++ programming language, use graphic library TranningFramework
 # Setup:
 
- - Setup Visul Studio 2019/MinGW/GCC
- - Open Tranning Framework
+ - Setup Visual Studio 2019/MinGW/GCC
+ - Open Tranning Framework with Visual Studio
 
 ### Game:
 
