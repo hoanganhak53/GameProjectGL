@@ -27,6 +27,7 @@ GSPlay::~GSPlay()
 
 void GSPlay::Init()
 {
+	m_map = 1;
 	m_PressKey = 0;
 	m_Time = 0;
 	m_isPause = false;
@@ -80,7 +81,7 @@ void GSPlay::Init()
 	//cup
 	m_cup = std::make_shared<Cup>(model, shader, texture, 8, 1, 0, 0.07f);
 	m_cup->UpdateAnimation();
-	m_cup->Set2DPosition(24250, 150);
+	m_cup->Set2DPosition(20600, 650);
 
 	m_cup->SetSize(64, 64);
 
@@ -168,7 +169,7 @@ void GSPlay::Attacked(float deltaTime)
 			m_player->setActive(false);
 			m_player->UpdateAnimation();
 			m_Time += deltaTime;
-			if (m_Time > 2.0f)
+			if (m_Time > 1.5f)
 			{
 				Globals::isWin = false;
 				UpdateScore();
@@ -298,8 +299,11 @@ void GSPlay::Update(float deltaTime)
 		{
 			if (!it->getActive())
 				continue;
-			it->Move(deltaTime);
-			it->Attack(m_player);
+			if (it->Get2DPosition().x >= -Globals::screenWidth && it->Get2DPosition().x <= Globals::screenWidth * 2)
+			{
+				it->Move(deltaTime);
+				it->Attack(m_player);
+			}
 			it->Update(deltaTime);
 		}
 
@@ -308,41 +312,49 @@ void GSPlay::Update(float deltaTime)
 			if (!it->getActive())
 				continue;
 
-			it->m_bullet->Attack(m_player);
-			it->m_bullet->Move(deltaTime);
+			if (it->Get2DPosition().x >= -Globals::screenWidth && it->Get2DPosition().x <= Globals::screenWidth * 2)
+			{
+				it->m_bullet->Attack(m_player);
+				it->m_bullet->Move(deltaTime);
+				it->Attack(m_player);
+			}
 			it->m_bullet->Update(deltaTime);
-			it->Attack(m_player);
 			it->Update(deltaTime);
 		}		
 		for (auto it : m_listGhost)
 		{
 			if (!it->getActive())
 				continue;
-			it->Move(m_player, deltaTime);
-			it->Attack(m_player);
+			if (it->Get2DPosition().x >= -Globals::screenWidth && it->Get2DPosition().x <= Globals::screenWidth * 2)
+			{
+				it->Move(m_player, deltaTime);
+				it->Attack(m_player);
+			}
 			it->Update(deltaTime);
 		}
 		for (auto it : m_listGround)
 		{
-			if(it->m_id == 2)
-				it->Falling(deltaTime, m_player);
+			if (it->Get2DPosition().x >= -Globals::screenWidth && it->Get2DPosition().x <= Globals::screenWidth * 2)
+				if(it->m_id == 2)
+					it->Falling(deltaTime, m_player);
 			it->Update(deltaTime);
 		}
 
 
 		for (auto it : m_listCoin)
 		{
-			if (it->Collecting(m_player)) {
-				it->setActive(false);
-			}else
+			if (it->Get2DPosition().x >= -Globals::screenWidth && it->Get2DPosition().x <= Globals::screenWidth * 2)
+				if (it->Collecting(m_player))
+					it->setActive(false);
+			if(it->getActive())
 				it->Update(deltaTime);
 		}
 		for (auto it : m_listHeart)
 		{
-			if (it->BuffHP(m_player)) {
-				it->setActive(false);
-			}
-			else
+			if (it->Get2DPosition().x >= -Globals::screenWidth && it->Get2DPosition().x <= Globals::screenWidth * 2)
+				if (it->BuffHP(m_player))
+					it->setActive(false);
+			if (it->getActive())
 				it->Update(deltaTime);
 		}
 		m_score->SetText(std::to_string(m_player->GetScore()));
@@ -354,23 +366,28 @@ void GSPlay::Update(float deltaTime)
 
 		for (auto it : m_listTrampoline)
 		{
-			it->Jumping(m_player);
+			if (it->Get2DPosition().x >= -Globals::screenWidth && it->Get2DPosition().x <= Globals::screenWidth * 2)
+				it->Jumping(m_player);
 			it->Update(deltaTime);
 		}
 
 		for (auto it : m_listSpike)
 		{
-			it->Attack(m_player);
+			if (it->Get2DPosition().x >= -Globals::screenWidth && it->Get2DPosition().x <= Globals::screenWidth * 2)
+				it->Attack(m_player);
 			it->Update(deltaTime);
 		}
-		if (m_cup->Win(m_player))
-		{
-			Globals::isWin = true;
-			UpdateScore();
-			Globals::score = m_player->GetScore();
-			GameStateMachine::GetInstance()->ChangeState(StateType::STATE_OVER);
-		}
+
+		if (m_cup->Get2DPosition().x >= -Globals::screenWidth && m_cup->Get2DPosition().x <= Globals::screenWidth * 2)
+			if (m_cup->Win(m_player))
+			{
+				Globals::isWin = true;
+				UpdateScore();
+				Globals::score = m_player->GetScore();
+				GameStateMachine::GetInstance()->ChangeState(StateType::STATE_OVER);
+			}
 		m_cup->Update(deltaTime);
+
 		for (auto it : m_listBackground)
 		{
 			if(it->Get2DPosition().x < -Globals::screenWidth / 2 + 20)
@@ -504,7 +521,6 @@ void GSPlay::CreateBackground(std::shared_ptr<Model> model, std::shared_ptr<Shad
 	bg9->Set2DPosition(-(float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
 	bg9->SetSize(Globals::screenWidth, Globals::screenHeight);
 	m_listBackground.push_back(bg9);
-
 }
 
 void GSPlay::CreateMap(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture)

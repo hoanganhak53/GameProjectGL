@@ -70,7 +70,7 @@ private:
 	std::list<std::shared_ptr<Coin>>			m_listCoin;
 	std::list<std::shared_ptr<Heart>>			m_listHeart;
 
-
+	int											m_map;
     float										m_Time;
 	bool										m_isPause;
 	int											m_PressKey;

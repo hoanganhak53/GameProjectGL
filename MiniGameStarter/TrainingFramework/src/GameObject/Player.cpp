@@ -26,7 +26,6 @@ void Player::UpdateAnimation()
 {
 	if (!m_isActive)
 	{
-		m_frameTime = 0.07;
 		SetNumFrame(7);
 		if (m_idCharacter == 1)
 		{
@@ -48,7 +47,6 @@ void Player::UpdateAnimation()
 	else
 	{
 		if (m_isJump) {
-			m_frameTime = 0.04;
 			SetNumFrame(6);
 			if (m_idCharacter == 1)
 			{
@@ -68,7 +66,6 @@ void Player::UpdateAnimation()
 			}
 		}
 		else {
-			m_frameTime = 0.07;
 			SetNumFrame(12);
 			if (m_idCharacter == 1)
 			{
