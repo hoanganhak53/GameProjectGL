@@ -18,6 +18,7 @@ class Spike;
 class Heart;
 class Ghost;
 class Cup;
+class Boss;
 
 class GSPlay :
 	public GameStateBase
@@ -59,6 +60,8 @@ private:
 	std::list<std::shared_ptr<Ghost>>			m_listGhost;
 	std::list<std::shared_ptr<Spike>>			m_listSpike;
 	std::list<std::shared_ptr<Trampoline>>		m_listTrampoline;
+	std::shared_ptr<Boss>						m_boss;
+
 	std::shared_ptr<Text>						m_score;
 	std::shared_ptr<Text>						m_hp;
 	std::shared_ptr<Text>						m_playTime;

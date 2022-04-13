@@ -71,7 +71,7 @@ void Enemies::Attack(std::shared_ptr<Player> obj)
 	{
 		if(m_position.y - m_iHeight / 2 >= obj->Get2DPosition().y + obj->getSize().y / 2 - 50)
 		{
-			obj->setV(15);
+			obj->setV(22);
 			setActive(false);
 		}
 		else
@@ -153,7 +153,7 @@ void Bullet::Attack(std::shared_ptr<Player> obj)
 
 Ghost::Ghost(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime) :Enemies(model, shader, texture, numFrames, numActions, currentAction, frameTime)
 {
-	m_dir = -1;
+	m_dir = 1;
 }
 
 Ghost::~Ghost()
@@ -200,11 +200,90 @@ void Ghost::Move(std::shared_ptr<Player> player, float deltaTime)
 		}
 		if (m_position.y > player->Get2DPosition().y)
 		{
-			Set2DPosition(m_position.x , m_position.y - 150 * deltaTime);
+			Set2DPosition(m_position.x , m_position.y - 175 * deltaTime);
 		}
 		else
 		{
-			Set2DPosition(m_position.x, m_position.y + 150 * deltaTime);
+			Set2DPosition(m_position.x, m_position.y + 175 * deltaTime);
+		}
+	}
+}
+
+Boss::Boss(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime) :Enemies(model, shader, texture, numFrames, numActions, currentAction, frameTime)
+{
+	m_hp = 20;
+	m_isJump = false;
+}
+
+Boss::~Boss()
+{
+}
+
+void Boss::UpdateAnimation()
+{
+	m_pTexture = ResourceManagers::GetInstance()->GetTexture("E_boss.tga");
+}
+
+void Boss::Move(std::shared_ptr<Player> player, float deltaTime)
+{
+	if (std::abs(player->Get2DPosition().x - m_position.x) < 1000 )
+	{
+		if (!m_isJump)
+		{
+			if (std::abs(player->Get2DPosition().x - m_position.x) > 3)
+			{
+				if (m_position.x > player->Get2DPosition().x)
+				{
+					SetRotation(Vector3(0.0f, 0.0, 0.0f));
+					Set2DPosition(m_position.x - 200 * deltaTime, m_position.y);
+				}
+				else
+				{
+					SetRotation(Vector3(0.0f, PI, 0.0f));
+					Set2DPosition(m_position.x + 200 * deltaTime, m_position.y);
+				}
+			}
+			else
+			{
+				setV(30);
+				Set2DPosition(Get2DPosition().x, Get2DPosition().y - 1);
+				m_isJump = true;
+			}
+		}
+		else
+		{
+			if (m_position.y >= m_start.y)
+			{
+				setV(0);
+				m_isJump = false;
+			}
+			else
+			{
+				Set2DPosition(Get2DPosition().x, Get2DPosition().y - getV() * deltaTime * 50);
+				setV(getV() - deltaTime * 50);
+			}
+		}
+	}
+}
+
+void Boss::Attack(std::shared_ptr<Player> obj)
+{
+	if (CheckBound(obj) && obj->getActive())
+	{
+		if (m_position.y - m_iHeight / 2 >= obj->Get2DPosition().y + obj->getSize().y / 2 - 50)
+		{
+			m_hp--;
+			if (!m_isJump)
+				obj->setV(20);
+
+			if(m_hp == 0)
+				setActive(false);
+		}
+		else
+		{
+			obj->SetHp(obj->GetHp() - 1);
+			obj->Set2DPosition(obj->Get2DPosition().x - 50, obj->Get2DPosition().y);
+			obj->setActive(false);
 		}
 	}
 }

@@ -81,12 +81,21 @@ void GSPlay::Init()
 	//cup
 	m_cup = std::make_shared<Cup>(model, shader, texture, 8, 1, 0, 0.07f);
 	m_cup->UpdateAnimation();
-	m_cup->Set2DPosition(20600, 650);
+	m_cup->Set2DPosition(19300, 670);
 
 	m_cup->SetSize(64, 64);
 
 	CreateMap(model, shader, texture);
 
+	//boss
+	if (Globals::mode == 2)
+	{
+		m_boss = std::make_shared<Boss>(model, shader, texture, 8, 1, 0, 0.07f);
+		m_boss->UpdateAnimation();
+		m_boss->Set2DPosition(200, 600);
+		m_boss->SetPositionStart(Vector2(200, 650));
+		m_boss->SetSize(100, 100);
+	}
 
 	//ground
 
@@ -133,8 +142,8 @@ void GSPlay::Init()
 	m_listGround.push_back(g7);
 
 	std::shared_ptr<Ground>  g8 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
-	g8->Set2DPosition(19300, 750);
-	g8->SetSize(4000, 100);
+	g8->Set2DPosition(18300, 750);
+	g8->SetSize(2500, 100);
 	g8->UpdateAnimation();
 	m_listGround.push_back(g8);
 }
@@ -388,6 +397,17 @@ void GSPlay::Update(float deltaTime)
 			}
 		m_cup->Update(deltaTime);
 
+		if (Globals::mode == 2)
+		{
+			if (m_boss->getActive())
+			{
+				m_boss->Move(m_player, deltaTime);
+				m_boss->Attack(m_player);
+				m_boss->Update(deltaTime);
+			}
+		}
+
+
 		for (auto it : m_listBackground)
 		{
 			if(it->Get2DPosition().x < -Globals::screenWidth / 2 + 20)
@@ -442,9 +462,15 @@ void GSPlay::Draw()
 			it->Draw();
 		}
 	}
+	if (Globals::mode == 2)
+	{
+		if (m_boss->getActive())
+			m_boss->Draw();	
+	}
+
+
 	m_cup->Draw();
 	m_player->Draw();
-
 	for (auto it : m_listCoin)
 	{
 		if(it->getActive())
@@ -527,7 +553,13 @@ void GSPlay::CreateMap(std::shared_ptr<Model> model, std::shared_ptr<Shader> sha
 {
 	int id = 0, xPosition = 0, yPosition = 0;
 	FILE* fptr;
-	fptr = fopen("..\\Data\\TextData\\DataMap.txt", "r");
+	if(Globals::mode == 1)
+		fptr = fopen("..\\Data\\TextData\\DataMap.txt", "r");
+	else if(Globals::mode == 2)
+		fptr = fopen("..\\Data\\TextData\\DataMapHard.txt", "r");
+	else
+		fptr = fopen("..\\Data\\TextData\\Spond.txt", "r");
+
 	if (fptr == NULL)
 	{
 		printf("Error!");

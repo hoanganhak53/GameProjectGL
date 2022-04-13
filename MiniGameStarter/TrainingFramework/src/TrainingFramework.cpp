@@ -12,6 +12,8 @@ int Globals::bestSocre = 0;
 bool Globals::haveSound = true;
 float Globals::second = 0;
 int Globals::score = 0;
+int Globals::mode = 1;
+
 
 GLint Init(ESContext* esContext)
 {

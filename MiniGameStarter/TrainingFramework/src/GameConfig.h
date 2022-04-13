@@ -30,7 +30,7 @@ public:
 	static bool Globals::haveSound;
 	static float Globals::second;
 	static int Globals::score;
-
+	static int Globals::mode;
 };
 
 // define value

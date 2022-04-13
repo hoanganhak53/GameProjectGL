@@ -64,3 +64,16 @@ public:
     GLint       m_dir;
 };
 
+class Boss :
+    public Enemies
+{
+public:
+    Boss(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, GLint numFrames, GLint numActions, GLint currentAction, GLfloat frameTime);
+    ~Boss();
+
+    void        UpdateAnimation();
+    void        Move(std::shared_ptr<Player> player, float deltaTime);
+    void        Attack(std::shared_ptr<Player>  obj);
+    GLint       m_hp;
+};
+

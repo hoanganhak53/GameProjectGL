@@ -14,6 +14,7 @@ GSMenu::~GSMenu()
 void GSMenu::Init()
 {
 	m_numChar = 1;
+	m_numMode = 1;
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto texture = ResourceManagers::GetInstance()->GetTexture("background_play.tga");
 
@@ -69,24 +70,41 @@ void GSMenu::Init()
 	//left button
 	texture = ResourceManagers::GetInstance()->GetTexture("b_left.tga");
 	std::shared_ptr<GameButton> buttonL = std::make_shared<GameButton>(model, shader, texture);
-	buttonL->Set2DPosition(350, 500);
-	buttonL->SetSize(64, 64);
+	buttonL->Set2DPosition(Globals::screenWidth / 4 - 200, 500);
+	buttonL->SetSize(50, 50);
 	buttonL->SetOnClick([]() {
 		if(Globals::character != 1)
 			Globals::character = Globals::character - 1;
 		});
 	m_listButton.push_back(buttonL);
+
+	std::shared_ptr<GameButton> buttonL1 = std::make_shared<GameButton>(model, shader, texture);
+	buttonL1->Set2DPosition(Globals::screenWidth / 4 * 3 - 200, 500);
+	buttonL1->SetSize(50, 50);
+	buttonL1->SetOnClick([]() {
+		if (Globals::mode != 1)
+			Globals::mode = Globals::mode - 1;
+		});
+	m_listButton.push_back(buttonL1);
 	//right button
 	texture = ResourceManagers::GetInstance()->GetTexture("b_right.tga");
 	std::shared_ptr<GameButton> buttonR = std::make_shared<GameButton>(model, shader, texture);
-	buttonR->Set2DPosition(950,500);
-	buttonR->SetSize(64, 64);
+	buttonR->Set2DPosition(Globals::screenWidth / 4 + 200 ,500);
+	buttonR->SetSize(50, 50);
 	buttonR->SetOnClick([]() {
 		if (Globals::character != 4)
 			Globals::character = Globals::character + 1;
 		});
 	m_listButton.push_back(buttonR);
 
+	std::shared_ptr<GameButton> buttonR1 = std::make_shared<GameButton>(model, shader, texture);
+	buttonR1->Set2DPosition(Globals::screenWidth / 4 * 3 + 200, 500);
+	buttonR1->SetSize(50, 50);
+	buttonR1->SetOnClick([]() {
+		if (Globals::mode != 3)
+			Globals::mode = Globals::mode + 1;
+		});
+	m_listButton.push_back(buttonR1);
 	// exit button
 	texture = ResourceManagers::GetInstance()->GetTexture("b_quit.tga");
 	button = std::make_shared<GameButton>(model, shader, texture);
@@ -106,6 +124,9 @@ void GSMenu::Init()
 	// score	
 	m_score = std::make_shared< Text>(shader, font, "Best score:", Vector4(0.0f, 1.0f, 1.0f, 1.0f), 1.0f);
 	m_score->Set2DPosition(Vector2(900, 60));
+
+	m_mode = std::make_shared< Text>(shader, font, " Normal", Vector4(0.0f, 1.0f, 1.0f, 1.0f), 1.5f);
+	m_mode->Set2DPosition(Vector2(Globals::screenWidth / 4 * 3 - 70, 515));
 
 	FILE* fptr;
 	fptr = fopen("..\\Data\\TextData\\BestScore.txt", "r");
@@ -127,8 +148,8 @@ void GSMenu::Init()
 	texture = ResourceManagers::GetInstance()->GetTexture("char1_Run.tga");
 	m_player = std::make_shared<Player>(model, shader, texture, 12, 1, 0, 0.07f);
 
-	m_player->Set2DPosition(Globals::screenWidth / 2, 480);
-	m_player->SetSize(128, 128);
+	m_player->Set2DPosition(Globals::screenWidth / 4, 480);
+	m_player->SetSize(96, 96);
 }
 
 void GSMenu::Exit()
@@ -182,6 +203,16 @@ void GSMenu::Update(float deltaTime)
 		m_player->UpdateAnimation();
 		m_numChar = Globals::character;
 	}
+	if (m_numMode != Globals::mode) {
+		if(Globals::mode == 1)
+			m_mode->SetText(" Normal");
+		else if(Globals::mode == 2)
+			m_mode->SetText("  Hard");
+		else
+			m_mode->SetText("Speed Run");
+
+		m_numMode = Globals::mode;
+	}
 	m_player->Update(deltaTime);
 	m_score->SetText("Best score: " + std::to_string(Globals::bestSocre));
 }
@@ -197,6 +228,7 @@ void GSMenu::Draw()
 	m_textGameName->Draw();
 	m_score->Draw();
 	m_player->Draw();
+	m_mode->Draw();
 }
 
 void GSMenu::setAudio(bool audio)

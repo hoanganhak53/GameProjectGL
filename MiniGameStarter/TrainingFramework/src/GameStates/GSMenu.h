@@ -32,9 +32,11 @@ private:
 	std::list<std::shared_ptr<GameButton>>	m_listButton;
 	std::shared_ptr<Text>					m_textGameName;
 	std::shared_ptr<Text>					m_score;
+	std::shared_ptr<Text>					m_mode;
 
 	std::shared_ptr<Player>					m_player;
 	GLint									m_numChar;
+	GLint									m_numMode;
 	bool									m_audioOn = true;
 };
 
