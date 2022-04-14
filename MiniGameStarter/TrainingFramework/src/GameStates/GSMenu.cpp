@@ -25,6 +25,12 @@ void GSMenu::Init()
 	m_background->SetSize(Globals::screenWidth, Globals::screenHeight);
 
 
+	//table best
+	texture = ResourceManagers::GetInstance()->GetTexture("table.tga");
+	m_tableBest = std::make_shared<Sprite2D>(model, shader, texture);
+	m_tableBest->Set2DPosition(Globals::screenWidth / 2, Globals::screenHeight / 2);
+	m_tableBest->SetSize(Globals::screenWidth / 2, Globals::screenHeight / 2);
+
 	//Sound
 	std::string name = "MenuSound.wav";
 	ResourceManagers::GetInstance()->PlaySound(name,true);
@@ -40,6 +46,18 @@ void GSMenu::Init()
 		});
 	m_listButton.push_back(button);
 	
+	//cup button
+	texture = ResourceManagers::GetInstance()->GetTexture("b_best.tga");
+	std::shared_ptr<GameButton> buttonCup = std::make_shared<GameButton>(model, shader, texture);
+	buttonCup->Set2DPosition(Globals::screenWidth - 250, 50);
+	buttonCup->SetSize(55, 55);
+	buttonCup->SetOnClick([=]() {
+			ReadFile();
+			m_best = !m_best;
+		});
+	m_listButton.push_back(buttonCup);
+
+
 	// audio button
 
 	texture = ResourceManagers::GetInstance()->GetTexture("b_audio.tga");
@@ -107,13 +125,13 @@ void GSMenu::Init()
 	m_listButton.push_back(buttonR1);
 	// exit button
 	texture = ResourceManagers::GetInstance()->GetTexture("b_quit.tga");
-	button = std::make_shared<GameButton>(model, shader, texture);
-	button->Set2DPosition(Globals::screenWidth - 50, 50);
-	button->SetSize(50, 50);
-	button->SetOnClick([]() {
-		exit(0);
+	std::shared_ptr<GameButton> buttonE = std::make_shared<GameButton>(model, shader, texture);
+	buttonE->Set2DPosition(Globals::screenWidth - 50, 50);
+	buttonE->SetSize(50, 50);
+	buttonE->SetOnClick([]() {
+			exit(0);
 		});
-	m_listButton.push_back(button);
+	m_listButton.push_back(buttonE);
 
 
 	// game title
@@ -122,26 +140,16 @@ void GSMenu::Init()
 	m_textGameName = std::make_shared< Text>(shader, font, "Adventure Guy", Vector4(0.0f, 1.0f, 1.0f, 1.0f), 2.0f);
 	m_textGameName->Set2DPosition(Vector2(40, 80));
 	// score	
-	m_score = std::make_shared< Text>(shader, font, "Best score:", Vector4(0.0f, 1.0f, 1.0f, 1.0f), 1.0f);
-	m_score->Set2DPosition(Vector2(900, 60));
+	m_scoreN = std::make_shared< Text>(shader, font, "Best score:", Vector4(0.0f, 1.0f, 1.0f, 1.0f), 1.0f);
+	m_scoreN->Set2DPosition(Vector2(400, 305));
+	m_scoreH = std::make_shared< Text>(shader, font, "Best score:", Vector4(0.0f, 1.0f, 1.0f, 1.0f), 1.0f);
+	m_scoreH->Set2DPosition(Vector2(400, 408));	
+	m_scoreR = std::make_shared< Text>(shader, font, "Best score:", Vector4(0.0f, 1.0f, 1.0f, 1.0f), 1.0f);
+	m_scoreR->Set2DPosition(Vector2(400, 520));
 
 	m_mode = std::make_shared< Text>(shader, font, " Normal", Vector4(0.0f, 1.0f, 1.0f, 1.0f), 1.5f);
 	m_mode->Set2DPosition(Vector2(Globals::screenWidth / 4 * 3 - 70, 515));
 
-	FILE* fptr;
-	fptr = fopen("..\\Data\\TextData\\BestScore.txt", "r");
-	if (fptr == NULL)
-	{
-		printf("Error!");
-		exit(1);
-	}
-	GLint score = 0;
-	while (fscanf(fptr, "%d", &score) != EOF)
-	{
-		m_score->SetText("Best score: " + std::to_string(score));
-	}
-	fclose(fptr);
-	Globals::bestSocre = score;
 
 	//character
 	shader = ResourceManagers::GetInstance()->GetShader("Animation");
@@ -190,6 +198,30 @@ void GSMenu::HandleMouseMoveEvents(int x, int y)
 {
 }
 
+void GSMenu::ReadFile()
+{
+	FILE* fptr;
+	//score  minus  second
+	fptr = fopen("..\\Data\\TextData\\BestScore.txt", "r");
+	if (fptr == NULL)
+	{
+		printf("Error!");
+		exit(1);
+	}
+	GLint score = 0;
+	GLint minus = 0;
+	GLint second = 0;
+	int a = 0;
+	a = fscanf(fptr, "%d %d %d", &score, &minus, &second);
+	m_scoreN->SetText("Normal      Best score: " + std::to_string(score) + "  Time: " + std::to_string(minus) + "S " + std::to_string(second) + "M");
+	a = fscanf(fptr, "%d %d %d", &score, &minus, &second);
+	m_scoreH->SetText("Hard         Best score: " + std::to_string(score) + "  Time: " + std::to_string(minus) + "S " + std::to_string(second) + "M");
+	a = fscanf(fptr, "%d %d %d", &score, &minus, &second);
+	m_scoreR->SetText("Speed        Best score: " + std::to_string(score) + "  Time: " + std::to_string(minus) + "S " + std::to_string(second) + "M");
+
+	fclose(fptr);
+}
+
 void GSMenu::Update(float deltaTime)
 {
 	m_background->Update(deltaTime);
@@ -214,7 +246,6 @@ void GSMenu::Update(float deltaTime)
 		m_numMode = Globals::mode;
 	}
 	m_player->Update(deltaTime);
-	m_score->SetText("Best score: " + std::to_string(Globals::bestSocre));
 }
 
 void GSMenu::Draw()
@@ -226,9 +257,15 @@ void GSMenu::Draw()
 			it->Draw();
 	}
 	m_textGameName->Draw();
-	m_score->Draw();
 	m_player->Draw();
 	m_mode->Draw();
+	if (m_best) 
+	{
+		m_tableBest->Draw();
+		m_scoreN->Draw();
+		m_scoreH->Draw();
+		m_scoreR->Draw();
+	}
 }
 
 void GSMenu::setAudio(bool audio)

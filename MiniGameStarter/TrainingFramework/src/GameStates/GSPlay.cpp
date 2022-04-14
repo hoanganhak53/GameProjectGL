@@ -670,24 +670,52 @@ void GSPlay::CreateMap(std::shared_ptr<Model> model, std::shared_ptr<Shader> sha
 
 void GSPlay::UpdateScore()
 {
-	if(m_player->GetScore() > Globals::bestSocre)
+	FILE* fptr;
+	fptr = fopen("..\\Data\\TextData\\BestScore.txt", "r");
+	if (fptr == NULL)
 	{
-		FILE* fptr;
-		fptr = fopen("..\\Data\\TextData\\BestScore.txt", "r+");
-		if (fptr == NULL)
-		{
-			printf("Error!");
-			exit(1);
-		}
-		fprintf(fptr, "%d", m_player->GetScore());
-		fclose(fptr);
-		Globals::bestSocre = m_player->GetScore();
+		printf("Error!");
+		exit(1);
 	}
+	int sc[3][3];
+	int i = 0;
+	// score  minus  second
+	i = fscanf(fptr, "%d %d %d", &sc[0][0], &sc[0][1], &sc[0][2]);
+	i = fscanf(fptr, "%d %d %d", &sc[1][0], &sc[1][1], &sc[1][2]);
+	i = fscanf(fptr, "%d %d %d", &sc[2][0], &sc[2][1], &sc[2][2]);
+	fclose(fptr);
+	if(m_player->GetScore() > sc[Globals::mode - 1][0])
+	{
+		sc[Globals::mode - 1][0] = m_player->GetScore();
+		sc[Globals::mode - 1][1] = (int)Globals::second / 60;
+		sc[Globals::mode - 1][2] = (int)Globals::second % 60;
+	}
+	if (m_player->GetScore() == sc[Globals::mode - 1][0])
+	{
+		if ((int)Globals::second / 60 < sc[Globals::mode - 1][1])
+		{
+			sc[Globals::mode - 1][1] = (int)Globals::second / 60;
+			sc[Globals::mode - 1][2] = (int)Globals::second % 60;
+		}
+		if ((int)Globals::second / 60 == sc[Globals::mode - 1][1])
+		{
+			if ((int)Globals::second % 60 < sc[Globals::mode - 1][2])
+				sc[Globals::mode - 1][2] = (int)Globals::second % 60;
+		}
+
+	}
+
+	fptr = fopen("..\\Data\\TextData\\BestScore.txt", "w");
+	fprintf(fptr, "%d %d %d\n", sc[0][0], sc[0][1], sc[0][2]);
+	fprintf(fptr, "%d %d %d\n", sc[1][0], sc[1][1], sc[1][2]);
+	fprintf(fptr, "%d %d %d", sc[2][0], sc[2][1], sc[2][2]);
+
+
+	fclose(fptr);
 	//Sound
 	if (Globals::haveSound)
 		ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
 }
-
 
 
 
@@ -725,8 +753,8 @@ void GSPlay::CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> 
 	buttonPause->Set2DPosition(Globals::screenWidth - 50, 50);
 	buttonPause->SetSize(70, 70);
 	buttonPause->SetOnClick([this]() {
-		Globals::moveCam = 0;
-		Pause();
+			Globals::moveCam = 0;
+			Pause();
 		});
 	m_listButton.push_back(buttonPause);
 
@@ -747,4 +775,3 @@ void GSPlay::CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> 
 		});
 	m_listButtonPause.push_back(buttonRestart);
 }
-

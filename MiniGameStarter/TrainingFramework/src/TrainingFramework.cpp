@@ -8,7 +8,6 @@ int Globals::screenHeight = 800;
 int Globals::character = 1;
 int Globals::moveCam = 0;
 bool Globals::isWin = false;
-int Globals::bestSocre = 0;
 bool Globals::haveSound = true;
 float Globals::second = 0;
 int Globals::score = 0;

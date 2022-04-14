@@ -26,7 +26,6 @@ public:
 	static int Globals::character;
 	static int Globals::moveCam;
 	static bool Globals::isWin;
-	static int Globals::bestSocre;
 	static bool Globals::haveSound;
 	static float Globals::second;
 	static int Globals::score;
