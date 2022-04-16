@@ -29,8 +29,10 @@ void GSPlay::Init()
 {
 	m_map = 1;
 	m_PressKey = 0;
+	m_RandTime = 0;
 	m_Time = 0;
 	m_isPause = false;
+	srand(time(0));
 	//Sound
 	std::string name = "MenuSound.wav";
 	if(Globals::haveSound)
@@ -76,32 +78,47 @@ void GSPlay::Init()
 	m_player = std::make_shared<Player>(model, shader, texture, 12, 1, 0, 0.07f);
 	m_player->setIdCharacter(Globals::character);
 	m_player->UpdateAnimation();
-	m_player->Set2DPosition(600, 650);
+	if(Globals::mode !=3)
+		m_player->Set2DPosition(600, 650);
+	else
+		m_player->Set2DPosition(300, 650);
+
 	m_player->SetSize(96, 96);
 	//cup
 	m_cup = std::make_shared<Cup>(model, shader, texture, 8, 1, 0, 0.07f);
 	m_cup->UpdateAnimation();
-	m_cup->Set2DPosition(19300, 670);
+	if(Globals::mode == 1 || Globals::mode == 3)
+		m_cup->Set2DPosition(16000, 670);
+	else if(Globals::mode == 2)
+		m_cup->Set2DPosition(10600, 670);
 
 	m_cup->SetSize(64, 64);
 
 	CreateMap(model, shader, texture);
 
 	//boss
-	if (Globals::mode == 2)
+	if (Globals::mode != 1)
 	{
 		m_boss = std::make_shared<Boss>(model, shader, texture, 8, 1, 0, 0.07f);
 		m_boss->UpdateAnimation();
-		m_boss->Set2DPosition(200, 600);
-		m_boss->SetPositionStart(Vector2(200, 650));
+		if (Globals::mode == 2)
+		{
+			m_boss->Set2DPosition(10500, 600);
+			m_boss->SetPositionStart(Vector2(10500, 650));
+		}
+		else
+		{
+			m_boss->Set2DPosition(300, 600);
+			m_boss->SetPositionStart(Vector2(300, 650));
+		}
 		m_boss->SetSize(100, 100);
 	}
 
 	//ground
 
 	std::shared_ptr<Ground>  g1 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
-	g1->Set2DPosition(700, 750);
-	g1->SetSize(1000, 100);
+	g1->Set2DPosition(300, 750);
+	g1->SetSize(1700, 100);
 	g1->UpdateAnimation();
 	m_listGround.push_back(g1);
 
@@ -141,11 +158,31 @@ void GSPlay::Init()
 	g7->UpdateAnimation();
 	m_listGround.push_back(g7);
 
-	std::shared_ptr<Ground>  g8 = std::make_shared<Ground>(model, shader, texture, 1, 1, 0, 0.5f, 1);
-	g8->Set2DPosition(18300, 750);
-	g8->SetSize(2500, 100);
-	g8->UpdateAnimation();
-	m_listGround.push_back(g8);
+	if (Globals::mode == 3) 
+	{
+		for (auto it : m_listEnemies)
+		{
+			it->setActive(false);
+		}
+		for (auto it : m_listPlant)
+		{
+			it->setActive(false);
+		}
+		for (auto it : m_listGhost)
+		{
+			it->setActive(false);
+		}
+		int i = 2;
+		for (auto it : m_listEnemies)
+		{
+			if (i == 0)
+				break;
+			it->setActive(true);
+			i--;
+		}
+		m_boss->setActive(false);
+	}
+
 }
 
 void GSPlay::Exit()
@@ -173,12 +210,13 @@ void GSPlay::Attacked(float deltaTime)
 	if (!m_player->getActive() || m_player->Get2DPosition().y > Globals::screenHeight)
 	{			
 		Globals::moveCam = 0;
-		if (m_player->GetHp() == 0 || m_player->Get2DPosition().y > Globals::screenHeight)
+		if (m_player->GetHp() == -1000 || m_player->Get2DPosition().y > Globals::screenHeight)
 		{
 			m_player->setActive(false);
 			m_player->UpdateAnimation();
 			m_Time += deltaTime;
-			if (m_Time > 1.5f)
+			m_PressKey = -1;
+			if (m_Time > 1.00f)
 			{
 				Globals::isWin = false;
 				UpdateScore();
@@ -207,6 +245,8 @@ void GSPlay::HandleKeyEvents(int key, bool bIsPressed)
 {
 	if (bIsPressed) 
 	{
+
+
 		switch (key)
 		{
 		case KEY_MOVE_LEFT: 
@@ -226,28 +266,28 @@ void GSPlay::HandleKeyEvents(int key, bool bIsPressed)
 		}
 		default:
 			break;
-		}
+		}	
 	}
 	else {
 		switch (key)
 		{
-		case KEY_MOVE_LEFT:
-		{
-			m_PressKey ^= 1;
-			break;
-		}
-		case KEY_MOVE_RIGHT:
-		{
-			m_PressKey ^= 1 << 1;
-			break;
-		}
-		case KEY_SPACE:
-		{
-			m_PressKey ^= 1 << 2;
-			break;
-		}
-		default:
-			break;
+			case KEY_MOVE_LEFT:
+			{
+				m_PressKey ^= 1;
+				break;
+			}
+			case KEY_MOVE_RIGHT:
+			{
+				m_PressKey ^= 1 << 1;
+				break;
+			}
+			case KEY_SPACE:
+			{
+				m_PressKey ^= 1 << 2;
+				break;
+			}
+			default:
+				break;
 		}
 	}
 }
@@ -303,7 +343,28 @@ void GSPlay::Update(float deltaTime)
 		m_player->UpdateAnimation();
 		m_player->Update(deltaTime);
 
-
+		if (Globals::mode == 3)
+		{
+			for (auto it : m_listEnemies)
+			{
+				if (!it->getActive())
+					it->SetPositionStart(Vector2(it->GetPositionStart().x - Globals::moveCam, it->GetPositionStart().y));
+			}
+			for (auto it : m_listPlant)
+			{
+				if (!it->getActive())
+				{
+					it->SetPositionStart(Vector2(it->GetPositionStart().x - Globals::moveCam, it->GetPositionStart().y));
+					it->m_bullet->SetPositionStart(Vector2(it->GetPositionStart().x - Globals::moveCam, it->GetPositionStart().y));
+				}
+			}
+			for (auto it : m_listGhost)
+			{
+				if (!it->getActive())
+					it->SetPositionStart(Vector2(it->GetPositionStart().x - Globals::moveCam, it->GetPositionStart().y));
+			}
+			RandomEnemies(deltaTime);
+		}
 		for (auto it : m_listEnemies)
 		{
 			if (!it->getActive())
@@ -397,7 +458,7 @@ void GSPlay::Update(float deltaTime)
 			}
 		m_cup->Update(deltaTime);
 
-		if (Globals::mode == 2)
+		if (Globals::mode == 2 || Globals::mode == 3)
 		{
 			if (m_boss->getActive())
 			{
@@ -406,7 +467,6 @@ void GSPlay::Update(float deltaTime)
 				m_boss->Update(deltaTime);
 			}
 		}
-
 
 		for (auto it : m_listBackground)
 		{
@@ -454,7 +514,6 @@ void GSPlay::Draw()
 			it->DrawBullet();
 			it->Draw();
 		}
-
 	}
 	for (auto it : m_listGhost)
 	{
@@ -462,7 +521,7 @@ void GSPlay::Draw()
 			it->Draw();
 		}
 	}
-	if (Globals::mode == 2)
+	if (Globals::mode == 2 || Globals::mode == 3)
 	{
 		if (m_boss->getActive())
 			m_boss->Draw();	
@@ -558,7 +617,7 @@ void GSPlay::CreateMap(std::shared_ptr<Model> model, std::shared_ptr<Shader> sha
 	else if(Globals::mode == 2)
 		fptr = fopen("..\\Data\\TextData\\DataMapHard.txt", "r");
 	else
-		fptr = fopen("..\\Data\\TextData\\Spond.txt", "r");
+		fptr = fopen("..\\Data\\TextData\\BattleMap.txt", "r");
 
 	if (fptr == NULL)
 	{
@@ -613,6 +672,7 @@ void GSPlay::CreateMap(std::shared_ptr<Model> model, std::shared_ptr<Shader> sha
 			std::shared_ptr<Ghost>  ghost = std::make_shared<Ghost>(model, shader, texture, 10, 1, 0, 0.07f);
 			ghost->UpdateAnimation();
 			ghost->Set2DPosition(xPosition, yPosition);
+			ghost->SetPositionStart(Vector2(xPosition, yPosition));
 			ghost->SetSize(96, 96);
 			m_listGhost.push_back(ghost);
 		}
@@ -668,6 +728,7 @@ void GSPlay::CreateMap(std::shared_ptr<Model> model, std::shared_ptr<Shader> sha
 	fclose(fptr);
 }
 
+
 void GSPlay::UpdateScore()
 {
 	FILE* fptr;
@@ -690,20 +751,36 @@ void GSPlay::UpdateScore()
 		sc[Globals::mode - 1][1] = (int)Globals::second / 60;
 		sc[Globals::mode - 1][2] = (int)Globals::second % 60;
 	}
-	if (m_player->GetScore() == sc[Globals::mode - 1][0])
+	if (Globals::mode == 3)
 	{
-		if ((int)Globals::second / 60 < sc[Globals::mode - 1][1])
+		if ((int)Globals::second / 60 > sc[Globals::mode - 1][1])
 		{
 			sc[Globals::mode - 1][1] = (int)Globals::second / 60;
 			sc[Globals::mode - 1][2] = (int)Globals::second % 60;
 		}
 		if ((int)Globals::second / 60 == sc[Globals::mode - 1][1])
 		{
-			if ((int)Globals::second % 60 < sc[Globals::mode - 1][2])
+			if ((int)Globals::second % 60 > sc[Globals::mode - 1][2])
 				sc[Globals::mode - 1][2] = (int)Globals::second % 60;
 		}
-
 	}
+	else
+	{
+		if (m_player->GetScore() == sc[Globals::mode - 1][0])
+		{
+			if ((int)Globals::second / 60 < sc[Globals::mode - 1][1])
+			{
+				sc[Globals::mode - 1][1] = (int)Globals::second / 60;
+				sc[Globals::mode - 1][2] = (int)Globals::second % 60;
+			}
+			if ((int)Globals::second / 60 == sc[Globals::mode - 1][1])
+			{
+				if ((int)Globals::second % 60 < sc[Globals::mode - 1][2])
+					sc[Globals::mode - 1][2] = (int)Globals::second % 60;
+			}
+		}
+	}
+
 
 	fptr = fopen("..\\Data\\TextData\\BestScore.txt", "w");
 	fprintf(fptr, "%d %d %d\n", sc[0][0], sc[0][1], sc[0][2]);
@@ -717,7 +794,104 @@ void GSPlay::UpdateScore()
 		ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
 }
 
+void GSPlay::RandomEnemies(float deltaTime)
+{
+	m_RandTime += deltaTime;
+	float rTime;
+	if (Globals::second < 31.0f)
+		rTime = 5.0f;
+	else if (Globals::second < 60.0f)
+		rTime = 9.0f;
+	else if (Globals::second < 60.0f)
+		rTime = 7.0f;
+	else
+		rTime = 5.0f;
 
+	if (m_RandTime > rTime)
+	{
+		m_RandTime = 0;
+		if (Globals::second < 31.0f)
+		{
+			int count = 0;
+			for (auto it : m_listEnemies)
+			{
+				if (!it->getActive())
+					count++;
+			}
+			int r = rand() % count + 1;
+			int i = 0;
+			for (auto it : m_listEnemies)
+			{
+				if (!it->getActive())
+					i++;
+				if (i == r && !it->getActive())
+				{
+					it->Set2DPosition(it->GetPositionStart().x, it->GetPositionStart().y);
+					it->setActive(true);
+					break;
+				}
+			}
+		}
+		else
+		{
+			int count = 0;
+			for (auto it : m_listEnemies)
+			{
+				if (!it->getActive())
+					count++;
+			}
+			for (auto it : m_listPlant)
+			{
+				if (!it->getActive())
+					count++;
+			}
+			for (auto it : m_listGhost)
+			{
+				if (!it->getActive())
+					count++;
+			}
+			if(count != 0)
+			{
+				int r1 = rand() % count + 1;
+				int r2 = (rand() + 7) % count + 1;
+				int i = 0;
+				for (auto it : m_listPlant)
+				{
+					if (!it->getActive())
+						i++;
+					if ((i == r1 || i == r2) && !it->getActive())
+					{
+						it->Set2DPosition(it->GetPositionStart().x, it->GetPositionStart().y);
+						it->setActive(true);
+					}
+				}
+				for (auto it : m_listEnemies)
+				{
+					if (!it->getActive())
+						i++;
+					if ((i == r1 || i == r2) && !it->getActive())
+					{
+						it->Set2DPosition(it->GetPositionStart().x, it->GetPositionStart().y);
+						it->setActive(true);
+					}
+				}
+				for (auto it : m_listGhost)
+				{
+					if (!it->getActive())
+						i++;
+					if ((i == r1 || i == r2) && !it->getActive())
+					{
+						it->Set2DPosition(it->GetPositionStart().x, it->GetPositionStart().y);
+						it->setActive(true);
+					}
+				}
+			}
+
+		}
+	}
+	if (Globals::second > 90.0f && Globals::second < 91.0f && !m_boss->getActive())
+		m_boss->setActive(true);
+}
 
 void GSPlay::CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture)
 {
@@ -769,6 +943,7 @@ void GSPlay::CreateButton(std::shared_ptr<Model> model, std::shared_ptr<Shader> 
 			ResourceManagers::GetInstance()->StopSound("MenuSound.wav");
 			ResourceManagers::GetInstance()->PlaySound("MenuSound.wav", true);
 		}
+		m_RandTime = 0;
 		Globals::second = 0;
 		GameStateMachine::GetInstance()->PopState();
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);

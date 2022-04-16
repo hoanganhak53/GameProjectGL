@@ -47,7 +47,7 @@ public:
 
 	void	CreateMap(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
 	void	UpdateScore();
-
+	void	RandomEnemies(float deltaTime);
 private:
 	std::list<std::shared_ptr<Sprite2D>>		m_listBackground;
 
@@ -75,6 +75,7 @@ private:
 
 	int											m_map;
     float										m_Time;
+	float										m_RandTime;
 	bool										m_isPause;
 	int											m_PressKey;
 };

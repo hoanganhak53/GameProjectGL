@@ -213,11 +213,11 @@ void GSMenu::ReadFile()
 	GLint second = 0;
 	int a = 0;
 	a = fscanf(fptr, "%d %d %d", &score, &minus, &second);
-	m_scoreN->SetText("Normal      Best score: " + std::to_string(score) + "  Time: " + std::to_string(minus) + "S " + std::to_string(second) + "M");
+	m_scoreN->SetText("Normal      Best score: " + std::to_string(score) + "  Time: " + std::to_string(minus) + "M " + std::to_string(second) + "S");
 	a = fscanf(fptr, "%d %d %d", &score, &minus, &second);
-	m_scoreH->SetText("Hard         Best score: " + std::to_string(score) + "  Time: " + std::to_string(minus) + "S " + std::to_string(second) + "M");
+	m_scoreH->SetText("Hard         Best score: " + std::to_string(score) + "  Time: " + std::to_string(minus) + "M " + std::to_string(second) + "S");
 	a = fscanf(fptr, "%d %d %d", &score, &minus, &second);
-	m_scoreR->SetText("Speed        Best score: " + std::to_string(score) + "  Time: " + std::to_string(minus) + "S " + std::to_string(second) + "M");
+	m_scoreR->SetText("Battle       Best Time: " + std::to_string(minus) + "M " + std::to_string(second) + "S");
 
 	fclose(fptr);
 }
@@ -241,7 +241,7 @@ void GSMenu::Update(float deltaTime)
 		else if(Globals::mode == 2)
 			m_mode->SetText("  Hard");
 		else
-			m_mode->SetText("Speed Run");
+			m_mode->SetText(" Battle");
 
 		m_numMode = Globals::mode;
 	}

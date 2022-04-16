@@ -186,7 +186,7 @@ void Ghost::UpdateAnimation()
 
 void Ghost::Move(std::shared_ptr<Player> player, float deltaTime)
 {
-	if (m_dir == player->GetDirect() && std::abs(player->Get2DPosition().x - m_position.x) < 700)
+	if (m_dir == player->GetDirect() && std::abs(player->Get2DPosition().x - m_position.x) < 900)
 	{
 		if (m_position.x > player->Get2DPosition().x)
 		{
