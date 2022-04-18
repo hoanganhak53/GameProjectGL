@@ -12,4 +12,4 @@ Written by C++ programming language, use graphic library TranningFramework
 
 ### Game:
 
-![Image](https://cdn.discordapp.com/attachments/734371335018381344/962945739246432256/unknown.png)
+![Image](https://scontent.fhan2-1.fna.fbcdn.net/v/t1.15752-9/277915492_531985471770394_503717708520155813_n.png?_nc_cat=101&ccb=1-5&_nc_sid=ae9488&_nc_ohc=3ZZbVc4cOygAX8Q0l9_&_nc_ht=scontent.fhan2-1.fna&oh=03_AVJZkTEAJCPQWwlFwJU-00Zrp1SRPgWErMMUYRjeCcfTOA&oe=6284376E)
