@@ -210,7 +210,7 @@ void GSPlay::Attacked(float deltaTime)
 	if (!m_player->getActive() || m_player->Get2DPosition().y > Globals::screenHeight)
 	{			
 		Globals::moveCam = 0;
-		if (m_player->GetHp() == -1000 || m_player->Get2DPosition().y > Globals::screenHeight)
+		if (m_player->GetHp() == 0 || m_player->Get2DPosition().y > Globals::screenHeight)
 		{
 			m_player->setActive(false);
 			m_player->UpdateAnimation();

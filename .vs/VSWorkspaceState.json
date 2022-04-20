@@ -1,0 +1,11 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\MiniGameStarter",
+    "\\MiniGameStarter\\TrainingFramework",
+    "\\MiniGameStarter\\TrainingFramework\\src",
+    "\\MiniGameStarter\\TrainingFramework\\src\\GameStates"
+  ],
+  "SelectedNode": "\\MiniGameStarter\\TrainingFramework\\src\\GameStates\\GSPlay.cpp",
+  "PreviewInSolutionExplorer": false
+}
